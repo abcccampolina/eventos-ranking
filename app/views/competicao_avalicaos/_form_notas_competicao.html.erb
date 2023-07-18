@@ -1,0 +1,56 @@
+		<div class="card-body">
+			<div class="row">
+				<%# <div class="col-lg-4 col-md-5 col-sm-12 col-6"> %>
+				<div class="col-lg-auto col-md-auto col-sm-12 col-12 custom-wd">
+					<div class="nav-tabs-navigation verical-navs mini-nav-verti custom-pd">
+						<div class="nav-tabs-wrapper">
+							<ul class="nav nav-tabs flex-column nav-stacked" role="tablist">
+							
+								<% competicaojuris&.each_with_index do |juri, index| %>
+									<% if can? :lancar_notas, juri.user %>
+										<li class="nav-item nav-item-c
+											<%= " active" if juri.user.id == current_user.id && current_user.tipo_usuario == "Admin" %>" 
+											data-action="click->competicao-avalicaos#navChange">
+											<a class="nav-link
+												<%= " active show" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>"
+													href="#juri-set-<%= juri.id %>" role="tab" data-toggle="tab" aria-selected="false">
+												<%= juri.user.name %>
+											</a>
+										</li>
+									<% end %>
+								<% end %>
+							</ul>
+						</div>
+					</div>
+				</div>
+               
+
+				<div class="col-lg-9 col-md-9 col-sm-12 col-12 fix-wd-nav">
+					<!-- Tab panes -->
+					<div class="tab-content tab-content-c">
+
+						<% competicaojuris&.each_with_index do |juri, index| %>
+							<%= render('competicao_avalicaos/notas',
+								index: index,
+								juri: juri,
+								competicao_avalicaos: competicao_avalicaos,
+								clusters: clusters) if can? :lancar_notas, juri.user,
+								filter_cluster: filter_cluster
+							%>
+						<% end %>
+						
+						<div class="row">
+
+							<div class="col-12">
+								<%= content_tag :button, "Salvar", 
+									class: "btn btn-success float-right", 
+									data: {action: "click->competicao-avalicaos#bookSubmitForm"} 
+								%>
+							</div>
+
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>

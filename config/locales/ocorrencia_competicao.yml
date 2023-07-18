@@ -1,0 +1,16 @@
+en:
+  enumerations:
+    ocorrencia_competicao:
+      asterisco: 'Asterisco (*)'
+      desclassificado: 'Desclassificado (desc)'
+      nep: 'Não entrou no parque (NEP)'
+      ncp: 'Não compareceu na pitsta (NCP)'
+      cla: 'Claudicação (CLA)'
+pt-BR:
+  enumerations:
+    ocorrencia_competicao:
+      asterisco: 'Asterisco (*)'
+      desclassificado: 'Desclassificado (desc)'
+      nep: 'Não entrou no parque (NEP)'
+      ncp: 'Não compareceu na pitsta (NCP)'
+      cla: 'Claudicação (CLA)'

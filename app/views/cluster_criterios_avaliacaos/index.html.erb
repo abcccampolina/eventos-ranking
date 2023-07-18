@@ -1,0 +1,53 @@
+<div class="row" data-controller="cluster-criterios-avaliacaos">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_cluster_criterios_avaliacao_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Cluster Critérios Avaliações</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Nome</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @cluster_criterios_avaliacaos.each do |cluster_criterios_avaliacao| %>
+							<tr id="cluster_criterios_avaliacao-item-<%= cluster_criterios_avaliacao.id %>">
+								<td><%= cluster_criterios_avaliacao.nome %></td>
+
+								<td class="project-actions">
+
+									<%= link_to edit_cluster_criterios_avaliacao_path(cluster_criterios_avaliacao), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+									<% end if can? :update, cluster_criterios_avaliacao %>
+
+									
+									<%= link_to "javascript:void(0);", 
+										'data-id': cluster_criterios_avaliacao.id, 
+										"data-action": "cluster-criterios-avaliacaos#delete", 
+										class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do 
+									%>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, cluster_criterios_avaliacao %>
+
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>

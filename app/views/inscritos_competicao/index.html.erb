@@ -1,0 +1,89 @@
+<div class="row" data-controller="competicao-avalicaos">
+	<% begin %>
+		<div class="col-md-12">
+			<div class="card">
+
+				<div class="row">
+					<div class="col-sm-10 col-sm-offset-2">
+						<%= link_to 'Voltar', root_path, class: 'btn btn-bold btn-default' %>
+					</div>
+
+					<% if @competicao.ajuste_nota? %>
+						<div class="col-sm-2 float-right">
+							<%= link_to '', ajutar_nota_path(catalogo: @catalogo), class: 'btn btn-outline-danger' %>
+						</div>
+					<% end %>
+
+				</div>
+				<div class="card-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th></th>
+								<th style="text-align: center;">Número Animal</th>
+								<th style="text-align: center;">Nota Final</td>
+								<th style="text-align: center;">Cabeça</td>
+								<th style="text-align: center;">Aprumo</td>
+								<th style="text-align: center;">Posto</td>
+								<th style="text-align: center;">Observação</td>
+								<th style="width: 160px;">Notas Juri</th>
+								<th style="width: 160px;">Notas Empate</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% position = 1%>
+							<% @competidores.each do |competidores| %>
+
+								<% catalogo = @catalogo.where(inscricao_id: competidores.inscricao_id).first %>
+								<tr id="competicao-item-<%= competidores.id %>">
+									
+									<td><%= (competidores.empate && !competidores.nota_desempate.present?) || !competidores.nota_final.present? || !competidores.observacao_final&.empty? ? "#" : "#{position}º" %></td>
+
+									<td style="text-align: center;"><%= catalogo.numero_colete %></td>
+									<td style="text-align: center;"><%= competidores.nota_final rescue "" %> <small> <%= competidores.nota_desempate%> </small> </td>
+									<td style="text-align: center;"><% if competidores.nota_final_melhor_cabeca == true%>
+											<i class="fas fa-circle" style="color: #4287f5"></i>
+										<%end%>
+									</td>
+									<td style="text-align: center;"><% if competidores.nota_final_melhor_aprumo == true %>
+											<i class="fas fa-circle" style="color: #42f587"></i>
+										<%end%>
+									</td>
+									<td style="text-align: center;"><%= competidores.posto rescue "" %></td>
+									<td style="text-align: center;"><%= competidores.observacao_final rescue "" %></td>
+
+									<td class="project-actions">
+										<% position += 1 %>
+
+										<% id = CompeticaoAvalicao.find_by(inscricao_id: competidores.inscricao.id, catalogo_id: catalogo.id) %>
+
+										<%if id.present? %>
+											<%= link_to 'Notas', "/competicao_avalicaos/#{id.id}/edit?competicao_id=#{@competicao.id}&evento_id=#{$evento.id}&inscricao=#{competidores.inscricao_id}&catalogo_id=#{catalogo.id}", class: 'btn btn-outline-default' %>
+										<% else %>
+											<%= link_to 'Notas', "/competicao_avalicaos/new?competicao_id=#{@competicao.id}&evento_id=#{$evento.id}&inscricao=#{competidores.inscricao_id}&catalogo_id=#{catalogo.id}", class: 'btn btn-outline-default' %>
+										<% end %>
+									</td>
+									<td>
+
+										<% desempate = Competicao.find(@competicao.id) %>
+										<%if competidores.empate && desempate&.competicao_desempate.present? %>
+											<%= link_to 'Desempate', "/competicao_desempates/new?competicao_id=#{desempate.competicao_desempate}&evento_id=#{$evento.id}&inscricao=#{competidores.inscricao_id}&comp=#{@competicao.id}&catalogo_id=#{catalogo.id}", class: 'btn btn-outline-danger' %>
+										<%end%>
+									</td>
+
+								</tr>
+							<% end %>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	<% end if false %>
+
+	<% competicaojuris, clusters = data_item_comp($evento.id, @competicao.id) %>
+	<% competidores = mount_competidores(@competidores, competicaojuris, @catalogo, @competicao.id) %>
+
+	<div class="col-md-12"> 
+		<%= render 'competicao_avalicaos/xform', competicaojuris: competicaojuris, clusters: clusters, competicao_avalicaos: competidores %>
+	</div>
+</div>

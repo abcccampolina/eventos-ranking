@@ -1,0 +1,200 @@
+<%# competicaojuris, clusters = data_item_comp($evento.id, @competicao.id) %>
+<%#competicaojuris, clusters = data_item_comp($evento.id, @competicao.id) %>
+<%# competidores = mount_competidores(@competidores, competicaojuris, @catalogo, @competicao.id) %>
+<div class="col-md-12"> 
+    <%#= render 'competicao_avalicaos/xform', competicaojuris: competicaojuris, clusters: clusters, competicao_avalicaos: competidores %>
+</div>
+
+<div class="row">
+    <div class="col-12"> 
+
+<!-- Agrupa por Cluster de Criterios de Avaliação. Ex. Marcha, Funcional e Morfologia -->
+
+<% @comp_avaliacaos.sort_by {|s| s.criterios_competicao.criterios_avaliacao.cluster_criterios_avaliacao.id}.group_by{|c| c.criterios_competicao.criterios_avaliacao.cluster_criterios_avaliacao.nome }.each do |cluster, avaliacao| %>
+        <div class="text-right"> 
+            <small><%= $evento.nome%> -  </small>
+        </div>
+        <img src="/LOGO_1.png" alt="logo-campolina" style="max-width: 6% !important">
+
+        <!-- Nome da Competição como escrita no Catalogo-->
+        <h5 class="text-center">
+            <strong>
+                <%= Catalogo.find_by(inscricao_id: @comp_avaliacaos.first.inscricao_id, competicaos_evento_id: @comp_avaliacaos.first.competicao_juri.competicaos_evento_id).nome_catalogo rescue nil%>
+            </strong>
+        </h5>
+
+        <h2 class="text-center"> <%= cluster %> </h2>
+        <table>
+            <tr>
+            </tr>
+            <!-- Caso seja morfologia não será exibido os animais só para marcha-->
+            <% grande = false %>
+            <% if cluster == "Morfologia"%>
+                <%avaliacao = avaliacao.select {|ca| ca.inscricao.so_marcha != true  } %>
+                <%if avaliacao.first.competicao_juri.competicaos_evento.competicao.modalidade.nome == "Grande Competição"%>
+                    <% grande = true %>
+                    <%avaliacao = avaliacao.select {|ca| ca.inscricao_id.in?(@campeoes_morfologia.map{|z| z.inscricao_id})} %>
+                <%end%>
+            <%elsif cluster == "Marcha" && avaliacao.first.competicao_juri.competicaos_evento.competicao.modalidade.nome == "Grande Competição" %>
+                <% grande = true %>
+                <%avaliacao = avaliacao.select {|ca| ca.inscricao_id.in?(@campeoes_marcha.map{|z| z.inscricao_id})} %>
+            <%end%>
+
+            <!-- Agrupo a competição por catalogo_id -->
+            <%if avaliacao.first.competicao_juri.competicaos_evento.competicao.modalidade.nome  == "Competição Acasalamento" || avaliacao.first.competicao_juri.competicaos_evento.competicao.modalidade.nome == "Competição Progênie" %>
+                <% avaliacao =  avaliacao.group_by{|c| c.catalogo.numero_colete_progenie } %>
+            <%else%>
+                <% avaliacao =  avaliacao.group_by{|c| c.catalogo_id } %>
+            <%end%>
+            
+            <% avaliacao.sort_by{|k, v| v.map{|p| p&.classificacao || 0 }}.each do |catalogo, notas| %>
+                <tr>
+                    <%total = 0%>
+                    <%if notas.first.competicao_juri.competicaos_evento.competicao.modalidade.nome  == "Competição Acasalamento" || notas.first.competicao_juri.competicaos_evento.competicao.modalidade.nome == "Competição Progênie"%>
+                                <% animal = Catalogo.find_by(numero_colete_progenie: catalogo) %>
+                                <% if animal.competicaos_evento.competicao.modalidade.nome == "Competição Acasalamento" %>
+                                    <% pai = SrgAnimal.find(animal.inscricao.pai_animal_id) %>
+                                    <% mae = SrgAnimal.find(animal.inscricao.mae_animal_id) %>
+                                    <td style="width: 190px; font-size: 14px;">#<%= animal.numero_colete_progenie %> - <%= pai.nome_completo %> x <%= mae.nome_completo %></td>
+                                <%else%>
+                                    <% progenie = SrgAnimal.find(InscricaosCompeticao.find_by(inscricao_id: animal.inscricao_id, competicaos_evento_id: animal.competicaos_evento_id).progenie_id) %>
+                                    <td style="width: 190px; font-size: 14px;">#<%= animal.numero_colete_progenie %> - <%= progenie.nome_completo %></td>
+                                <%end%>
+                        <%notas.group_by{|c| c.catalogo.numero_colete_progenie}.sort_by { |k, nota| nota.map{|p| p&.criterios_competicao_id }}.each do |progenie, notao| %>
+                            <% notao.group_by{|c| c.competicao_juri }.each  do |juri, nota| %>
+                                <% total += nota.first.nota.round %>
+                                <td style="width: 100px; font-size: 14px;"> <%if nota.first.competicao_juri.juri_desempate? %> <strong> <%= nota.first.competicao_juri.user.name %> </strong> <%else%> <%= nota.first.competicao_juri.user.name %> <%end%> :<%#= nota.first.inscricao.nome_animal%> <% if cluster == "Prova Funcional"%> - <%= nota.first.criterios_competicao.criterios_avaliacao.nome%>:  <%end %> <%= nota.first.nota.round %> </td>
+                            <%end%>
+                        <%end%>
+                    <%else%>
+                    <% animal = Catalogo.find(catalogo) %>
+                            <td style="width: 190px; font-size: 14px;">
+                                #<%= animal.numero_colete %> - <%= animal.inscricao.nome_animal %>
+                            </td>
+                        <%notas.sort_by { |nota| [nota.criterios_competicao_id] }.each do |nota|%>
+                            <td style="width: 100px; font-size: 14px;"> 
+                            <%if nota.competicao_juri.juri_desempate? %> 
+                                <strong> <%= nota.competicao_juri.user.name %> </strong> 
+                            <%else%> 
+                                <%= nota.competicao_juri.user.name %> 
+                            <%end%> : 
+                            <% if cluster == "Prova Funcional"%> - 
+                                <%= nota.criterios_competicao.criterios_avaliacao.nome%>:  
+                            <%end %> 
+                            <%= nota.nota.round %> 
+                            <%if nota.ocorrencia == "asterisco" %> * <%end%>
+                            </td>
+                        <%end%>
+                        <%total = notas.map{|i| i.nota}.sum.round %>
+                    <%end%>
+                     <% if cluster == "Marcha"%>
+                        <% total = notas.map{|i| i.nota}.sum.round - notas.map{|i| i.nota}.max.round - notas.map{|i| i.nota}.min.round %>
+                     <%end%>
+                    <% if cluster == "Prova Funcional"%><td style="width: 100px; font-size: 14px;"> Tempo Final: <%= Time.at(notas.first.tempo_final).utc.strftime("%M:%S.%ss") rescue nil %> </td><%end %>
+                    <% if cluster != "Prova Funcional"%> <td style="width: 100px; font-size: 14px;">Total: <%= total&.abs %></td> <%end%>
+                    <% if notas.first.ocorrencia.present? %>
+                        <%if notas.first.ocorrencia == "asterisco"%>
+                            <td style="width: 190px; font-size: 14px;">*<%= if animal.inscricao.faixa_etaria < 36 || cluster == "Morfologia" || grande == true
+                                                                                case notas.first.classificacao 
+                                                                                    when 1
+                                                                                        "Campeão"
+                                                                                    when 2
+                                                                                        "Reservado Camp."
+                                                                                    else
+                                                                                        ""
+                                                                                end
+                                                                            elsif cluster == "Prova Funcional"
+                                                                                notas.first.classificacao
+                                                                            else
+                                                                                case notas.first.classificacao 
+                                                                                    when 1
+                                                                                        "Campeão"
+                                                                                    when 2
+                                                                                        "Reservado Camp."
+                                                                                    when 3
+                                                                                    "1° Premio"
+                                                                                    when 4
+                                                                                    "2° Premio"
+                                                                                    when 5
+                                                                                    "3° Premio"
+                                                                                    when 6
+                                                                                    "4° Premio"
+                                                                                    when 7
+                                                                                    "5° Premio"
+                                                                                    else
+                                                                                    ""
+                                                                                end
+                                                                            end
+                                                                                  %></td>
+                        <%else%>
+                            <td><%= notas.first.ocorrencia %></td>
+                        <%end%>
+                    <%else%>
+                        <td style="width: 190px; font-size: 14px;"><%=      if animal.inscricao.faixa_etaria < 36 || cluster == "Morfologia" || grande == true
+                                                                                case notas.first.classificacao 
+                                                                                    when 1
+                                                                                        "Campeão"
+                                                                                    when 2
+                                                                                        "Reservado Camp."
+                                                                                    else
+                                                                                        ""
+                                                                                end
+                                                                            elsif cluster == "Prova Funcional"
+                                                                                notas.first.classificacao
+                                                                            else
+                                                                                case notas.first.classificacao 
+                                                                                    when 1
+                                                                                        "Campeão"
+                                                                                    when 2
+                                                                                        "Reservado Camp."
+                                                                                    when 3
+                                                                                        "1° Premio"
+                                                                                    when 4
+                                                                                    "2° Premio"
+                                                                                    when 5
+                                                                                    "3° Premio"
+                                                                                    when 6
+                                                                                    "4° Premio"
+                                                                                    when 7
+                                                                                    "5° Premio"
+                                                                                    when 8
+                                                                                    "6° Premio"
+                                                                                    else
+                                                                                        ""
+                                                                                end
+                                                                            end
+                                                                                  %></td>
+                    <%end%>
+                </tr>
+            <%end%>
+        </table>
+        <br>
+        <br>
+        <div class="text-right"> 
+            <img src="/logo_eleva.jpg" alt="" width="100" height="40">
+            <br>
+            <small style="color: #c0c2bc">www.elevatech.com.br </small>
+        </div>
+        <div class="page-break"></div>
+<%end%>
+
+    </div>
+</div>
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>

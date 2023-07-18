@@ -1,0 +1,38 @@
+<div class="card-body form-type-round">
+	<% if @inscricaos_competicao.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@inscricaos_competicao.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @inscricaos_competicao.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@inscricaos_competicao, html: {class: ""}) do |f| %>
+
+			<%= f.hidden_field(:inscricao_id, value: params[:inscricao]) %>
+			<%= f.hidden_field(:evento_id, value: params[:evento]) %>
+
+			<h1>
+				Inscrição: <%= params[:inscricao] %>
+			</h1>
+			<%= f.label "Seu animal está apto a competir nas categorias:" %> <br>
+			
+				<% @competicao.each do |comp| %>
+					<fieldset class="form-group">
+						<%= check_box_tag 'comp_ids[]', comp.id, {:checked => "checked"} %>
+						<%= h comp.nome -%>
+					</fieldset>
+				<% end %>		
+		<p>
+			* Fique atento ao seu e-mail que será o canal de comunicação que ele receberá o boleto para pagamento.
+		</p>
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Confimar Inscrição", class: 'btn btn-bold btn-success' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

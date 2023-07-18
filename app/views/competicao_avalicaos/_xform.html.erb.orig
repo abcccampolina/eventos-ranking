@@ -1,0 +1,391 @@
+<% competicaojuris      ||= @competicaojuris %>
+<% competicao_avalicaos ||= @competicao_avalicaos %>
+<% competicao_avalicaos = competicao_avalicaos.sort_by{|c| c.catalogo.numero_colete}.reverse %>
+<% competicaojuris = competicaojuris.where(competicaos_evento_id: @catalogo.first.competicaos_evento.id) %>
+
+<div class="card">
+	<div class="card-header">
+		<div class="row" data-turbolinks="false">
+			<div class="col-lg-12">
+				<h5>Notas <%= @catalogo.first.nome_catalogo %> </h5>
+			</div>
+
+			<% if can? :read, :imprimir_parcial %>
+				<div class="col-sm-3">
+					<%= link_to 'Imprimir Parcial', 
+						imprimir_parcial_path(catalogo: @catalogo.map{|c| c.id }, 
+							competicao_evento_id: @catalogo.first.competicaos_evento_id
+						), class: 'btn btn-sm btn-default text-break-center w-100'
+					%>
+				</div>
+			<% end %>
+
+			<%if @catalogo.first.competicaos_evento.competicao.modalidade.nome == "Grande Competição" && @catalogo.first.competicaos_evento.competicao.nome != "Prova Esportiva" && @catalogo.first.competicaos_evento.competicao.nome != "Grande Campeonato Prova Funcional Campolina em Ação Solida Marcha Batida" && @catalogo.first.competicaos_evento.competicao.nome != "Grande Campeonato Prova Funcional Campolina em Ação Solida Marcha Picada" && @catalogo.first.competicaos_evento.competicao.nome !="Grande Campeonato Prova Funcional Campolina em Ação Pampa Marcha Batida" && @catalogo.first.competicaos_evento.competicao.nome !=  "Grande Campeonato Prova Funcional Campolina em Ação Pampa Marcha Picada" %>
+				<% if can? :read, :ajutar_nota %>
+					<div class="col-sm-3">
+						<%= link_to 'Ajustar e imprimir Notas Grande da Raça',
+							ajutar_nota_path(
+								inscricaos: @catalogo.map{|c| c.inscricao_id },
+								competicao_id: @catalogo.first.competicaos_evento.competicao_id,
+								competicao_evento_id: @catalogo.first.competicaos_evento_id,
+								nome_catalogo: @catalogo.first.catalogo_nome_id
+							), class: 'btn btn-sm btn-danger text-break-center w-100'
+						%>
+					</div>
+				<% end %>
+			<% end %>
+
+			<%if @catalogo.first.competicaos_evento.competicao.modalidade.nome != "Grande Competição"%>
+				<% if can? :read, :imprimir_resultado %>
+					<div class="col-sm-3">
+						<%= link_to 'Imprimir Resultado Final', 
+							imprimir_resultado_path(catalogo: @catalogo.map{|c| c.id }, 
+							competicao_evento_id: @catalogo.first.competicaos_evento_id
+							), class: 'btn btn-sm btn-default text-break-center w-100' 
+						%>
+					</div>
+				<% end %>
+			<% end %>
+
+		</div>		
+	</div>
+
+	<% if can? :create, :read, :update, :destroy, :set_juri_desempate %>
+    <div class="card-header">
+        <div class="row">
+            <div class="ml-auto mr-auto col-lg-8 mt-10">
+                <div id="accordion-juri" role="tablist" aria-multiselectable="true" class="card-collapse">
+                    <div class="card card-plain">
+                        <div class="card-header" role="tab" id="itjuriTabSelections">
+                            <a data-toggle="collapse" id="lkjuriTabSelections" data-parent="#accordion"
+                                href="#juriTabSelections" aria-expanded="false" aria-controls="collapseOne"
+                                class="collapsed text-danger" style="text-decoration:none;">
+                                <i class="nc-icon nc-minimal-up"></i>
+                                <strong class="text-danger">Defina o júri de desempate</strong>
+                            </a>
+                        </div>
+                        <div id="juriTabSelections" class="collapse" role="tabpanel"
+                            aria-labelledby="juriTabSelections">
+                            <div class="card-body">
+                                <%= form_with url: competicao_avalicaos_set_juri_desempate_path, data:
+                                    {action: "ajax:success->competicao-avalicaos#onBookPostSuccess" } do |f| %>
+
+<<<<<<< HEAD
+						<div class="row">
+							<div class="col-lg-12 text-center">
+								<strong class="text-danger">Escolha dos Juízes de Desempate</strong>
+							</div>
+							<div class="col-lg-12">
+								<% clusters.each do |_cluster| %>
+									<%= f.fields_for :juri_desempate do |form| %>
+										<%= form.label _cluster.id.to_s, _cluster.nome %>
+										<%= form.select _cluster.id.to_s, 
+											options_for_select(competicaojuris.map { |ca| [ca.user.name, ca.id] }, 
+												competicaojuris.find_by(juri_desempate: true, cluster_criterios_avaliacao_id: _cluster.id)&.id), {include_blank: true},
+											class: 'form-control show-tick'
+										%>
+									<% end %>
+								<% end %>
+							</div>
+						
+							<div class="col-lg-12">
+								<%= submit_tag "Salvar Juri", class: "btn btn-success float-right" %>
+							</div>
+						</div>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	<% end %>
+=======
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <% clusters.each do |_cluster| %>
+                                                <%= f.fields_for :juri_desempate do |form| %>
+                                                    <%= form.label _cluster.id.to_s, _cluster.nome %>
+													<%= form.select _cluster.id.to_s,
+														options_for_select(competicaojuris.map { |ca| [ca.user.name,
+														ca.id] }, competicaojuris.find_by(juri_desempate: true,
+														cluster_criterios_avaliacao_id: _cluster.id)&.id),
+														{include_blank: true}, class: 'form-control show-tick' %>
+													<% end %>
+											<% end %>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <%= submit_tag "Salvar Juri" , class: "btn btn-success float-right" %>
+                                        </div>
+                                    </div>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>
+>>>>>>> master
+
+
+	<form id="FormClusterAvaliacao" action="change_cluster">
+		<input type="hidden" id="catalogo" name="catalogo" value='<%=@catalogo.ids%>'>
+		<%if @filter_cluster == "Morfologia" || !(@filter_cluster).present? %>
+			<input type="radio" id="cluster1" name="cluster" value="Morfologia" onchange="javascript:subCluster();" checked>
+		<%else%>
+			<input type="radio" id="cluster1" name="cluster" value="Morfologia" onchange="javascript:subCluster();" >
+		<%end%>
+		<label for="cluster1">Morfologia</label><br>
+		<%if @filter_cluster == "Marcha"%>
+			<input type="radio" id="cluster2" name="cluster" value="Marcha" onchange="javascript:subCluster();" checked>
+		<%else%>
+			<input type="radio" id="cluster2" name="cluster" value="Marcha" onchange="javascript:subCluster();">
+		<%end%>
+		<label for="cluster2">Marcha</label><br> 
+		<%if @filter_cluster == "Funcional"%>''
+			<input type="radio" id="cluster3" name="cluster" value="Funcional" onchange="javascript:subCluster();" checked >
+		<%else%>
+			<input type="radio" id="cluster3" name="cluster" value="Funcional" onchange="javascript:subCluster();">
+		<%end%>
+		<label for="cluster3">Prova Funcional</label>
+	</form>
+	
+
+	<%if !@filter_cluster.present?%>
+		<%@filter_cluster = "Morfologia"%>
+	<%end%>
+	<!-- Verifica se a competição não é de acasalamento ou progenie -->
+	<% if @catalogo.first.competicaos_evento&.competicao.modalidade.nome != "Competição Acasalamento" && @catalogo.first.competicaos_evento&.competicao.modalidade.nome != "Competição Progênie"  %>
+<<<<<<< HEAD
+		<%= render 'competicao_avalicaos/form_notas_competicao', competicao_avalicaos: competicao_avalicaos, clusters: clusters, competicaojuris: competicaojuris, filter_cluster: @filter_cluster %>
+	<% else %>
+		<!-- Caso a competição seja de acasalamento ou progenie -->
+		<%= render 'competicao_avalicaos/form_notas_progenie', competicao_avalicaos: competicao_avalicaos, clusters: clusters, competicaojuris: competicaojuris, filter_cluster: @filter_cluster %>
+=======
+		<div class="card-body">
+			<div class="row">
+				<div class="col-12 border-tab">
+					<div class="nav-tabs-navigation">
+						<div class="nav-tabs-wrapper">
+							<ul class="nav nav-tabs nav-stacked" role="tablist">
+								<% competicaojuris&.each_with_index do |juri, index| %>
+									<% if can? :lancar_notas, juri.user %>
+										<li class="nav-item nav-item-c
+											<%= " active" if juri.user.id == current_user.id && current_user.tipo_usuario == "Admin"%>" 
+											data-action="click->competicao-avalicaos#navChange">
+											<a class="nav-link" id="<%= juri.user.name %>
+												<%= " active show" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>"
+													href="#juri-set-<%= juri.id %>" role="tab" data-toggle="tab" aria-selected="false">
+												<%= juri.user.name %>
+											</a>
+											<% clusters&.each do |cluster| %>
+												<% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogo.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster.id}]'" ).present? %>
+													<strong class="text-danger"> <%= cluster&.nome %> <br/></strong>
+												<% end %>
+											<% end %>
+										</li>
+									<% end %>
+								<% end %>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-12">
+					<div class="tab-content tab-content-c">
+						<div class="table-responsive-y">
+							<table class="table" id="myTable">
+								<thead>
+									<tr  class="header">
+										<th style="width: 120px;">Jurado</th>
+										<th style="width: 110px;">Colete</th>
+										<th>Notas</th>
+									</tr>
+								</thead>
+								<% competicaojuris&.each_with_index do |juri, index| %>
+									<%= render('competicao_avalicaos/config_notas',
+										index: index,
+										juri: juri,
+										competicao_avalicaos: competicao_avalicaos,
+										clusters: clusters) if can? :lancar_notas, juri.user
+									%>
+								<% end %>
+							</table>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<%= content_tag :button, "Salvar", 
+									class: "btn btn-success float-right", 
+									data: {action: "click->competicao-avalicaos#bookSubmitForm"} 
+								%>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	<% else %>
+		<!-- Caso a competição seja de acasalamento ou progenie -->
+		<div class="card-body">
+			<div class="row">
+				<%# <div class="col-lg-4 col-md-5 col-sm-12 col-6"> %>
+				<div class="col-lg-auto col-md-auto col-sm-12 col-12 custom-wd">
+					<div class="nav-tabs-navigation verical-navs mini-nav-verti custom-pd">
+						<div class="nav-tabs-wrapper">
+							<ul class="nav nav-tabs flex-column nav-stacked" role="tablist">
+								<% competicaojuris&.each_with_index do |juri, index| %>
+								<li class="nav-item nav-item-c<%= "active" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>"
+									data-action="click->competicao-avalicaos#navChange">
+									<a class="nav-link<%= "active show" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>"
+										href="#juri-set-<%= juri.id %>" role="tab" data-toggle="tab" aria-selected="false">
+										<%= juri.user.name %>
+									</a>
+								</li>
+								<% end %>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-9 col-md-9 col-sm-12 col-12 fix-wd-nav">
+					<!-- Tab panes -->
+					<div class="tab-content tab-content-c">
+						<% competicaojuris&.each_with_index do |juri, index| %>
+							<div class="tab-pane<%= " active show" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>" id="juri-set-<%= juri.id %>">
+								<div id="accordion-<%= juri.id %>" role="tablist" aria-multiselectable="true" class="card-collapse">
+									<% competicao_progenie = competicao_avalicaos&.select {|ca| ca.competicao_juri_id == juri.id  }  %>
+										<% competicao_progenie.group_by{|i| i.catalogo.numero_colete_progenie}&.sort.uniq.each do |progenie, competicao_avaliacao| %>
+										<%# <h4 class="card-title">Collapsible Accordion</h4> %>
+										<% key_id = SecureRandom.hex %>
+										<div class="card card-plain">
+
+											<div class="card-header" role="tab" id="it<%= key_id %>">
+												<% clusters&.each do |cluster| %>
+													<% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogo.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster.id}]'" ).present? %>
+														<!--<h5 class="text-danger"> <strong><%= cluster&.nome %></strong> </h5>-->
+													<%end%>
+												<%end%>
+
+												<a data-toggle="collapse" id="lk<%= key_id %>" data-parent="#accordion" href="#<%= key_id %>" aria-expanded="false" aria-controls="collapseOne" class="collapsed <%= competicao_avaliacao.first.new_record? ? "text-danger" : "text-danger" %>">
+													<% notas = InscricaosCompeticao.find_by(inscricao_id: competicao_avaliacao&.first.inscricao_id, competicaos_evento_id: competicao_avaliacao&.first.competicao_juri.competicaos_evento_id)%>
+													<strong>#<%= competicao_avaliacao.first.catalogo&.numero_colete_progenie %></strong> <%#= competicao_avaliacao&.first.inscricao&.nome_animal %> </small>
+													<i class="nc-icon nc-minimal-up"></i>
+												</a>
+											</div>
+
+											<div id="<%= key_id %>" class="collapse show" role="tabpanel" aria-labelledby="<%= key_id %>">
+
+												<div class="card-body">
+													<%= form_for(competicao_avaliacao.first, remote: true, html: {class: "post-form-nota", data: {action: "ajax:success->competicao-avalicaos#onPostSuccess", key: key_id}, remote: true}) do |f| %>
+													<%= f.hidden_field(:evento_id) %>
+													<%= f.hidden_field(:inscricao_id) %>
+													<%= f.hidden_field(:competicao_id) %>
+													<%= f.hidden_field(:competicao_juri_id) %>
+													<%= f.hidden_field(:catalogo_id) %>
+													<%= hidden_field_tag :key_id, key_id %>
+													<small>
+														<div class="row mb-20">
+															<div class="col-lg-4">
+																<% clusters&.each do |cluster| %>
+																	<% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogo.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster.id}]'" ).present? %>
+																		<% criterios = cluster.criterios_avaliacaos.map{ |ca| ca.criterios_competicaos.where(competicao_id: @competicao.id) }.flatten %>
+																		<div class="table-responsive-y">
+																			<table>
+																				<tbody>
+																					<%# @criterios_competicao.where(criterios_avaliacao_id: @criterios.where(cluster_criterios_avaliacao_id: cluster.id)).each do |criterio| %>
+																					<tr id="cluster-<%= cluster.id %>">
+																						<% conector = SecureRandom.hex %>
+																						<% if cluster.funcional %>
+																							<%= f.label :tempo_executado, "Executado", class: 'font-weight-bold' %>
+																							<td  class="min-w-100">
+																								<%= f.text_field :tempo_executado, class: "form-control input-time", 
+																									value: tempo_formatado(competicao_avaliacao.first.tempo_executado),
+																									id: "el#{conector}", 
+																									data: {conector: conector, action: cluster.funcional ? "change->competicao-avalicaos#changeElements" : nil} 
+																								%>
+																							</td>
+																						<% end %>
+																						<% criterios.each do |criterio| %>
+																							<td class="min-w-100">
+																								<%= f.label :criterio do %>
+																									<strong> <%= criterio&.criterios_avaliacao&.nome || "Atributo Indefinido" %> </strong>
+																								<% end %>
+																								<fieldset>
+																									<% nota = CompeticaoAvalicao.find_by(competicao_juri_id: competicao_avaliacao.first.competicao_juri_id, criterios_competicao_id: criterio.id, inscricao_id: competicao_avaliacao.first.inscricao_id) %>
+																									<%= number_field(:nota, criterio.criterios_avaliacao_id, class: "form-control #{"co#{conector}" if cluster.funcional}", data: {conector: cluster.funcional ? conector : nil, action: cluster.funcional ? "change->competicao-avalicaos#changeElements" : nil}, value: nota&.nota&.round.to_i ) %>
+																								</fieldset>
+																							</td>
+																						<% end %>
+
+																						<% if cluster.funcional %>
+																							<strong> Resultado </strong>
+																							<td class="text-center">
+																								<strong id="<%= "fn#{conector}" %>" class="text-danger"><%= tempo_formatado(competicao_avaliacao.first.tempo_final) %></strong>
+																							</td>
+																						<% end %>
+
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>	
+																	<%end%>
+																<% end %>
+															</div>
+															<div class="col-lg-3">
+																<%= f.check_box :melhor_cabeca %>
+																<%= f.label :melhor_cabeca do %>
+																<strong>Melhor Cabeça?</strong>
+																<% end %>
+																<br>
+																<%= f.check_box :aprumacao %>
+																<%= f.label :aprumacao do %>
+																<strong>Aprumação?</strong>
+																<% end %>
+															</div>
+															<div class="col-lg-4">
+																<%= f.label :ocorrencia do %>
+																<strong>Ocorrência</strong>
+																<% end %>
+																<%= f.select :ocorrencia, 
+																	options_for_select(OcorrenciaCompeticao.to_a, competicao_avaliacao.first.ocorrencia), 
+																	{include_blank: "Nenhum"}, {class: "form-control"} 
+																%>
+															</div>
+															
+														</div>
+
+													</small>
+
+													<% end %>
+
+												</div>
+
+											</div>
+										</div>
+									<% end %>
+								</div>
+							</div>
+						<% end %>
+						
+						<div class="row">
+						
+							<div class="col-12">
+								<%= content_tag :button, "Salvar", 
+									class: "btn btn-success float-right", 
+									data: {action: "click->competicao-avalicaos#bookSubmitForm"} %>
+							</div>
+
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+>>>>>>> master
+	<% end %>
+</div>
+
+<script type="text/javascript">
+	function subCluster() {
+	document.getElementById("FormClusterAvaliacao").submit();
+	}
+</script>

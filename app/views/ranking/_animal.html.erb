@@ -1,0 +1,69 @@
+ <div class="row" data-controller="ranking">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+            <h3 class='text-center'>Ranking Animais</h3>
+            <input type="text" id="myInput" onkeyup="fProcurar()" placeholder="Procurar..." title="Pesquisar">
+                <table id="myTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Animal</th>
+                            <th>Pontuação</th>
+                            <th style="width: 160px;">Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% idd = 1 %>
+                        <% @rankings.group_by{|c|c&.nome_animal}.sort_by{| k, v | v.map{|i| i&.pontuacao&.to_f || 0}.sum}.reverse.each do |animal, pontos| %>
+                            <tr id="ranking-item-<%= animal %>">
+                                <td> <%= idd %> º </td>
+                                <td><%= animal rescue "Atributo Indefinido" %></td>
+                                <td><%= pontos.map{|i| i&.pontuacao&.to_f || 0}.sum %></td>
+                                <td class="project-actions">
+                                    <%= link_to detalhe_ranking_animal_path(animal: animal), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+                                    <i class="fas fa-list"></i>
+                                    <% end if can? :update, animal %>
+                                </td>
+                            </tr>
+                            <% idd = idd + 1 %>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<style>
+    tr:nth-child(even) {
+    background-color: #f2f2f2
+    }
+</style>
+
+<script>
+
+  function fProcurar() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInput");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tr = table.getElementsByTagName("tr");
+	for (i = 0; i < tr.length; i++) {
+	  td = tr[i].getElementsByTagName("td")[1];
+	  if (td) {
+		txtValue = td.textContent || td.innerText;
+		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		  tr[i].style.display = "";
+		} else {
+		  tr[i].style.display = "none";
+		}
+	  }       
+	}
+  }
+
+</script>

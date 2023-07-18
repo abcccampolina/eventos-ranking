@@ -1,0 +1,103 @@
+<div class="row" data-controller="pessoas">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_pessoa_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Pessoas</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Nome</th>
+						<th>Email</th>
+						<th>Status</th>
+						<th>Cpf</th>
+						<th>Cep</th>
+						<th>Endereco</th>
+						<th>Numero</th>
+						<th>Bairro</th>
+						<th>Cidade</th>
+						<th>Uf</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @pessoas.each do |pessoa| %>
+							<tr id="pessoa-item-<%= pessoa.id %>">
+								<td><%= pessoa.nome %></td>
+								<td><%= pessoa.email %></td>
+								<td><%= pessoa.status %></td>
+								<td><%= pessoa.cpf %></td>
+								<td><%= pessoa.cep %></td>
+								<td><%= pessoa.endereco %></td>
+								<td><%= pessoa.numero %></td>
+								<td><%= pessoa.bairro %></td>
+								<td><%= pessoa.cidade %></td>
+								<td><%= pessoa.uf %></td>
+
+								<td class="project-actions">
+									<%= link_to edit_pessoa_path(pessoa), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, pessoa %>
+									<%= link_to "javascript:void(0);", 'data-pessoas-id': pessoa.id, "data-action": "pessoas#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, pessoa %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<% content_for :javascript do %>
+	<script type="text/javascript">
+		$(".delete").click(function(){
+			id = $(this).data('id');
+			 swal({
+				title: "Você tem certeza?",
+				text: "Não será possível recuperar esses dados!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Sim, quero remover!",
+				closeOnConfirm: false
+			}, function(isConfirm) {
+				if(isConfirm){
+					$.ajax({
+						type: "POST",
+						url: "/pessoas/" + id,
+						dataType: "json",
+						data: {"_method": "delete"},
+						success: function(){
+							$("#pessoa-item-" + id).remove();
+							swal("Excluido!", "Os dados foram eliminados.", "success");
+						},
+						error: function(){
+							swal("Erro!", "Os dados não foram excluidos.", "error");
+						}
+					});
+				}
+			});
+			event.preventDefault();
+		});
+	</script>
+<% end %>

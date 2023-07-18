@@ -1,0 +1,48 @@
+<div class="row" data-controller="inscricaos-competicaos">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_inscricaos_competicao_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Inscrições Competições</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Inscrição</th>
+						<th>Competição</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @inscricaos_competicaos.each do |inscricaos_competicao| %>
+							<tr id="inscricaos_competicao-item-<%= inscricaos_competicao.id %>">
+								<td><%= inscricaos_competicao.inscricao.name rescue "Atributo Indefinido" %></td>
+								<td><%= inscricaos_competicao.competicao.name rescue "Atributo Indefinido" %></td>
+
+								<td class="project-actions">
+									<%= link_to edit_inscricaos_competicao_path(inscricaos_competicao), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, inscricaos_competicao %>
+									<%= link_to "javascript:void(0);", 'data-inscricaos_competicaos-id': inscricaos_competicao.id, "data-action": "inscricaos_competicaos#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, inscricaos_competicao %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>

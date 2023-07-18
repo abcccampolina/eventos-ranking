@@ -1,0 +1,46 @@
+
+<div class="row" data-controller="catalogo-competicaos">
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Categorias da Competição</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Qtd Inscritos</th>
+						<th>Qtd Catalogos</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @catalogo_competicaos.each do |catalogo_competicao| %>
+							<tr id="catalogo_competicao-item-<%= catalogo_competicao.id %>">
+								<td><%= catalogo_competicao.qtd_inscritos %> - <%= catalogo_competicao.qtd_inscritos_fim %></td>
+								<td><%= catalogo_competicao.qtd_catalogos %></td>
+								<td class="project-actions">
+
+									<%= link_to "/catalogo_competicaos/#{catalogo_competicao.id}/edit?competicaos_evento_id=#{params[:id]}", class: "btn btn-icona btn-neutral btn-info btn-sm" do  %>
+										<i class="fas fa-pen"></i>
+									<% end if can? :update, catalogo_competicao %>
+									<%= link_to "javascript:void(0);", 'data-catalogo_competicaos-id': catalogo_competicao.id, "data-action": "catalogo_competicaos#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, catalogo_competicao %>
+									
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-lg-12">
+				<div class="float-right">
+					<%= link_to "Novo", "/catalogo_competicaos/new?competicaos_evento_id=#{params[:id]}", class: "btn btn-bold btn-success" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

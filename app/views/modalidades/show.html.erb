@@ -1,0 +1,17 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Nome</strong><br>
+							<%= @modalidade.nome %>
+						</address>
+							
+		<%= link_to 'Editar', edit_modalidade_path(@modalidade), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', modalidades_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

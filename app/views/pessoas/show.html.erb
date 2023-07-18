@@ -1,0 +1,53 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Nome</strong><br>
+							<%= @pessoa.nome %>
+						</address>
+						<address>
+						<strong>Email</strong><br>
+							<%= @pessoa.email %>
+						</address>
+						<address>
+						<strong>Status</strong><br>
+							<%= @pessoa.status %>
+						</address>
+						<address>
+						<strong>Cpf</strong><br>
+							<%= @pessoa.cpf %>
+						</address>
+						<address>
+						<strong>Cep</strong><br>
+							<%= @pessoa.cep %>
+						</address>
+						<address>
+						<strong>Endereco</strong><br>
+							<%= @pessoa.endereco %>
+						</address>
+						<address>
+						<strong>Numero</strong><br>
+							<%= @pessoa.numero %>
+						</address>
+						<address>
+						<strong>Bairro</strong><br>
+							<%= @pessoa.bairro %>
+						</address>
+						<address>
+						<strong>Cidade</strong><br>
+							<%= @pessoa.cidade %>
+						</address>
+						<address>
+						<strong>Uf</strong><br>
+							<%= @pessoa.uf %>
+						</address>
+							
+		<%= link_to 'Editar', edit_pessoa_path(@pessoa), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', pessoas_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,89 @@
+<div data-controller="dashboard">
+ 
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title"><%= $evento ? "Competições do(a) #{$evento&.nome}" : "" %></h5>
+          <p class="card-category">
+          </p>
+        </div>
+          <div class="card-body">
+            <% if !@catalogos.length.eql?(0) %>
+            <input type="text" id="myInput" onkeyup="fProcurar()" placeholder="Procurar..." title="Pesquisar">
+              <table  id="myTable" class="table">
+                <thead>
+                  <tr>
+                  <th onclick="sortTable(0)">Nome</th>
+                  <th style="width: 160px;"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @catalogos.map{|m| m.nome_catalogo}.uniq.each do |catalogo| %>
+                    <tr id="competicao-item">
+                      <td><%= catalogo %></td>
+                      <td class="project-actions">
+                        <%= link_to 'Detalhe', inscritos_competicao_index_path(catalogo: @catalogos.where(nome_catalogo: catalogo).ids), class: 'btn btn-outline-default' %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            <% else %>
+              <div class="mb-5">
+                <img src="/competicao-null.png" class="align-img-center mt-2 mb-2">
+                <span class="d-flex justify-content-center text-muted">Parece que não existem eventos ativos...</span>
+              </div>
+            <% end %>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<style>
+    table {
+    border-spacing: 0;
+    width: 100%;
+    border: 1px solid #ddd;
+    }
+
+    th {
+    cursor: pointer;
+    }
+
+    th, td {
+    text-align: left;
+    padding: 16px;
+    }
+
+    tr:nth-child(even) {
+    background-color: #f2f2f2
+    }
+</style>
+
+
+<script>
+
+  function fProcurar() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[0];
+      if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+      }       
+    }
+  }
+
+</script>

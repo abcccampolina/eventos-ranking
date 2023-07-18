@@ -1,0 +1,97 @@
+<div class="card-body form-type-round">
+	<% if @competicao.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@competicao.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @competicao.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@competicao, html: {class: ""}) do |f| %>
+
+		
+			
+				<%= f.label :nome %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :nome, class: 'form-control' %>
+					<%= "<p>#{@competicao.errors.messages[:nome].first}</p>".html_safe if @competicao.errors.messages[:nome].present? %>
+				</fieldset>
+			
+		
+				<%= f.label :modalidade_id %>
+				<fieldset class="form-group">
+					<%= f.collection_select :modalidade_id, Modalidade.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+					<%= "<p>#{@competicao.errors.messages[:modalidade_id].first}</p>".html_safe if @competicao.errors.messages[:modalidade_id].present? %>
+				</fieldset>
+
+			
+				<%= f.label :status %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :status, class: 'form-control' %>
+					<%= "<p>#{@competicao.errors.messages[:status].first}</p>".html_safe if @competicao.errors.messages[:status].present? %>
+				</fieldset>
+			
+	
+				
+				<%= label_tag nil do %>
+					<%= f.check_box :ajuste_nota, checked: @competicao&.ajuste_nota? %>
+					Competição com ajuste de nota ?
+				<% end %>
+				
+				<fieldset class="col-lg-9">
+						<%= label_tag do %>
+							<strong>Desempate em: </strong>
+						<% end %>
+						<br/>
+						<%= label_tag nil do %>
+							<%= f.radio_button :desempate_em, :competicao, checked: @competicao&.desempate_em == 'competicao', onclick: "javascript:compCheck();", id: "CheckComp" %>
+							Competição
+						<% end %>
+						<br>
+						<%= label_tag nil do %>
+							<%= f.radio_button :desempate_em, :morfologia, checked: @competicao&.desempate_em == 'morfologia' %>
+							Morfologia
+						<% end %>
+						<br>
+						<%= label_tag nil do %>
+							<%= f.radio_button :desempate_em, :prova_funcional, checked: @competicao&.desempate_em == 'prova_funcional' %>
+							Prova Funcional
+						<% end %>
+						<br>
+						<%= label_tag nil do %>
+							<%= f.radio_button :desempate_em, :marcha, checked: @competicao&.desempate_em == 'marcha' %>
+							Marcha
+						<% end %>
+								
+					</fieldset>
+					
+			<div id="CamposTabela" data-element="CheckComp" class="fields-tipo-parametros" style="display: <%= @competicao&.desempate_em == 'competicao' ? "block" : "none" %>">
+				<%= f.label "Competição de Desempate" %>
+				<fieldset class="form-group">
+				<% modalidade_desempate = Modalidade.where(nome: "Competição de Desempate").first %>
+					<%= f.collection_select :competicao_desempate, Competicao.where(modalidade_id: modalidade_desempate.id), :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+					<%= "<p>#{@competicao.errors.messages[:competicao_desempate].first}</p>".html_safe if @competicao.errors.messages[:competicao_desempate].present? %>
+				</fieldset>
+			</div>
+
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', competicaos_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>
+
+
+<script type="text/javascript">
+	function compCheck() {
+		document.querySelectorAll(".fields-tipo-parametros").forEach((el) => {
+			el.style.display = document.getElementById(el.dataset.element).checked ? 'block' : 'none'
+		})
+	}
+</script>

@@ -1,0 +1,41 @@
+<div class="card-body form-type-round">
+	<% if @competicaos_evento.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@competicaos_evento.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @competicaos_evento.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@competicaos_evento, html: {class: ""}) do |f| %>
+
+		<%= f.label :evento_id %>
+		<fieldset class="form-group">
+			<%= f.collection_select :evento_id, Evento.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+			<%= "<p>#{@competicaos_evento.errors.messages[:evento_id].first}</p>".html_safe if @competicaos_evento.errors.messages[:evento_id].present? %>
+		</fieldset>
+		
+		<%= f.label :competicao_id, "Competição" %>
+		<fieldset class="form-group">
+			<%= f.collection_select :competicao_id, Competicao.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+			<%= "<p>#{@competicaos_evento.errors.messages[:competicao_id].first}</p>".html_safe if @competicaos_evento.errors.messages[:competicao_id].present? %>
+		</fieldset>
+
+		<%= f.label :metodo, "Método" %>
+		<fieldset class="form-group">
+		<%= f.select :metodo, options_for_select([ 'Soma' ]), {}, { :class => 'form-control show-tick' } %>
+			<%= "<p>#{@competicaos_evento.errors.messages[:competicao_id].first}</p>".html_safe if @competicaos_evento.errors.messages[:competicao_id].present? %>
+		</fieldset>
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', competicaos_eventos_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+	
+</div>

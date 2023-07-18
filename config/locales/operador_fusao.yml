@@ -1,0 +1,5 @@
+pt-BR:
+  enumerations:
+    operador_fusao:
+      soma: 'Soma'
+      media: 'Média'

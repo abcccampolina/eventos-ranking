@@ -1,0 +1,220 @@
+<<<<<<< HEAD
+<div class="tab-pane<%= " active show" if juri.user.id == current_user.id || current_user.tipo_usuario == 'Admin' %>" id="juri-set-<%= juri.id %>">
+    <div id="accordion-<%= juri.id %>" role="tablist" aria-multiselectable="true" class="card-collapse">
+        <%# filter_competicao_avaliacao(competicao_avalicaos, juri).each do |competicao_avaliacao| %>
+        <% competicao_avalicaos&.select {|ca| ca.competicao_juri_id == juri.id  }&.sort {|i| i.catalogo&.numero_colete }&.each do |competicao_avaliacao| %>
+            <% key_id = SecureRandom.hex %>
+
+                <div id="<%= key_id %>" class="collapse show" role="tabpanel" aria-labelledby="<%= key_id %>">
+                    <div class="card-body" style="padding-bottom: 0px; padding-top: 0px; margin: 0px">
+                     
+                        <%= form_for(competicao_avaliacao, remote: true, html: {class: "post-form-nota", data: {action: "ajax:success->competicao-avalicaos#onPostSuccess", key: key_id}}) do |f| %>
+                        
+                            <%= f.hidden_field(:evento_id, id: "evento_id-#{key_id}") %>
+                            <%= f.hidden_field(:inscricao_id, id: "inscricao_id-#{key_id}") %>
+                            <%= f.hidden_field(:competicao_id, id: "competicao_id-#{key_id}") %>
+                            <%= f.hidden_field(:competicao_juri_id, id: "competicao_juri_id-#{key_id}") %>
+                            <%= f.hidden_field(:catalogo_id, id: "catalogo_id-#{key_id}") %>
+                            <%= hidden_field_tag :key_id, key_id %>
+                            <%= hidden_field :competicao_juri, :juri_desempate, id: "cj-#{key_id}", value: (juri.juri_desempate || false), class: "juri-desempate", data: {id: juri.id} %>
+
+                            <small>
+                                <div class="row mb-20">
+                                    <div class="col-lg-12">
+                                        <% clusters&.each do |cluster| %>
+
+                                        <%if cluster.nome == @filter_cluster %>
+                                            <% has_competicao_juri = CompeticaoJuri.where(user_id: juri.user_id, competicaos_evento_id: @catalogo.first.competicaos_evento_id).where("store_cluster_criterio_avaliacao_id @> '[?]'", cluster.id).present? %>
+                                            <%# if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogo.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster.id}]'" ).present? %>
+                                            <% if has_competicao_juri %>
+                                                <% criterios = cluster.criterios_avaliacaos.map{ |ca| ca.criterios_competicaos.where(competicao_id: @competicao.id) }.flatten %>
+                                                <!--<h4><%= cluster&.nome %></h4>-->
+                                                
+                                                <div class="table-responsive-y">
+                                                    <table>
+                                                        <tbody>
+                                                            <%# @criterios_competicao.where(criterios_avaliacao_id: @criterios.where(cluster_criterios_avaliacao_id: cluster.id)).each do |criterio| %>
+                                                            <tr id="cluster-<%= cluster.id %>">
+                                                                <% conector = SecureRandom.hex %>
+                                                                <td>    <% notas = InscricaosCompeticao.find_by(inscricao_id: competicao_avaliacao&.inscricao_id, competicaos_evento_id: competicao_avaliacao&.competicao_juri.competicaos_evento_id)%>
+                                                                    <strong>#<%= competicao_avaliacao.catalogo&.numero_colete %></strong> - <%= competicao_avaliacao.catalogo&.numero_colete_progenie %> </small>
+                                                                </td>
+                                                                <% if cluster.funcional %>
+                                                                    <td class="min-w-100">
+                                                                        <%= f.label :tempo_executado, "Executado", class: 'font-weight-bold' %>
+                                                                        <%= f.text_field :tempo_executado, class: "form-control input-time", 
+                                                                            value: tempo_formatado(competicao_avaliacao.tempo_executado), 
+                                                                            id: "el#{conector}", 
+                                                                            data: {conector: conector, action: cluster.funcional ? "change->competicao-avalicaos#changeElements" : nil} 
+                                                                        %>
+                                                                    </td>
+                                                                <% end %>
+=======
+<tr>
+    <% key_id = SecureRandom.hex %>
+    <% notas = InscricaosCompeticao.find_by(inscricao_id: competicao_avaliacao&.inscricao_id, competicaos_evento_id: competicao_avaliacao&.competicao_juri.competicaos_evento_id)%>
+    <td>
+        <strong><%= juri.user.name %></strong><br/>
+        <% clusters&.each do |cluster| %>
+            <% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogo.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster.id}]'" ).present? %>
+                <small> <strong class="text-danger"> <%= cluster&.nome %> </strong> </small>
+            <% end %>
+        <% end %>
+    </td>
+    <td>#<%= competicao_avaliacao.catalogo&.numero_colete %> - <%= competicao_avaliacao.catalogo&.numero_colete_progenie %></td>
+
+    <%= form_for(competicao_avaliacao, remote: true, html: {class: "post-form-nota", data: {action: "ajax:success->competicao-avalicaos#onPostSuccess", key: key_id}}) do |f| %>
+        <%= f.hidden_field(:evento_id, id: "evento_id-#{key_id}") %>
+        <%= f.hidden_field(:inscricao_id, id: "inscricao_id-#{key_id}") %>
+        <%= f.hidden_field(:competicao_id, id: "competicao_id-#{key_id}") %>
+        <%= f.hidden_field(:competicao_juri_id, id: "competicao_juri_id-#{key_id}") %>
+        <%= f.hidden_field(:catalogo_id, id: "catalogo_id-#{key_id}") %>
+        <%= hidden_field_tag :key_id, key_id %>
+        <%= hidden_field :competicao_juri, :juri_desempate, id: "cj-#{key_id}", value: (juri.juri_desempate || false), class: "juri-desempate", data: {id: juri.id} %>
+
+        <td style="width: 300px;">
+            <% clusters&.each do |cluster| %>
+                <% has_competicao_juri = CompeticaoJuri.where(user_id: juri.user_id, competicaos_evento_id: @catalogo.first.competicaos_evento_id).where("store_cluster_criterio_avaliacao_id @> '[?]'", cluster.id).present? %>
+                <% if has_competicao_juri %>
+                    <% criterios = cluster.criterios_avaliacaos.map{ |ca| ca.criterios_competicaos.where(competicao_id: @competicao.id) }.flatten %>
+                    <% conector = SecureRandom.hex %>
+
+                    <% if cluster.funcional && reject_nota %>
+                        <%= f.label :tempo_executado, "Executado", class: 'font-weight-bold' %>
+                        <%= f.text_field :tempo_executado, class: "form-control input-time", 
+                            value: tempo_formatado(competicao_avaliacao.tempo_executado), 
+                            id: "el#{conector}", 
+                            data: {conector: conector, action: cluster.funcional ? "change->competicao-avalicaos#changeElements" : nil} 
+                        %>
+                    <% end %>
+>>>>>>> master
+
+                    <% criterios.select{ |i| !i.criterios_avaliacao&.nome.eql?("Prova Funcional") }.each do |criterio| %>
+                        <%= f.label :criterio do %>
+                            <strong> <%= criterio&.criterios_avaliacao&.nome || "Atributo Indefinido" %> </strong>
+                        <% end %>
+
+<<<<<<< HEAD
+                                                                        <fieldset>
+                                                                            <% nota = CompeticaoAvalicao.find_by(competicao_juri_id: competicao_avaliacao.competicao_juri_id, criterios_competicao_id: criterio.id, inscricao_id: competicao_avaliacao.inscricao_id) %>
+                                                                            <%= number_field(:nota, criterio.criterios_avaliacao_id, 
+                                                                                class: "form-control #{"co#{conector}" if cluster.funcional}", 
+                                                                                data: {conector: cluster.funcional ? conector : nil, 
+                                                                                    action: cluster.funcional ? "change->competicao-avalicaos#changeElements" : nil}, 
+                                                                                value: nota&.nota&.to_i ) 
+                                                                            %>
+                                                                        </fieldset>
+                                                                    </td>
+                                                                    <td>
+                                                                    <% if !cluster.funcional %>
+                                                                            <%= f.label :ocorrencia do %>
+                                                                            <% end %>
+                                                                            <%= f.select :ocorrencia, 
+                                                                                options_for_select(OcorrenciaCompeticao.to_a, competicao_avaliacao.ocorrencia), 
+                                                                                {include_blank: "Nenhum"}, 
+                                                                                {class: "form-control", id: "ocorrencia-#{key_id}", :tabindex => '1'} 
+                                                                            %>
+                                                                    <%end%>
+                                                                    </td>
+                                                                    <td>
+                                                                     <% if cluster.nome == 'Morfologia' %>
+                                                                            <%= f.check_box :melhor_cabeca, :tabindex => '1'  %>
+                                                                            <%= f.label :melhor_cabeca do %>
+                                                                            <strong>Melhor Cabeça?</strong>
+                                                                            <% end %>
+                                                                    <%end%>
+                                                                    </td>
+                                                                    <td>
+                                                                    <% if cluster.nome == 'Marcha' %>
+                                                                            <%= f.check_box :aprumacao, :tabindex => '1'  %>
+                                                                            <%= f.label :aprumacao do %>
+                                                                            <strong>Melhor Aprumo?</strong>
+                                                                            <% end %>
+                                                                    <%end%>
+                                                                    </td>
+                                                              
+                                                                <% end %>
+
+                                                                <% if cluster.funcional %>
+                                                                    <td class="text-center">
+                                                                        <strong> Resultado </strong>
+                                                                        <strong id="<%= "fn#{conector}" %>" class="text-danger">
+                                                                            <%= tempo_formatado(competicao_avaliacao.tempo_final) %>
+                                                                        </strong>
+                                                                    </td>
+                                                                <% end %>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <% if cluster.funcional %>
+                                                        <%= f.label :ocorrencia do %>
+                                                        <% end %>
+                                                        <%= f.select :ocorrencia, 
+                                                            options_for_select(OcorrenciaCompeticao.to_a, competicao_avaliacao.ocorrencia), 
+                                                            {include_blank: "Nenhum"}, 
+                                                            {class: "form-control", id: "ocorrencia-#{key_id}", :tabindex => '1'} 
+                                                        %>
+                                                <%end%>
+                                            <%end%>
+                                            <%end%>
+                                        <% end %>
+                                    </div>
+                                    
+                                </div>
+                            </small>
+                        <% end %>
+                    </div>
+                </div>
+        <% end %>
+    </div>
+</div>
+=======
+                        <fieldset>
+                            <% nota = CompeticaoAvalicao.find_by(competicao_juri_id: competicao_avaliacao.competicao_juri_id, criterios_competicao_id: criterio.id, inscricao_id: competicao_avaliacao.inscricao_id) %>
+                            <%= number_field(:nota, criterio.criterios_avaliacao_id, 
+                                class: "form-control #{"co#{conector}" if cluster.funcional}", 
+                                data: {conector: cluster.funcional ? conector : nil, 
+                                    action: cluster.funcional ? "change->competicao-avalicaos#changeElements" : nil}, 
+                                value: nota&.nota&.to_i ) 
+                            %>
+                        </fieldset>
+                    <% end %>
+
+                    <% if cluster.funcional && reject_nota %>
+                        <br />
+                        <strong> Resultado </strong>
+                        <strong id="<%= "fn#{conector}" %>" class="text-danger">
+                            <%= tempo_formatado(competicao_avaliacao.tempo_final) %>
+                        </strong>
+                    <% end %>
+
+                <%end%>
+            <% end %>
+        </td>
+
+        <td>
+            <%= f.label :ocorrencia do %>
+                <strong>Ocorrência</strong>
+            <% end %>
+            <%= f.select :ocorrencia,  
+                options_for_select(OcorrenciaCompeticao.to_a, competicao_avaliacao.ocorrencia), 
+                {include_blank: "Nenhum"}, 
+                {class: "form-control col-sm-11", id: "ocorrencia-#{key_id}", :tabindex => '1'} 
+            %>
+        </td>
+
+        <td>
+            <%= f.check_box :melhor_cabeca, :tabindex => '1' %>
+            <%= f.label :melhor_cabeca do %>
+                <strong>Melhor Cabeça?</strong>
+            <% end %>
+            <br />
+            <%= f.check_box :aprumacao, :tabindex => '1' %>
+            <%= f.label :aprumacao do %>
+                <strong>Aprumação?</strong>
+            <% end %>
+        </td>
+    <% end %>
+</tr>
+>>>>>>> master

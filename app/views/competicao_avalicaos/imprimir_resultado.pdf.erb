@@ -1,0 +1,164 @@
+<% if @comp_avaliacaos.first.competicao_juri&.competicaos_evento.competicao.modalidade.nome == "Competição Acasalamento" || @comp_avaliacaos.first.competicao_juri.competicaos_evento.competicao.modalidade.nome == "Competição Progênie" %>
+    <div class="text-right"> 
+        <small><%= $evento.nome%> </small>
+    </div>
+    <img src="/LOGO_1.png" alt="logo-campolina" style="max-width: 6% !important">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="text-center">
+                <strong>
+                    <%= Catalogo.find_by(inscricao_id: @comp_avaliacaos.first.inscricao_id, competicaos_evento_id: @comp_avaliacaos.first.competicao_juri.competicaos_evento_id).nome_catalogo %>
+                </strong>
+            </h5>
+            <table>
+                <tbody>
+                    <% @funcional = false %>
+                    <% @total_final = 1 %>
+                    <% @insc_avalicao = @insc_avalicao.joins('INNER JOIN inscricaos on inscricaos.id = inscricaos_competicaos.inscricao_id') %>
+
+                    <% @insc_avalicao = @insc_avalicao.group_by{|c| c.grupo_progenie } %>
+                    <% @insc_avalicao.sort_by{|k, v| [v.map{|p| p.nota_final.to_i}, v.map{|p| p.nota_desempate&.to_i}]}.each do |progenie, inscrito| %>
+                    
+                        <tr>
+                        <%catalogo = Catalogo.where(inscricao_id: inscrito.first.inscricao_id, competicaos_evento_id: inscrito.first.competicaos_evento_id)%>
+                        <%resultados = CompeticaoAvalicao.where(catalogo_id: catalogo.first.id)%>
+                            <% if !resultados.first.present? %>
+                                <%catalogo = Catalogo.where(inscricao_id: inscrito.map{|m| m.inscricao_id}, competicaos_evento_id: inscrito.last.competicaos_evento_id)%>
+                                <%resultados = CompeticaoAvalicao.where(catalogo_id: catalogo.map{|m| m.id})%>
+                            <%end%>
+
+                            <% if resultados.first.present? %>
+                                <% if catalogo.first.competicaos_evento.competicao.modalidade.nome == "Competição Acasalamento" %>
+                                    <% pai = SrgAnimal.find(catalogo.first.inscricao.pai_animal_id) %>
+                                    <% mae = SrgAnimal.find(catalogo.first.inscricao.mae_animal_id) %>
+                                    <td>#<%= catalogo.first.numero_colete_progenie %> - <%= pai.nome_completo %> x <%= mae.nome_completo %> </td>
+                                <%else%>
+                                    <% progenie = SrgAnimal.find(InscricaosCompeticao.find_by(inscricao_id: catalogo.first.inscricao_id, competicaos_evento_id: catalogo.first.competicaos_evento_id).progenie_id) %>
+                                    <td>#<%= catalogo.first.numero_colete_progenie %> - <%= progenie.nome_completo %></td>
+                                <%end%>
+                            <%end%>
+                                
+                            <% if resultados.first.present? %>
+                                <%if @funcional %>
+                                    <td> Tempo Final: <%= Time.at(@tempo_funcional_final).utc.strftime("%M:%S.%ss") rescue nil %> </td>
+                                    <td> Classificacao: <%= @classificacao_funcional %></td>
+                                <%end%>
+                                <td>
+                                    Classificação Final:
+                                    <%= @total_final %>
+                                    <% @total_final+=1 %>
+                                </td>
+                                
+                                <td>
+                                   <% if inscrito&.first.observacao_final.present? %>
+                                        <%if inscrito&.first.observacao_final == "asterisco" %>
+                                            * <%= inscrito&.first.posto %>
+                                        <%else%>
+                                            <%= inscrito&.first.observacao_final %>
+                                        <%end%>
+                                    <%else%>
+                                        <%= inscrito&.first.posto %>
+                                    <%end%>
+                                </td>
+                            <%end%>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<%else%>
+    <div class="text-right"> 
+        <small><%= $evento.nome%> </small>
+    </div>
+    <img src="/LOGO_1.png" alt="logo-campolina" style="max-width: 6% !important">
+    <div class="row">
+        <div class="col-12">
+            <h5 class="text-center">
+                <strong>
+                    <%= Catalogo.find_by(inscricao_id: @comp_avaliacaos.first.inscricao_id, competicaos_evento_id: @comp_avaliacaos.first.competicao_juri.competicaos_evento_id).nome_catalogo %>
+                </strong>
+            </h5>
+            <table>
+                <tbody>
+                    <% @funcional = false %>
+                    <% @total_final = 1 %>
+
+                    <% @insc_avalicao = @insc_avalicao.joins('INNER JOIN inscricaos on inscricaos.id = inscricaos_competicaos.inscricao_id').where.not('inscricaos.so_marcha = true') %>
+                    
+                    <% @insc_avalicao.order('nota_final', 'nota_desempate').each do |inscrito| %>
+                        <tr>
+                        <%catalogo = Catalogo.find_by(inscricao_id: inscrito.inscricao_id, competicaos_evento_id: inscrito.competicaos_evento_id)%>
+                        <%resultados = CompeticaoAvalicao.where(catalogo_id: catalogo.id)%>
+                                <td>#<%= catalogo.numero_colete %> - <%= catalogo.inscricao.nome_animal %></td>
+                                <% resultados.group_by{|i| i.criterios_competicao}.sort_by{|k, v| k}.each do |criterio, resultado| %>
+                                    <% if criterio.peso > 0 %>
+                                        <td>
+                                            <%= criterio.criterios_avaliacao.nome %>:
+                                            <%= resultado.first.classificacao %>
+                                        </td>
+                                    <%else%>
+                                        <%@funcional = true%>
+                                        <%@tempo_funcional_executado = resultado.first.tempo_executado %>
+                                        <%@tempo_funcional_final = resultado.first.tempo_final %>
+                                        <%@classificacao_funcional =  resultado.first.classificacao %>
+                                    <%end%>
+                                <%end%>
+                            <% if resultados.first.present? %>
+                                <%if @funcional %>
+                                    <td> Tempo Final: <%= Time.at(@tempo_funcional_final).utc.strftime("%M:%S.%ss") rescue nil %> </td>
+                                    <td> <%#= @classificacao_funcional %></td>
+                                <%end%>
+                                <td>
+                                    Classificação Final:
+                                    <%= @total_final %>
+                                    <% @total_final+=1 %>
+                                </td>
+                                
+                                <td>
+                                <%# ins = InscricaosCompeticao.find_by(inscricao_id: catalogo.inscricao_id, competicaos_evento_id: resultados.first.competicao_juri.competicaos_evento.id )%>
+                                    <% if inscrito&.observacao_final.present? %>
+                                        <%if inscrito&.observacao_final == "asterisco" %>
+                                            * <%= inscrito&.posto %>
+                                        <%else%>
+                                            <%= inscrito&.observacao_final %>
+                                        <%end%>
+                                    <%else%>
+                                        <%= inscrito&.posto %>
+                                    <%end%>
+                                </td>
+                            <%end%>
+                        </tr>
+                    <% end %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<%end%>
+
+<div class="text-right"> 
+    <img src="/logo_eleva.jpg" alt="" width="100" height="40">
+    <br>
+    <small style="color: #c0c2bc">www.elevatech.com.br </small>
+</div>
+
+
+
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>

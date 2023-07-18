@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html><head>
+   <title>Campolina - Eventos e Ranking</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="robots" content="noindex,follow" />
+   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+ 
+   <!-- This line includes the general project style sheet (not required) -->
+   <link type="text/css" href="styles.css" rel="stylesheet" />
+
+   <!-- This block defines the styles of the TOC headings, change them as needed -->
+   <style type="text/css">
+       body { font-size: 1em }
+       .heading1 { color: #000; text-decoration: none; }
+       .heading2 { color: #000; text-decoration: none; }
+       .heading3 { color: #000; text-decoration: none; }
+       .heading4 { color: #000; text-decoration: none; }
+       .heading5 { color: #000; text-decoration: none; }
+       .heading6 { color: #000; text-decoration: none; }
+
+       .hilight1 { color: #FFFFFF; background: #2C5D88; text-decoration: none; }
+       .hilight2 { color: #FFFFFF; background: #2C5D88; text-decoration: none; }
+       .hilight3 { color: #FFFFFF; background: #2C5D88; text-decoration: none; }
+       .hilight4 { color: #FFFFFF; background: #2C5D88; text-decoration: none; }
+       .hilight5 { color: #FFFFFF; background: #2C5D88; text-decoration: none; }
+       .hilight6 { color: #FFFFFF; background: #2C5D88; text-decoration: none; }
+
+       /* TOC LIST CSS */
+       #toc    { padding:0; margin:0 }
+       #toc li { margin-top:2px; margin-left:0; padding:1px }
+       #toc ul { padding-left:0; margin-left:0px }       
+       /* TOC LIST CSS */
+   </style>
+   <script type="text/javascript" src="jquery.js"></script>
+   <script type="text/javascript" src="helpman_settings.js"></script>
+   <script type="text/javascript">
+   $(document).ready(function(){
+   	   var hiTest = /^hilight/im,
+			parentScope = (parent.hmNavigationFrame);
+		if (parentScope) parent.currentNav("toc");
+		$("a[class^='heading']").on("click",function(event){
+			var doSwipe = (hiTest.test($(this).children("span").first().attr("class")) || false || (parentScope && !parent.hmBrowser.nonDeskTouch));
+			if (doSwipe && parentScope) {
+			window.parent.showNav("toggle");
+			}
+			});
+     });
+   </script>
+      <script type="text/javascript">
+     var parentScope = (parent.hmNavigationFrame);
+     if (!parentScope) {
+		      var s = document.createElement("script");
+		      s.setAttribute("type","text/javascript");
+		      s.setAttribute("src", "helpman_navigation.js");
+		      document.getElementsByTagName("head")[0].appendChild(s);
+	    }
+     else {
+       if (initialtocstate != "expandall") parent.hmAddCss(document, "#toc li ul { display: none }");
+     }
+     function loadicons() { var icons = new Array(); for (i=0; i<arguments.length; i++) { icons[i] = new Image(); icons[i].src = arguments[i]; } }
+     function loadtoc() { if (parentScope) parent.loadstate(document.getElementById("toc")); else loadstate(document.getElementById("toc")); }
+     function savetoc() { if (parentScope) parent.savestate(document.getElementById("toc")); else savestate(document.getElementById("toc")); }
+     function clicked(node, event) { deselect(); if (parentScope) parent.hmNodeClicked(node, event); else hmNodeClicked(node, event); }
+     function dblclicked(node) { if (parentScope) parent.hmNodeDblclicked(node); else hmNodeDblclicked(node); }
+     function deselect() { if (window.getSelection) window.getSelection().removeAllRanges(); else if (document.selection) document.selection.empty(); }
+     $(document).ready(function(){
+       loadtoc();
+       $(window).onunload = savetoc;
+     });
+   </script>
+</head>
+<body>
+<ul id="toc" style="list-style-type:none;display:block;padding-left:0">
+<li class="heading1" id="i1" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading1" id="a1" href="dh_intro_about.html" target="hmcontent"><span class="heading1" id="s1">Sobre o sistema</span></a>
+</li>
+<li class="heading1" id="i2" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading1" id="a2" href="dh_intro_htmedit.html" target="hmcontent"><span class="heading1" id="s2">Etapas a seguir</span></a>
+</li>
+<li class="heading1" id="i3" data-bg="icon-book.png;icon-bookopen.png" style="background:url(icon-bookopen.png) no-repeat;cursor:pointer;padding-left:24px" onclick="return clicked(this,event)"><a class="heading1" id="a3" href="dh_navbuttons.html" target="hmcontent"><span class="heading1" id="s3" ondblclick="return dblclicked(this)">Novo evento</span></a>
+<ul id="ul3" style="list-style-type:none">
+<li class="heading2" id="i3.1" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a3.1" href="dh_navbuttons_static.html" target="hmcontent"><span class="heading2" id="s3.1">Criando novo evento</span></a>
+</li>
+</ul>
+</li>
+<li class="heading1" id="i4" data-bg="icon-book.png;icon-bookopen.png" style="background:url(icon-bookopen.png) no-repeat;cursor:pointer;padding-left:24px" onclick="return clicked(this,event)"><a class="heading1" id="a4" href="dh_usingall.html" target="hmcontent"><span class="heading1" id="s4" ondblclick="return dblclicked(this)">Inscrições</span></a>
+<ul id="ul4" style="list-style-type:none">
+<li class="heading2" id="i4.1" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a4.1" href="dh_usingall_new.html" target="hmcontent"><span class="heading2" id="s4.1">Criando nova inscrição</span></a>
+</li>
+<li class="heading2" id="i4.2" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a4.2" href="dh_gerando-catalogo.html" target="hmcontent"><span class="heading2" id="s4.2">Gerando catálogo</span></a>
+</li>
+<li class="heading2" id="i4.3" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a4.3" href="dh_usingall_updating.html" target="hmcontent"><span class="heading2" id="s4.3">Confirmando presença</span></a>
+</li>
+</ul>
+</li>
+<li class="heading1" id="i5" data-bg="icon-book.png;icon-bookopen.png" style="background:url(icon-bookopen.png) no-repeat;cursor:pointer;padding-left:24px" onclick="return clicked(this,event)"><a class="heading1" id="a5" href="dh_print.html" target="hmcontent"><span class="heading1" id="s5" ondblclick="return dblclicked(this)">Cadastrar competições</span></a>
+<ul id="ul5" style="list-style-type:none">
+<li class="heading2" id="i5.1" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a5.1" href="dh_print_creating.html" target="hmcontent"><span class="heading2" id="s5.1">Competições do evento</span></a>
+</li>
+<li class="heading2" id="i5.2" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a5.2" href="dh_print_effects.html" target="hmcontent"><span class="heading2" id="s5.2">Jurados competição</span></a>
+</li>
+<li class="heading2" id="i5.3" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a5.3" href="dh_categorias-da-competicao.html" target="hmcontent"><span class="heading2" id="s5.3">Categorias da competição</span></a>
+</li>
+</ul>
+</li>
+<li class="heading1" id="i6" data-bg="icon-book.png;icon-bookopen.png" style="background:url(icon-bookopen.png) no-repeat;cursor:pointer;padding-left:24px" onclick="return clicked(this,event)"><a class="heading1" id="a6" href="dh_linkstyling.html" target="hmcontent"><span class="heading1" id="s6" ondblclick="return dblclicked(this)">Súmulas acompanhamentos</span></a>
+<ul id="ul6" style="list-style-type:none">
+<li class="heading2" id="i6.1" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a6.1" href="dh_linkstyling_classes.html" target="hmcontent"><span class="heading2" id="s6.1">Imprindo súmula</span></a>
+</li>
+<li class="heading2" id="i6.2" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a6.2" href="dh_linkstyling_adding.html" target="hmcontent"><span class="heading2" id="s6.2">Lançar notas</span></a>
+</li>
+</ul>
+</li>
+<li class="heading1" id="i7" data-bg="icon-book.png;icon-bookopen.png" style="background:url(icon-bookopen.png) no-repeat;cursor:pointer;padding-left:24px" onclick="return clicked(this,event)"><a class="heading1" id="a7" href="dh_nsh.html" target="hmcontent"><span class="heading1" id="s7" ondblclick="return dblclicked(this)">Non-Scrolling Headers</span></a>
+<ul id="ul7" style="list-style-type:none">
+<li class="heading2" id="i7.1" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a7.1" href="dh_nsh_creating.html" target="hmcontent"><span class="heading2" id="s7.1">Creating Non-Scrolling Headers</span></a>
+</li>
+<li class="heading2" id="i7.2" style="background:url(icon-page.png) no-repeat;padding-left:24px" onclick="return clicked(this,event)"><a class="heading2" id="a7.2" href="dh_nsh_template.html" target="hmcontent"><span class="heading2" id="s7.2">Template for copying</span></a>
+</li>
+</ul>
+</li>
+</ul>
+<script type="text/javascript">loadicons('icon-page.png','icon-bookopen.png','icon-book.png');</script>
+</body>
+</html>

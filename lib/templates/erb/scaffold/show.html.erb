@@ -1,0 +1,23 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+	<% attributes.reject(&:password_digest?).each do |attribute| -%>
+					<address>
+						<strong><%= attribute.human_name %></strong><br>
+	<% if attribute.reference? -%>
+						<%%= @<%= singular_table_name %>.<%= attribute.name %>.name rescue nil %>
+	<% else -%>
+						<%%= @<%= singular_table_name %>.<%= attribute.name %> %>
+	<% end -%>
+					</address>
+	<% end -%>
+						
+		<%%= link_to 'Editar', edit_<%= singular_table_name %>_path(@<%= singular_table_name %>), class: 'btn btn-bold btn-info' %>
+		<%%= link_to 'Voltar', <%= index_helper %>_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

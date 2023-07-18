@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/pdf; charset=UTF-8" />
+        <title>Sumula da Competição</title>
+        <style>
+            <%= File.open('public/bootstrap.css').read %>
+            
+            body { font-family: sans-serif !important; line-height: 1 !important }
+            .ws-nowarp { white-space: nowrap }
+            hr { border-top: 1px solid #d4d4d4 !important }
+            
+                .content {
+                    min-height: calc(100vh - 70px);
+                }
+                .footer {
+                    height: 50px;
+                }
+                table {
+                    width: 100%;
+                }
+                .td-header{
+                    font-weight: bold;
+                }
+                .td-form-border {
+                    text-align: center;
+                    border-style: solid;
+                }
+                tr > td.td-form-border:first-child {
+                    font-weight: bold;
+                    height: 90px;
+                    font: 15px;
+                }
+                .page-title {
+                    font-size: large;
+                    font-weight: bold;
+                }
+
+                .page-break { display:block; clear:both; page-break-after:always; }
+
+
+        </style>
+    </head>
+
+    <body>
+        <%= yield %>
+    </body>
+</html>

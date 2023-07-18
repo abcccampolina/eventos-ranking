@@ -1,0 +1,10 @@
+Eventos e Ranking:
+  ✔ Adicionar o nome_animal na tabela Premios.
+  ✔ Melhor Cabeça e Aprumos (não deve ser por média para competir na final de melhor cabeça / aprumos)
+  ✔ Competição com categoria única
+  . Ajustar NOMECLATURA
+  . Ajustar a competição MELHOR APRUMO. Alterar o tipo de competição para a Nacional.
+  . Conferir pq não tras todos os nomes de categoria... Ex. Cabeça Jovem Macho
+  . Ao criar o acasalamento com os mesmo pai e mãe, está gerando um único catalogo, utilizar o grupo progenie para exibir o resultado.
+  . Observação Final com asterisco a competição de Acasalamento
+  

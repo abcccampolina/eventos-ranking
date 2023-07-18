@@ -1,0 +1,36 @@
+<div class="card-body form-type-round">
+	<% if @cluster_criterios_avaliacao.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@cluster_criterios_avaliacao.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @cluster_criterios_avaliacao.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@cluster_criterios_avaliacao, html: {class: ""}) do |f| %>
+
+		<%= f.label :nome %><br>
+		<fieldset class="form-group">
+			<%= f.text_field :nome, class: 'form-control' %>
+			<%= "<p>#{@cluster_criterios_avaliacao.errors.messages[:nome].first}</p>".html_safe if @cluster_criterios_avaliacao.errors.messages[:nome].present? %>
+		</fieldset>
+
+		<fieldset class="form-group">
+			<%= f.check_box :funcional %>
+			<%= f.label :funcional do %>
+				<strong>Cluster funcional?</strong>
+			<% end %>
+		</fieldset>
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', cluster_criterios_avaliacaos_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+
+	<% end %>
+</div>

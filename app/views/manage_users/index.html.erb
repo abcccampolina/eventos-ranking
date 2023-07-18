@@ -1,0 +1,53 @@
+<div class="row" data-controller="manage-users">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_manage_user_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Usuários</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Nome</th>
+						<th>Email</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @manage_users.each do |manage_user| %>
+							<tr id="manage_user-item-<%= manage_user.id %>">
+								<td><%= manage_user.name %></td>
+								<td><%= manage_user.email %></td>
+
+								<td class="project-actions">
+
+									<%= link_to edit_manage_user_path(manage_user), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<i class="fas fa-pen"></i>
+									<% end if can? :update, manage_user %>
+
+
+									<%= link_to "javascript:void(0);", 'data-id': manage_user.id,
+										"data-action": "manage-users#delete",
+										class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do 
+									%>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, manage_user %>
+
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>

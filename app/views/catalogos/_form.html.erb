@@ -1,0 +1,46 @@
+<div class="card-body form-type-round">
+	<% if @catalogo.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@catalogo.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @catalogo.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@catalogo, html: {class: ""}) do |f| %>
+
+		
+							<%= f.label :inscricao_id %>
+				<fieldset class="form-group">
+					<%= f.collection_select :inscricao_id, Inscricaos.all, :id, :name, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+					<%= "<p>#{@catalogo.errors.messages[:inscricao_id].first}</p>".html_safe if @catalogo.errors.messages[:inscricao_id].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :nome_catalogo %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :nome_catalogo, class: 'form-control' %>
+					<%= "<p>#{@catalogo.errors.messages[:nome_catalogo].first}</p>".html_safe if @catalogo.errors.messages[:nome_catalogo].present? %>
+				</fieldset>
+			
+		
+							<%= f.label :competicao_evento_id %>
+				<fieldset class="form-group">
+					<%= f.collection_select :competicao_evento_id, CompeticaoEvento.all, :id, :name, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+					<%= "<p>#{@catalogo.errors.messages[:competicao_evento_id].first}</p>".html_safe if @catalogo.errors.messages[:competicao_evento_id].present? %>
+				</fieldset>
+			
+		
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', catalogos_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

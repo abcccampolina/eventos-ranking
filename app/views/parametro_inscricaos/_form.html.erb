@@ -1,0 +1,259 @@
+<div class="card-body form-type-round">
+	<% if @parametro_inscricao.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@parametro_inscricao.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @parametro_inscricao.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@parametro_inscricao, html: {class: ""}) do |f| %>
+				<%= f.hidden_field(:competicao_id, value: params[:competicao_id])%>
+
+				<div class="row">
+					<fieldset class="col-lg-3">
+							<%= f.label :nome do %>
+								<strong>Descrição</strong>
+							<% end %>
+							<br>
+							<fieldset class="form-group">
+								<%= f.text_field :nome, class: 'form-control' %>
+								<%= "<p>#{@parametro_inscricao.errors.messages[:nome].first}</p>".html_safe if @parametro_inscricao.errors.messages[:nome].present? %>
+							</fieldset>
+					</fieldset>
+					
+					<fieldset class="col-lg-9">
+						<%= label_tag do %>
+							<strong>Tipo Critério</strong>
+						<% end %>
+						<br/>
+						<%= label_tag nil do %>
+							<%= f.radio_button :comp_or_table, :comp, checked: @parametro_inscricao&.comp?, onclick: "javascript:yesnoCheck();", id: "CheckComp" %>
+							Competição
+						<% end %>
+						<br>
+						<%= label_tag nil do %>
+							<%= f.radio_button :comp_or_table, :tabela, checked: @parametro_inscricao&.tabela?, onclick: "javascript:yesnoCheck();", id: "CheckTable" %>
+							Caracteristica
+						<% end %>
+						<br>
+						<%= label_tag nil do %>
+							<%= f.radio_button :comp_or_table, :melhor_indicacao, checked: @parametro_inscricao&.melhor_indicacao?, onclick: "javascript:yesnoCheck();", id: "CheckMelhorIndicacao" %>
+							Melhor Indicação
+						<% end %>
+						<br>
+						<%= label_tag nil do %>
+							<%= f.radio_button :comp_or_table, :tipo_marcha, checked: @parametro_inscricao&.tipo_marcha?, onclick: "javascript:yesnoCheck();", id: "CheckTipoMarcha" %>
+							Tipo Marcha
+						<% end %>
+
+								
+					</fieldset>
+				</div>
+				<br><hr>
+				
+					<div id="CamposTabela" data-element="CheckTable" class="fields-tipo-parametros" style="display: <%= @parametro_inscricao&.tabela? ? "block" : "none" %>">
+						<div class="row">
+							<fieldset class="col-lg-3">
+								<%= f.label :coluna_parametro do %>
+								<strong>Coluna Parâmetro</strong>
+								<% end %>
+								<br>
+								<% vapo = (SrgAnimal.get_valid_columns_with_translations << ["Quantidade de Meses do Animal","faixa_etaria"]).reverse
+								%>
+								<%#= f.select :coluna_parametro, options_for_select(SrgAnimal.get_valid_columns_with_translations), {include_blank: " - Selecione - "}, { :class => 'form-control show-tick' } %>
+								<%= f.select :coluna_parametro, options_for_select(vapo), {include_blank: true}, { :class => 'form-control show-tick' } %>
+							</fieldset>
+
+							<fieldset class="col-lg-3">
+								<%= f.label :operador_parametro do %>
+								<strong>Operador Parâmetro</strong>
+								<% end %>
+								<br>
+								<%= f.select :operador_parametro, options_for_select(["<", ">", "=", "<=", ">="]), {include_blank: true}, { :class => 'form-control show-tick' } %>
+							</fieldset>
+
+							<fieldset class="col-lg-3">
+								<%= f.label :valor_parametro do %>
+								<strong>Valor Parâmetro</strong>
+								<% end %>
+								<br>
+								<fieldset class="form-group">
+									<%= f.text_field :valor_parametro, class: 'form-control' %>
+									<%= "<p>#{@parametro_inscricao.errors.messages[:valor_parametro].first}</p>".html_safe if @parametro_inscricao.errors.messages[:valor_parametro].present? %>
+								</fieldset>
+							</fieldset>
+							<small> pampa / nao pampa <br> picada / batida <br> macho / femea / castrado</small><br>
+						</div>
+					</div>
+
+				
+				<div id="CamposComp" data-element="CheckComp" class="fields-tipo-parametros" style="display: <%= @parametro_inscricao&.comp? ? "block" : "none" %>">
+					<div class="row">
+						<fieldset class="col-lg-3">
+							<%= f.label :competicao_antecessora, class: "required" do %>
+								<strong>Competição Antecessora</strong>
+							<% end %>
+							<fieldset class="form-group">
+								<%= f.collection_select :competicao_antecessora, Competicao.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+								<%= "<p>#{@parametro_inscricao.errors.messages[:competicao_antecessora].first}</p>".html_safe if @parametro_inscricao.errors.messages[:competicao_antecessora].present? %>
+							</fieldset>
+						</fieldset>
+						
+
+						<%#= f.select(:competicao_antecessora, Competicao.all.collect {|p| [p.nome, p.id]},  {prompt: "Select"}, {class: 'form-control'}) %>
+						<%#= f.select(:competicao_antecessora, Competicao.all.collect {|t| [t.name, t.id]}, {}, {class: 'form-control'}) %>
+
+
+						<fieldset class="col-lg-3">
+							<%= f.label :competicao_antecessora do %>
+								<strong> Critério </strong> <small> (Não obrigatório) </small>
+							<% end %>
+							<%#binding.pry%>
+							<%
+							crit = (CriteriosAvaliacao.joins('INNER JOIN criterios_competicaos on criterios_avaliacaos.id = criterios_competicaos.criterios_avaliacao_id').where.not('criterios_competicaos.peso = 0').uniq.map{|a| [a.nome, a.id]} << ["Tempo Final - Funcional", 99999]).reverse
+							%>
+
+							<fieldset class="form-group">
+								<%#= f.collection_select :criterio_competicao_antecessora, crit, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+								<%= f.select :criterio_competicao_antecessora, options_for_select(crit), {include_blank: true}, { :class => 'form-control show-tick' } %>
+								<%= "<p>#{@parametro_inscricao.errors.messages[:competicao_antecessora].first}</p>".html_safe if @parametro_inscricao.errors.messages[:competicao_antecessora].present? %>
+							</fieldset>
+						</fieldset>
+
+						<fieldset class="col-lg-2">
+							<%= f.label :comp_posicao_inicio, class: "required" do %>
+								<strong>Posição Inicial</strong>
+							<% end %>
+							<br>
+							<fieldset class="form-group">
+								<%= f.number_field :comp_posicao_inicio, class: 'form-control' %>
+								<%= "<p>#{@parametro_inscricao.errors.messages[:comp_posicao_inicio].first}</p>".html_safe if @parametro_inscricao.errors.messages[:comp_posicao_inicio].present? %>
+							</fieldset>
+						</fieldset>
+
+						<p style="margin-top: 34px"> até </p>
+						<fieldset class="col-lg-2">
+							<%= f.label :comp_posicao_fim, class: "required" do %>
+								<strong>Posição Final</strong>
+							<% end %>
+							<br>
+							<fieldset class="form-group">
+								<%= f.number_field :comp_posicao_fim, class: 'form-control' %>
+								<%= "<p>#{@parametro_inscricao.errors.messages[:comp_posicao_fim].first}</p>".html_safe if @parametro_inscricao.errors.messages[:comp_posicao_fim].present? %>
+							</fieldset>
+						</fieldset>
+					</div>
+
+					<div class="row mt-20 mb-30">
+						<fieldset class="col-lg-4">
+							<%= f.label :fusao_competicao_antecessora_id do %>
+								<strong>Fusão Competição Antecessora</strong>
+							<% end %>
+							<fieldset class="form-group">
+								<%= f.collection_select :fusao_competicao_antecessora_id, Competicao.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+								<%= "<p>#{@parametro_inscricao.errors.messages[:fusao_competicao_antecessora_id].first}</p>".html_safe if @parametro_inscricao.errors.messages[:fusao_competicao_antecessora_id].present? %>
+							</fieldset>
+						</fieldset>
+
+						<fieldset class="col-lg-4">
+							<%= f.label :operador_fusao do %>
+								<strong>Operador Fusão</strong>
+							<% end %>
+							<fieldset class="form-group">
+								<%= f.select :operador_fusao, options_for_select(OperadorFusao.to_a, @parametro_inscricao.operador_fusao), {prompt: true}, class: 'form-control', data: {provide: "selectpicker", 'live-search': true}  %>
+								<%= "<p>#{@parametro_inscricao.errors.messages[:operador_fusao].first}</p>".html_safe if @parametro_inscricao.errors.messages[:operador_fusao].present? %>
+							</fieldset>
+						</fieldset>
+
+						
+					</div>
+				</div>
+
+
+				<div id="melhor-indicacao-section" data-element="CheckMelhorIndicacao" class="fields-tipo-parametros" style="display: <%= @parametro_inscricao&.melhor_indicacao? ? "block" : "none" %>">
+					<div class="row ml-20 mb-30">
+						<fieldset class="col-lg-3">
+							<%= label_tag nil do %>
+								<%= f.radio_button :melhor_indicacao_select, "aprumo", checked: @parametro_inscricao&.melhor_indicacao_select == "aprumo" %>
+								Melhor Aprumo
+							<% end %>
+							<br>
+							<%= label_tag nil do %>
+								<%= f.radio_button :melhor_indicacao_select, "cabeca", checked: @parametro_inscricao&.melhor_indicacao_select == "cabeca" %>
+								Melhor Cabeça
+							<% end %>
+						</fieldset>
+
+					</div>
+				</div>
+
+
+				<div id="tipo-marcha-section" data-element="CheckTipoMarcha" class="fields-tipo-parametros" style="display: <%= @parametro_inscricao&.tipo_marcha? ? "block" : "none" %>">
+					<div class="row ml-20 mb-30">
+						<fieldset class="col-lg-3">
+							<%= label_tag nil do %>
+								<%= f.radio_button :tipo_marcha_select, "picada", checked: @parametro_inscricao&.tipo_marcha_select == "picada" %>
+								Picada
+							<% end %>
+							<br>
+							<%= label_tag nil do %>
+								<%= f.radio_button :tipo_marcha_select, "batida", checked: @parametro_inscricao&.tipo_marcha_select == "batida" %>
+								Batida
+							<% end %>
+						</fieldset>
+
+					</div>
+				</div>
+
+
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', parametro_inscricaos_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>
+
+<script type="text/javascript">
+function yesnoCheck() {
+	document.querySelectorAll(".fields-tipo-parametros").forEach((el) => {
+		el.style.display = document.getElementById(el.dataset.element).checked ? 'block' : 'none'
+	})
+}
+
+$("#hour_task_id").prop("disabled", true); // second dropdown is disable while first dropdown is empty
+$("#hour_project_id").change(function(){
+  	var project = $(this).val();
+  	if(project == ''){
+  		$("#hour_task_id").prop("disabled", true);
+  	}else{
+  		$("#hour_task_id").prop("disabled", false);
+  	}
+  	$.ajax({
+	    url: "/tasks",
+	    method: "GET",  
+	    dataType: "json",
+	    data: {project: project},
+	    error: function (xhr, status, error) {
+	      	console.error('AJAX Error: ' + status + error);
+	    },
+	    success: function (response) {
+	      	console.log(response);
+	      	var tasks = response["tasks"];
+	      	$("#hour_task_id").empty();
+
+	      	$("#hour_task_id").append('<option>Select Task</option>');
+	      	for(var i = 0; i < tasks.length; i++){
+	      		$("#hour_task_id").append('<option value="' + tasks[i]["id"] + '">' +tasks[i]["name"] + '</option>');
+	      	}
+	    }
+  	});
+});
+
+
+</script>

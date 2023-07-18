@@ -1,0 +1,21 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Nome</strong><br>
+							<%= @criterios_avaliacao.nome %>
+						</address>
+						<address>
+						<strong>Cluster criterio avaliacao</strong><br>
+							<%= @criterios_avaliacao.cluster_criterios_avaliacao.name rescue nil %>
+						</address>
+							
+		<%= link_to 'Editar', edit_criterios_avaliacao_path(@criterios_avaliacao), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', criterios_avaliacaos_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

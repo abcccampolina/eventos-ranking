@@ -1,0 +1,54 @@
+<div class="row" data-controller="inscricaos">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    <strong><%= @expositor.nome %></strong> | 
+                    <small> <%= @expositor&.fazenda %>, <%= @expositor&.cidade %> - <%= @expositor&.uf %></small>
+                </h4>
+            </div>
+
+            <div class="card-header mt-4">
+                <%= form_with model: @inscricao, url: presenca_confirmada_path(@expositor.id, :presenca_evento), method: :post do |f| %>
+                   
+                    <table class="table">
+                        <thead>
+                            <tr class="text-center">
+                                <th>Registro/Animal</th>
+                                <th>Sexo</th>
+                                <th>Marcha</th>
+                                <th>Tipo</th>
+                                 <% if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador')%>
+                                    <th>Presente?</th>
+                                <%end%>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% @inscricao.each do |inscricao| %>
+                                <tr class="text-center">
+                                    <td>
+                                        <%= inscricao.srg_registro_animal || "-" %> -
+                                        <%= inscricao.srg_animal&.nome_completo %>
+                                    </td>
+                                    <td><%= inscricao.srg_animal&.sexo&.titlecase %></td>
+                                    <td><%= inscricao.marcha&.titlecase %></td>
+                                    <td><%= inscricao.so_marcha ? "Só Marcha" : "Convencional" %></td>
+                                    <% if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador')%>
+                                        <td>
+                                            <fieldset class="form-group">
+                                                <%= f.check_box :presenca_evento, {checked: true}, "Presente", "Ausente" %>
+                                            </fieldset>
+                                        </td>
+                                    <%end%>
+                                </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                    <% if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador')%>
+                        <%= f.submit "Concluir", class: 'btn btn-bold btn-success float-right mb-4' %>
+                    <%end%>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>

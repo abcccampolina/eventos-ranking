@@ -1,0 +1,1 @@
+json.partial! "cluster_criterios_avaliacaos/cluster_criterios_avaliacao", cluster_criterios_avaliacao: @cluster_criterios_avaliacao

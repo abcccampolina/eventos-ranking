@@ -1,0 +1,25 @@
+---
+:pg:
+- user
+- modalidade
+- cluster_criterios_avaliacao
+- criterios_avaliacao
+- evento
+- competicao
+- criterios_competicao
+- competicaos_evento
+- parametro_inscricao
+- competicao_juri
+- inscricao
+- pessoa
+- inscricaos_competicao
+- catalogo_nome
+- catalogo
+- catalogo_competicao
+- competicao_avalicao
+- competicao_desempate
+- ranking
+- premio
+:mysql:
+- srg_pessoa
+- srg_animal

@@ -1,0 +1,47 @@
+<div class="card-body form-type-round">
+	<% if @competicao_juri.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@competicao_juri.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @competicao_juri.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@competicao_juri, html: {class: ""}) do |f| %>
+
+		<%= f.hidden_field(:competicaos_evento_id, value: params[:competicao_evento_id]) %>
+
+		<%= f.label "Juri" %>
+		<fieldset class="form-group">
+			<%#= f.collection_select :user_id, User.all, :id, :name, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+			<%= f.select :user_id, User.tipo_juri.pluck(:name, :id), 
+				{include_blank: true}, class: "form-control" 
+			%>
+			<%= "<p>#{@competicao_juri.errors.messages[:user_id].first}</p>".html_safe if @competicao_juri.errors.messages[:user_id].present? %>
+		</fieldset>
+
+		<%= f.label "Criterio de Avaliação" %>
+		<fieldset class="form-group">
+			<%= f.collection_select :cluster_criterios_avaliacao_id, ClusterCriteriosAvaliacao.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+			<%= "<p>#{@competicao_juri.errors.messages[:user_id].first}</p>".html_safe if @competicao_juri.errors.messages[:user_id].present? %>
+		</fieldset>
+
+		<fieldset class="form-group">
+			<%= f.check_box :juri_desempate %>
+			<%= f.label :juri_desempate do %>
+				<strong>Juri de Desempate?</strong>
+			<% end %>
+		</fieldset>
+
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', competicao_juris_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

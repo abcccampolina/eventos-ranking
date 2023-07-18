@@ -1,0 +1,87 @@
+<div class="row" data-controller="criterios_competicaos">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_criterios_competicao_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Criterios Avaliação Competicaos</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Competicao</th>
+						<th>Criterios Avaliacao</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @criterios_competicaos.each do |criterios_competicao| %>
+							<tr id="criterios_competicao-item-<%= criterios_competicao.id %>">
+								<td><%= criterios_competicao.competicao.name rescue "Atributo Indefinido" %></td>
+								<td><%= criterios_competicao.criterios_avaliacao.name rescue "Atributo Indefinido" %></td>
+
+								<td class="project-actions">
+									<%= link_to edit_criterios_competicao_path(criterios_competicao), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, criterios_competicao %>
+									<%= link_to "javascript:void(0);", 'data-criterios_competicaos-id': criterios_competicao.id, "data-action": "criterios_competicaos#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, criterios_competicao %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<% content_for :javascript do %>
+	<script type="text/javascript">
+		$(".delete").click(function(){
+			id = $(this).data('id');
+			 swal({
+				title: "Você tem certeza?",
+				text: "Não será possível recuperar esses dados!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Sim, quero remover!",
+				closeOnConfirm: false
+			}, function(isConfirm) {
+				if(isConfirm){
+					$.ajax({
+						type: "POST",
+						url: "/criterios_competicaos/" + id,
+						dataType: "json",
+						data: {"_method": "delete"},
+						success: function(){
+							$("#criterios_competicao-item-" + id).remove();
+							swal("Excluido!", "Os dados foram eliminados.", "success");
+						},
+						error: function(){
+							swal("Erro!", "Os dados não foram excluidos.", "error");
+						}
+					});
+				}
+			});
+			event.preventDefault();
+		});
+	</script>
+<% end %>

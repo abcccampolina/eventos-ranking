@@ -1,0 +1,123 @@
+ <div class="row" data-controller="ranking">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+            <h3 class='text-center'>Ranking Criador M. Batida</h3>
+            <input type="text" id="myInput" onkeyup="fProcurar()" placeholder="Procurar..." title="Pesquisar">
+                <table id="myTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Criador</th>
+                            <th>Pontuação</th>
+                            <th style="width: 160px;">Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% idd = 1 %>
+                        <% @rankings.group_by{|c|c&.criador}.sort_by{| k, v | v.map{|i| i&.pontuacao_criador&.to_f || 0}.sum}.reverse.each do |criador, pontos| %>
+                            <tr id="ranking-item-<%= criador %>">
+                                <td> <%= idd %> º </td>
+                                <td><%= criador rescue "Atributo Indefinido" %></td>
+                                <td><%= pontos.map{|i| i&.pontuacao_criador&.to_f || 0}.sum %></td>
+                                <td class="project-actions">
+                                    <%= link_to detalhe_ranking_criador_path(criador: criador), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+                                    <i class="fas fa-list"></i>
+                                    <% end if can? :update, criador %>
+                                </td>
+                            </tr>
+                            <% idd = idd + 1 %>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+            <h3 class='text-center'>Ranking Expositor M. Batida</h3>
+            <input type="text" id="myInputII" onkeyup="fProcurarII()" placeholder="Procurar..." title="Pesquisar">
+                <table id="myTableII" class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Expositor</th>
+                            <th>Pontuação</th>
+                            <th style="width: 160px;">Detalhes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% idd = 1 %>
+                        <% @rankings.group_by{|c|c&.expositor}.sort_by{| k, v | v.map{|i| i&.pontuacao_expositor&.to_f || 0}.sum}.reverse.each do |expositor, pontos| %>
+                            <tr id="ranking-item-<%= expositor %>">
+                                <td> <%= idd %> º </td>
+                                <td><%= expositor rescue "Atributo Indefinido" %></td>
+                                <td><%= pontos.map{|i| i&.pontuacao_expositor&.to_f || 0}.sum %></td>
+                                <td class="project-actions">
+                                    <%= link_to detalhe_ranking_criador_path(expositor: expositor), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+                                    <i class="fas fa-list"></i>
+                                    <% end if can? :update, expositor %>
+                                </td>
+                            </tr>
+                            <% idd = idd + 1 %>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+<style>
+    tr:nth-child(even) {
+    background-color: #f2f2f2
+    }
+</style>
+
+<script>
+
+  function fProcurar() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInput");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tr = table.getElementsByTagName("tr");
+	for (i = 0; i < tr.length; i++) {
+	  td = tr[i].getElementsByTagName("td")[1];
+	  if (td) {
+		txtValue = td.textContent || td.innerText;
+		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		  tr[i].style.display = "";
+		} else {
+		  tr[i].style.display = "none";
+		}
+	  }       
+	}
+  }
+
+  function fProcurarII() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInputII");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTableII");
+	tr = table.getElementsByTagName("tr");
+	for (i = 0; i < tr.length; i++) {
+	  td = tr[i].getElementsByTagName("td")[1];
+	  if (td) {
+		txtValue = td.textContent || td.innerText;
+		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		  tr[i].style.display = "";
+		} else {
+		  tr[i].style.display = "none";
+		}
+	  }       
+	}
+  }
+</script>

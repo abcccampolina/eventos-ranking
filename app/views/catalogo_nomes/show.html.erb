@@ -1,0 +1,25 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Nome</strong><br>
+							<%= @catalogo_nome.nome %>
+						</address>
+						<address>
+						<strong>Ordem nome</strong><br>
+							<%= @catalogo_nome.ordem_nome %>
+						</address>
+						<address>
+						<strong>Competições eventos</strong><br>
+							<%= @catalogo_nome.competicaos_eventos.name rescue nil %>
+						</address>
+							
+		<%= link_to 'Editar', edit_catalogo_nome_path(@catalogo_nome), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', catalogo_nomes_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

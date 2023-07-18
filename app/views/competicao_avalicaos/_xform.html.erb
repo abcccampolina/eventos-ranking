@@ -1,0 +1,224 @@
+<% competicaojuris      ||= @competicaojuris %>
+<% competicao_avalicaos ||= @competicao_avalicaos %>
+<% competicao_avalicaos = competicao_avalicaos.sort_by{|c| c.catalogo.numero_colete}.reverse %>
+<% competicaojuris = competicaojuris.where(competicaos_evento_id: @catalogo.first.competicaos_evento.id) %>
+
+
+<div class="card">
+	<div class="card-header">
+		<div class="row" data-turbolinks="false">
+			<div class="col-lg-12">
+				<h5>Notas <%= @catalogo.first.nome_catalogo %> </h5>
+			</div>
+			
+			<% if can? :read, :imprimir_parcial %>
+				<div class="col-sm-3">
+					<%= link_to 'Imprimir Parcial', 
+						imprimir_parcial_path(catalogo: @catalogo.map{|c| c.id }, 
+							competicao_evento_id: @catalogo.first.competicaos_evento_id
+						), class: 'btn btn-sm btn-default text-break-center w-100'
+					%>
+				</div>
+			<% end %>
+
+			<%if @catalogo.first.competicaos_evento.competicao.modalidade.nome == "Grande Competição" && @catalogo.first.competicaos_evento.competicao.nome != "Prova Esportiva" && @catalogo.first.competicaos_evento.competicao.nome != "Grande Campeonato Prova Funcional Campolina em Ação Solida Marcha Batida" && @catalogo.first.competicaos_evento.competicao.nome != "Grande Campeonato Prova Funcional Campolina em Ação Solida Marcha Picada" && @catalogo.first.competicaos_evento.competicao.nome !="Grande Campeonato Prova Funcional Campolina em Ação Pampa Marcha Batida" && @catalogo.first.competicaos_evento.competicao.nome !=  "Grande Campeonato Prova Funcional Campolina em Ação Pampa Marcha Picada" %>
+				<% if can? :read, :ajutar_nota %>
+					<div class="col-sm-3">
+						<%= link_to 'Ajustar e imprimir Notas Grande da Raça',
+							ajutar_nota_path(
+								inscricaos: @catalogo.map{|c| c.inscricao_id },
+								competicao_id: @catalogo.first.competicaos_evento.competicao_id,
+								competicao_evento_id: @catalogo.first.competicaos_evento_id,
+								nome_catalogo: @catalogo.first.catalogo_nome_id
+							), class: 'btn btn-sm btn-danger text-break-center w-100'
+						%>
+					</div>
+				<% end %>
+			<% end %>
+
+			<%if @catalogo.first.competicaos_evento.competicao.modalidade.nome != "Grande Competição"%>
+				<% if can? :read, :imprimir_resultado %>
+					<div class="col-sm-3">
+						<%= link_to 'Imprimir Resultado Final', 
+							imprimir_resultado_path(catalogo: @catalogo.map{|c| c.id }, 
+							competicao_evento_id: @catalogo.first.competicaos_evento_id
+							), class: 'btn btn-sm btn-default text-break-center w-100' 
+						%>
+					</div>
+				<% end %>
+			<% end %>
+
+		</div>		
+	</div>
+
+	<% if can? :create, :read, :update, :destroy, :set_juri_desempate %>
+		<div class="card-header">
+			<div class="row">
+				<div class="ml-auto mr-auto col-lg-8 mt-10">
+					<%= form_with url: competicao_avalicaos_set_juri_desempate_path, 
+						data: {action: "ajax:success->competicao-avalicaos#onBookPostSuccess"} do |f| %>
+
+						<div class="row">
+							<div class="col-lg-12 text-center">
+								<strong class="text-danger">Escolha dos Juízes de Desempate</strong>
+							</div>
+							<div class="col-lg-12">
+								<% clusters.each do |_cluster| %>
+									<%= f.fields_for :juri_desempate do |form| %>
+										<%= form.label _cluster.id.to_s, _cluster.nome %>
+										<%= form.select _cluster.id.to_s, 
+											options_for_select(competicaojuris.map { |ca| [ca.user.name, ca.id] }, 
+												competicaojuris.find_by(juri_desempate: true, cluster_criterios_avaliacao_id: _cluster.id)&.id), {include_blank: true},
+											class: 'form-control show-tick'
+										%>
+									<% end %>
+								<% end %>
+							</div>
+						
+							<div class="col-lg-12">
+								<%= submit_tag "Salvar Juri", class: "btn btn-success float-right" %>
+							</div>
+						</div>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	<% end %>
+
+	<div class="card-header">
+	<div class="contenedor">
+		<span class="spinner" id="spinner"></span>
+	</div>
+		<div class="row">
+				<div class="ml-auto mr-auto col-lg-12">
+					<form id="FormClusterAvaliacao" action="change_cluster">
+						<input type="hidden" id="catalogo" name="catalogo" value='<%=@catalogo.ids%>'>
+						<%if @filter_cluster == "Morfologia" || !(@filter_cluster).present? %>
+							<input type="radio" id="cluster1" name="cluster" value="Morfologia" onchange="javascript:subCluster();" checked>
+						<%else%>
+							<input type="radio" id="cluster1" name="cluster" value="Morfologia" onchange="javascript:subCluster();" >
+						<%end%>
+						<label for="cluster1">Morfologia</label><br>
+						<%if @filter_cluster == "Marcha"%>
+							<input type="radio" id="cluster2" name="cluster" value="Marcha" onchange="javascript:subCluster();" checked>
+						<%else%>
+							<input type="radio" id="cluster2" name="cluster" value="Marcha" onchange="javascript:subCluster();">
+						<%end%>
+						<label for="cluster2">Marcha</label><br> 
+						<%if @filter_cluster == "Prova Funcional"%>
+							<input type="radio" id="cluster3" name="cluster" value="Prova Funcional" onchange="javascript:subCluster();" checked >
+						<%else%>
+							<input type="radio" id="cluster3" name="cluster" value="Prova Funcional" onchange="javascript:subCluster();">
+						<%end%>
+						<label for="cluster3">Prova Funcional</label>
+					</form>
+				</div>
+		</div>
+	</div>
+
+	<%if !@filter_cluster.present?%>
+		<%@filter_cluster = "Morfologia"%>
+	<%end%>
+	<!-- Verifica se a competição não é de acasalamento ou progenie -->
+	<% if @catalogo.first.competicaos_evento&.competicao.modalidade.nome != "Competição Acasalamento" && @catalogo.first.competicaos_evento&.competicao.modalidade.nome != "Competição Progênie"  %>
+		<%= render 'competicao_avalicaos/form_notas_competicao', competicao_avalicaos: competicao_avalicaos, clusters: clusters, competicaojuris: competicaojuris, filter_cluster: @filter_cluster %>
+	<% else %>
+		<!-- Caso a competição seja de acasalamento ou progenie -->
+		<%= render 'competicao_avalicaos/form_notas_progenie', competicao_avalicaos: competicao_avalicaos, clusters: clusters, competicaojuris: competicaojuris, filter_cluster: @filter_cluster %>
+	<% end %>
+</div>
+
+<script type="text/javascript">
+	function subCluster() {
+	document.getElementById("FormClusterAvaliacao").submit();
+	}
+</script>
+
+
+
+<style>
+
+.contenedor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Define altura e largura para o contêiner, caso necessário */
+  height: 100px;
+  width: 100%;
+}
+
+.spinner  {
+  animation: rotate 1s infinite;  
+  height: 50px;
+  width: 50px;
+  display: none;
+}
+
+.spinner:before,
+.spinner:after {   
+  border-radius: 50%;
+  content: '';
+  display: block;
+  height: 20px;  
+  width: 20px;
+}
+.spinner:before {
+  animation: ball1 1s infinite;  
+  background-color: #cb2025;
+  box-shadow: 30px 0 0 #f8b334;
+  margin-bottom: 10px;
+}
+.spinner:after {
+  animation: ball2 1s infinite; 
+  background-color: #00a096;
+  box-shadow: 30px 0 0 #97bf0d;
+}
+
+@keyframes rotate {
+  0% { 
+    -webkit-transform: rotate(0deg) scale(0.8); 
+    -moz-transform: rotate(0deg) scale(0.8);
+  }
+  50% { 
+    -webkit-transform: rotate(360deg) scale(1.2); 
+    -moz-transform: rotate(360deg) scale(1.2);
+  }
+  100% { 
+    -webkit-transform: rotate(720deg) scale(0.8); 
+    -moz-transform: rotate(720deg) scale(0.8);
+  }
+}
+
+@keyframes ball1 {
+  0% {
+    box-shadow: 30px 0 0 #f8b334;
+  }
+  50% {
+    box-shadow: 0 0 0 #f8b334;
+    margin-bottom: 0;
+    -webkit-transform: translate(15px,15px);
+    -moz-transform: translate(15px, 15px);
+  }
+  100% {
+    box-shadow: 30px 0 0 #f8b334;
+    margin-bottom: 10px;
+  }
+}
+
+@keyframes ball2 {
+  0% {
+    box-shadow: 30px 0 0 #97bf0d;
+  }
+  50% {
+    box-shadow: 0 0 0 #97bf0d;
+    margin-top: -20px;
+    -webkit-transform: translate(15px,15px);
+    -moz-transform: translate(15px, 15px);
+  }
+  100% {
+    box-shadow: 30px 0 0 #97bf0d;
+    margin-top: 0;
+  }
+}
+
+</style>

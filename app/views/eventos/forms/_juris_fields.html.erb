@@ -1,0 +1,36 @@
+<div class="row nested-fields">
+
+	<div class="col-sm-5">
+		<fieldset class="form-group">
+			<%= label_tag "evento[juris_templates][][cluster_id]", "Cluster" %>
+			<%= select_tag "evento[juris_templates][][cluster_id]", 
+				options_from_collection_for_select($evento.cluster_criterios_avaliacaos.uniq, :id, :nome), 
+				include_blank: true, class: "form-control" 
+			%>
+		</fieldset>
+	</div>
+
+	<div class="col-sm-6">
+		<fieldset class="form-group">
+			<%= label_tag "evento[juris_templates][][user_id]", "Nome do Juri" %>
+			<%= select_tag "evento[juris_templates][][user_id]",
+				options_from_collection_for_select(User.tipo_juri, :id, :name), 
+				include_blank: true, class: "form-control" 
+			%>
+		</fieldset>
+	</div>
+
+	<div class="col-auto p-0">
+		<%= link_to '#remove-juris', 
+			class: "remove_fields btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral pull-right mt-20",
+			data: {action: "click->eventos#removeTemplateFields"} do %>
+			<i class="remove_fields nc-icon nc-simple-remove"></i>
+		<% end %>
+	</div>
+
+	<div class="col-12">
+		<hr>
+	</div>
+
+	
+</div> 

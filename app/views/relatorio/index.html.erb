@@ -1,0 +1,107 @@
+<div class="row" data-controller="inscricaos">
+	<div class="col-lg-12">
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title"><%= $evento ? "Relatórios do Evento: #{$evento&.nome}" : "" %></h4>
+			</div>
+			<div class="card-body">
+				<% if $evento %>
+					<table class="table">
+						<thead>
+							<tr>
+							<th>Descrição</th>
+							<th style="width: 160px;">Ação</th>
+							<th style="width: 160px;">Visualizar</th>
+							</tr>
+						</thead>
+						<tbody>
+
+
+							<tr id="item-catalogo">
+								<td>Animais por competições</td>
+								<td></td>
+								<td><%= link_to 'Visualizar', relatorio_animais_competicoes_path(format: :pdf), 
+									target: :_blank, class: 'btn btn-outline-default btn-sm' %>
+								</td>
+							</tr>
+
+							<tr id="item-catalogo">
+								<td>Catálogo</td>
+								<td>
+									<% if !CompeticaoAvalicao.where(evento_id: $evento&.id).present? %>  
+										<%= link_to 'Gerar', gerar_catalogo_path, class: 'btn btn-outline-default btn-sm' %> 
+									<% end %> 
+								</td>
+								<td><%= link_to 'Visualizar', catalogos_path(format: :pdf), 
+									target: :_blank, class: 'btn btn-outline-default btn-sm' %>
+								</td>
+							</tr>
+
+							<tr id="item-catalogo">
+								<td>Animais por Expositor</td>
+								<td>
+									<%= link_to 'E-mail', confirmacao_inscricao_mailer_path, class: 'btn btn-outline-default btn-sm' %>
+								</td>
+								<td>
+									<%= link_to 'Visualizar', relatorio_animais_expositor_path(format: :pdf), 
+									target: :_blank, class: 'btn btn-outline-default btn-sm' %>
+								</td>
+							</tr>
+
+							<tr id="item-catalogo">
+								<!-- Separar progenie de mãe, progênie de pai e acasalamento 
+									(Cada um desses com as colunas de garanhão e matriz, animal, expositor, expositor fazenda, marcha e pelagem)
+								-->
+								<td>Sugestão de Progênies</td>
+								<td></td>
+								<td><%= link_to 'Visualizar', relatorio_sugestao_progenie_path(format: :pdf), class: 'btn btn-outline-default btn-sm', target: :_blank %></td>
+							</tr>
+
+							<tr id="item-catalogo">
+								<td>Mapa dos Campeões</td>
+								<td></td>
+								<td>
+									<%= link_to 'Visualizar', relatorio_mapa_campeoes_path(format: :pdf), 
+									target: :_blank, class: 'btn btn-outline-default btn-sm' %>
+								</td>
+							</tr>
+
+
+							<tr id="item-catalogo">
+								<td>Campolina Completo</td>
+								<td>
+									<%= link_to 'Gerar', gerar_campolina_completo_path(format: :pdf), class: 'btn btn-outline-default btn-sm' %>
+								</td>
+								<td>
+									<%#= link_to 'Visualizar', relatorio_campolina_completo_path(format: :pdf), 
+									target: :_blank, class: 'btn btn-outline-default btn-sm' %>
+								</td>
+							</tr>
+
+							<tr id="item-catalogo">
+								<td>Animais por UF</td>
+								<td>
+									<%#= link_to 'Gerar', gerar_campolina_completo_path(format: :pdf), class: 'btn btn-outline-default btn-sm' %>
+								</td>
+								<td>
+									<%= link_to 'Visualizar', animais_uf_path(format: :pdf), 
+									target: :_blank, class: 'btn btn-outline-default btn-sm' %>
+								</td>
+							</tr>
+
+						</tbody>
+					</table>
+				<% else %>
+					<div class="mb-5">
+						<img src="/relatorio-null.png" class="align-img-center">
+						<span class="d-flex justify-content-center text-muted mt-2">Não existem relatórios a serem exibidos...</span>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>
+

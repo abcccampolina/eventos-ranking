@@ -1,0 +1,7 @@
+pt-BR:
+  enumerations:
+    tipo_parametro:
+      comp: 'Competição'
+      tabela: 'Tabela'
+      melhor_indicacao: 'Melhor Indicação'
+      tipo_marcha: 'Tipo Marcha'

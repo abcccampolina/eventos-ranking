@@ -1,0 +1,45 @@
+<div class="card-body form-type-round">
+	<% if @catalogo_nome.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@catalogo_nome.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @catalogo_nome.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@catalogo_nome, html: {class: ""}) do |f| %>
+
+		
+			
+				<%= f.label :nome %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :nome, class: 'form-control' %>
+					<%= "<p>#{@catalogo_nome.errors.messages[:nome].first}</p>".html_safe if @catalogo_nome.errors.messages[:nome].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label "Ordem do nome","Ordem do nome" %><br>
+				<fieldset class="form-group">
+					<%= f.number_field :ordem_nome, class: 'form-control' %>
+					<%= "<p>#{@catalogo_nome.errors.messages[:ordem_nome].first}</p>".html_safe if @catalogo_nome.errors.messages[:ordem_nome].present? %>
+				</fieldset>
+			
+		
+				<fieldset class="form-group">
+					<%= f.hidden_field(:competicaos_evento_id, value: params[:competicaos_evento_id]) %>
+				</fieldset>
+			
+		
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				
+			</div>
+		</fieldset>
+	<% end %>
+</div>

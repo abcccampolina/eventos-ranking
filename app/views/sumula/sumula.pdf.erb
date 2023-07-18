@@ -1,0 +1,203 @@
+<% catalogo_juri = @catalogos.map{|i| i.competicaos_evento_id}  %>
+<% jurados = CompeticaoJuri.where(competicaos_evento_id: catalogo_juri).uniq %>
+
+<% @catalogos.include_and_group_sumula&.each do |nome_catalogo, catalogos| %>
+    <% jurados.each do |juri| %>
+        <% criterios = catalogos.first.criterios_competicaos.criterio_sem_prova_funcional %>
+
+        <% if criterios.present? %>
+            <div style="margin-bottom: 60px">
+                <%= image_tag( root_url + "LOGO_1.png",  alt: "campolina-logo", style: "max-width: 10% !important" ) -%>
+            </div>
+
+            <div style="margin-bottom: 60px">
+                <!--Logo Campolina-->
+                <h4 class="text-center"><b> <%= catalogos&.first&.nome_catalogo %> </b></h4>
+                <h6 class="text-center"><%= $evento.nome %></h6>
+            </div>
+
+            <h4><b> Árbitro: <%= juri.user.name %></b></h4>
+
+            <table>
+                <% _criterios = criterios.group_by{|i| i.criterios_avaliacao.cluster_criterios_avaliacao} %>
+                
+
+                <tr>
+                    <th style="width: 200px; text-align: center;">
+                        <h5><b> Colete </b></h5>
+                        <br>
+                    </th>
+                    <% _criterios.each do |nome, criterio| %>
+                        <% cluster_id = nome.id %>
+                        <% if CompeticaoJuri
+                            .where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogos.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster_id}]' and #{cluster_id} <> 3" ).count > 0 %>
+                            <th style="width: 200px; text-align: center"> 
+                                <h5><b> <%= nome.nome %> </b></h5>
+                                <br>
+                            </th>
+                        <% end %>
+                    <% end %>
+                    <th style="width: 200px; height: 30px; text-align: center">
+                        <h5><b> Observação </b></h5>
+                        <br>
+                    </th>
+                </tr>
+
+                <% if criterios.first.competicao.modalidade.nome == "Competição Progênie" or criterios.first.competicao.modalidade.nome == "Competição Acasalamento" %>
+                    <% catalogos.group_by{|i| i.numero_colete_progenie}.sort_by{|i,k| i}.each do |num_prongenie,catalogo| %>
+                        <tr>
+                            <td class="td-form-border" style="height: 10px; border: 2px solid"><%= num_prongenie %></td>
+                            <% criterios.each do |criterio| %>
+                                    <% cluster_id = criterio.criterios_avaliacao.cluster_criterios_avaliacao.id %>
+                                    <% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogos.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster_id}]'" ).present? %>
+                                        <td class="td-form-border" style="height: 10px; border: 2px solid"></td>
+                                        <% if criterio.criterios_avaliacao.cluster_criterios_avaliacao.nome == "Morfologia" %>
+                                            <%# <td class="td-form-border" style="height: 10px; border: 2px solid"></td>
+                                            <td class="td-form-border" style="height: 10px; border: 2px solid"></td> %>
+                                        <% end %> 
+                                        <% if criterio.criterios_avaliacao.cluster_criterios_avaliacao.nome == "Marcha" %>
+                                            <%# <td class="td-form-border" style="height: 10px; border: 2px solid"></td> %>
+                                        <% end %>
+                                    <% end %>
+                                <% end %>
+                            <%# <td class="td-form-border" style="height: 10px; border: 2px solid"></td> %>
+                        </tr>
+                    <% end %>
+                <% else %>
+                    <% catalogos.sort_by{|i| i.numero_colete}.each do |catalogo| %>
+                        <tr>
+                            <td class="td-form-border" style=" height: 50px; border: 2px solid ">
+                                <%= catalogo.numero_colete%>
+                                <br>
+                                <small><%= catalogo.inscricao.faixa_etaria %> meses </small>
+                            </td>
+
+                            <% criterios.each do |criterio| %>
+                                <% cluster_id = criterio.criterios_avaliacao.cluster_criterios_avaliacao.id %>
+                                <% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogos.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster_id}]'" ).present? %>
+                                    <td class="td-form-border" style=" height: 50px; border: 2px solid "></td>
+                                    <% if criterio.criterios_avaliacao.cluster_criterios_avaliacao.nome == "Morfologia" %>
+                                        <%# <td class="td-form-border" style=" height: 50px; border: 2px solid "></td>
+                                        <td class="td-form-border" style=" height: 50px; border: 2px solid "></td> %>
+                                    <% end %> 
+                                    <% if criterio.criterios_avaliacao.cluster_criterios_avaliacao.nome == "Marcha" %>
+                                        <%# <td class="td-form-border" style=" height: 50px; border: 2px solid "></td> %>
+                                    <% end %>
+                                <% end %>
+                            <% end %>
+                            <td class="td-form-border" style=" height: 50px; border: 2px solid"> 
+                                <% if catalogo.inscricao.so_marcha? %>
+                                    <span>Só Marcha</span>
+                                <% end %>
+                                <% inscricaos_competicao = InscricaosCompeticao.where(inscricao_id: catalogo.inscricao_id) %>
+                                <% inscricaos_competicao.each do |camp_anterior| %>
+                                    <% output = camp_anterior&.campeao_anterior_json? ? camp_anterior&.campeao_anterior_json&.map {|k,v| k['posto'].to_s} : "" %>
+                                    <p>
+                                        <%= output&.join(', ').titlecase rescue nil %>
+                                    </p> 
+                                <% end %>
+                            </td>
+                        </tr>
+                    <% end %>
+                <% end %>
+
+            </table>
+
+            <table style="margin-top: 100px">
+                <tr>
+                    <td style="text-align: center;">
+                        ______________________________________________________
+                        <br><br>
+                        <h6><b> <%= juri.user.name %> </b></h6>
+                    </td>
+                </tr>
+            </table>   
+
+            <div  style="margin-top: 80px; text-align: center;">
+                <%= raw @svg_qrcode %>
+            </div>  
+            <div class="page-break"></div>
+        <% end %>
+
+                <% criterios_funcional = CriteriosCompeticao.where(competicao_id: @catalogos.first.competicaos_evento.competicao_id ) %>
+                <% criterios_funcional = criterios_funcional.joins('inner join criterios_avaliacaos on criterios_competicaos.criterios_avaliacao_id  = criterios_avaliacaos.id
+                                                inner join cluster_criterios_avaliacaos on criterios_avaliacaos.cluster_criterios_avaliacao_id  = cluster_criterios_avaliacaos.id')
+                                                .where("cluster_criterios_avaliacaos.nome like 'Prova Funcional'") 
+                %>
+                <% @juiz_funcional = false%>
+                <% criterios_funcional.group_by{|i| i.criterios_avaliacao.cluster_criterios_avaliacao}.each do |nome, criterio| %>
+                    <% cluster_id = nome.id %>
+                    <% @juiz_funcional = CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogos.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster_id}]'" ).present? %>
+                <% end %>
+    <% if @juiz_funcional %>
+        <div>
+            <%= image_tag( root_url + "LOGO_1.png",  alt: "campolina-logo", style: "max-width: 10% !important" ) -%>
+            <h6 class="text-right"><small> <%=$evento.nome%> </small></h6>
+        </div>  
+        <br><br><br>
+        <div>
+            <!--Logo Campolina-->
+            <h4 class="text-center"><b> <%= catalogos&.first&.nome_catalogo %> </b></h4>
+
+            <h6 class="text-center"><%= $evento.nome%></h6>
+        </div>
+        <br><br><br>
+        <div>
+            <h5><b> Árbitro: <%= juri.user.name %> </b></h5>
+        </div>
+        <br><br>
+        <table>
+            <tr>
+                <th style="width: 120px; text-align: center"> Colete </th>
+                <th style="width: 100px; text-align: center"> Passo </th>
+                <th style="width: 100px; text-align: center"> Porteira </th>
+                <th style="width: 100px; text-align: center"> Balizas </th>
+                <th style="width: 100px; text-align: center"> Galope </th>
+                <th style="width: 100px; text-align: center"> Tambores </th>
+                <th style="width: 100px; text-align: center"> Salto </th>
+                <th style="width: 100px; text-align: center"> Parada E Recuo </th>
+                <th style="width: 100px; text-align: center"> Estação </th>
+                <th style="width: 100px; text-align: center"> Passo Livre </th>
+                <th style="width: 100px; text-align: center"> Total Faltas </th>
+                <th style="width: 100px; text-align: center"> Tempo  </th>
+                <th style="width: 100px; text-align: center"> Tempo Final </th>
+                <th style="width: 100px; text-align: center"> Calss.</th>
+            </tr>
+
+            <% catalogos.sort_by{|i| i.numero_colete}.each do |catalogo| %>
+                <tr>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"><%= catalogo.numero_colete%></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="width: 200px; height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="width: 200px; height: 30px; border: 2px solid"></td>
+                    <td class="td-form-border" style="height: 30px; border: 2px solid"></td>
+                </tr>
+            <% end %>
+        </table>  
+        <br><br><br><br>
+        <table>
+            <tr>
+                <td style="text-align: center;">
+                    ______________________________________________________
+                    <br><br>
+                    <h6><b> <%= juri.user.name %> </b></h6>
+                </td>
+            </tr>
+        </table> 
+        <div  style="text-align: center;">
+            <br><br><br><br>
+            <%= raw @svg_qrcode %>
+        </div> 
+        <div class="page-break"></div>
+        <% end %>
+    <% end %>
+<% end %>

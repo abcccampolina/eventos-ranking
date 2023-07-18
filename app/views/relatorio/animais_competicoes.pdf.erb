@@ -1,0 +1,51 @@
+<h4 class="text-center">
+    <strong>
+        <%= $evento.nome %>
+    </strong>
+</h4>
+
+    <table class="table" style="background:#fafafa">
+        <thead>
+            <tr>
+            <th style="width: 120px;">Competição</th>
+            <th style="width: 120px; text-align: center;" >Qtde Só Marcha </th>
+            <th style="width: 120px; text-align: center;" >Qtde Convencional </th>
+            <th style="width: 120px; text-align: center;" >Qtde Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% @comps_evet.sort_by {|i| i.competicao_id }.group_by {|i| i.competicao }.each do |competicao, inscricoes| %>
+            <tr>
+                <td>
+                    <strong><%= competicao.nome %></strong>
+                </td>
+                <td>
+                    <%= inscricoes.select{|c| c.inscricao.so_marcha == true}.count %> 
+                </td>
+                <td>
+                    <%= inscricoes.select{|c| c.inscricao.so_marcha == false}.count %> 
+                </td>
+                <td>
+                    <%= inscricoes.count %> 
+                </td>
+            </tr>
+        <% end %>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>TOTAL</td>
+                <td style="font-weight: bold;"> <%= @comps_evet.select{|c| c.inscricao.so_marcha == true}.count %> </td>
+                <td style="font-weight: bold;"> <%= @comps_evet.select{|c| c.inscricao.so_marcha == false}.count %></td>
+                <td style="font-weight: bold;"> <%= @comps_evet.count %></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <style>
+        tr:nth-child(even) {
+            background:lightgray;
+        }
+        td {
+            text-align: center;
+        }
+    </style>

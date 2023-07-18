@@ -1,0 +1,57 @@
+<div class="card-body form-type-round">
+	<% if @criterios_competicao.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@criterios_competicao.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @criterios_competicao.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@criterios_competicao, html: {class: ""}) do |f| %>
+
+		
+				<!--<%= f.label :competicao_id %>
+				<fieldset class="form-group">
+					<%= f.collection_select :competicao_id, Competicao.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+					<%= "<p>#{@criterios_competicao.errors.messages[:competicao_id].first}</p>".html_safe if @criterios_competicao.errors.messages[:competicao_id].present? %>
+				</fieldset>-->
+
+				<%= f.hidden_field(:competicao_id, value: params[:competicao_id])%>
+			
+		
+				<%= f.label :criterios_avaliacao_id %>
+				<fieldset class="form-group">
+					<%= f.collection_select :criterios_avaliacao_id, CriteriosAvaliacao.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+					<%= "<p>#{@criterios_competicao.errors.messages[:criterios_avaliacao_id].first}</p>".html_safe if @criterios_competicao.errors.messages[:criterios_avaliacao_id].present? %>
+				</fieldset>
+				<br>
+				<%= f.label :peso %><br> 
+				<fieldset class="form-group">
+					<%= f.text_field :peso, class: 'form-control' %>
+					<%= "<p>#{@criterios_competicao.errors.messages[:peso].first}</p>".html_safe if @criterios_competicao.errors.messages[:peso].present? %>
+				<small>* Colocar 0 caso esse critério seja apenas informativo </small>
+				</fieldset>
+				<br>
+
+				<%= f.label :metodo %>
+				<fieldset class="form-group">
+				<%= f.select :metodo, options_for_select([ 'Soma']), {}, { :class => 'form-control show-tick' } %>
+					<%= "<p>#{@criterios_competicao.errors.messages[:competicao_id].first}</p>".html_safe if @criterios_competicao.errors.messages[:competicao_id].present? %>
+				</fieldset>
+
+			
+
+			
+		
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', criterios_competicaos_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

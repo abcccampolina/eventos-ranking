@@ -1,0 +1,40 @@
+<h4 class="text-center">
+    <strong>
+        <%= $evento.nome %>
+    </strong>
+</h4>
+
+    <table class="table" style="background:#fafafa">
+        <thead>
+            <tr>
+                <th style="width: 120px; text-align: center;">UF</th>
+                <th style="width: 120px; text-align: center;" > Qtde animais </th>
+                <th style="width: 120px; text-align: center;" > Qtde Expositores </th>
+            </tr>
+        </thead>
+        <tbody>
+        <% @inscritos.sort_by {|i| i.expositor.uf }.group_by {|i| i.expositor.uf }.each do |uf, inscricoes| %>
+
+            <tr>
+                <td>
+                    <strong><%= uf %></strong>
+                </td>
+                <td>
+                    <%= inscricoes.count %> 
+                </td>
+                <td>
+                    <%= inscricoes.map{|i| i.expositor_id}.uniq.count %> 
+                </td>
+            </tr>
+        <% end %>
+        </tbody>
+    </table>
+
+    <style>
+        tr:nth-child(even) {
+            background:lightgray;
+        }
+        td {
+            text-align: center;
+        }
+    </style>

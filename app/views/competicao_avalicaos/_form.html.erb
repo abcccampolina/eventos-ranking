@@ -1,0 +1,226 @@
+<div data-controller="competicao-avalicaos" data-competicao-avalicaos-action-form="edit">
+	<% competicaojuris      ||= @competicaojuris %>
+	<% competicao_avalicaos ||= @competicao_avalicaos %>
+	<div class="card card-nav-tabs">
+		<div class="card-header">
+			<h4 class="card-title">Book de Avaliação</h4>
+		</div>
+		
+		<div class="card-header card-header-danger">
+			<div class="nav-tabs-navigation">
+				<div class="nav">
+					<ul class="nav nav-tabs" data-tabs="tabs">
+					<% competicaojuris.each do |juri| %>
+						<li class="nav-item">
+							<a class="nav-link btn btn-default" href="#juriuser<%=juri.user.id%>" data-toggle="tab"> <%= juri.user.name %></a>
+						</li>
+					<% end %>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="card-body ">
+			<div class="tab-content ">
+				<% competicaojuris.each do |juri| %>
+					<div class="tab-pane" id="juriuser<%=juri.user.id%>">
+						<% competicao_avalicaos&.each do |competicao_avaliacao| %>
+							<%= form_for(competicao_avaliacao, html: {class: ""}) do |f| %>
+								<%= f.hidden_field(:evento_id, value: params[:evento_id]) %>
+								<%= f.hidden_field(:inscricao_id, value: params[:inscricao]) %>
+								<%= f.hidden_field(:competicao_id, value: params[:competicao_id]) %>
+								<%= f.hidden_field(:juri_id, value: juri.user.id) %>
+								<%= f.hidden_field(:catalogo_id, value: params[:catalogo_id]) %>
+
+								<div class="row mb-20">
+									<div class="col-lg-4">
+										<%= f.check_box :melhor_cabeca %>
+										<%= f.label :melhor_cabeca do %>
+											<strong>Melhor Cabeça?</strong>
+										<% end %>
+										<br>
+										<%= f.check_box :aprumacao %>
+										<%= f.label :aprumacao do %>
+											<strong>Aprumação?</strong>
+										<% end %>
+									</div>
+									<div class="col-lg-4">
+										<%= f.label :ocorrencia do %>
+											<strong>Ocorrência</strong>
+										<% end %>
+										<%= f.select :ocorrencia, options_for_select(OcorrenciaCompeticao.to_a, competicao_avaliacao.ocorrencia), {include_blank: "Nenhum"}, {class: "form-control"} %>
+									</div>
+								</div>
+										
+								<% @clusters&.each do |cluster| %>
+									<table class="table">
+										<thead>
+											<tr>
+												<th style="width: 250px">
+													<%= cluster&.nome %>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% @criterios_competicao.where(criterios_avaliacao_id: @criterios.where(cluster_criterios_avaliacao_id: cluster.id)).each do |criterio| %>
+												<tr id="criterio-item-<%= criterio.criterios_avaliacao_id %>">
+													<td>
+														<%= criterio&.criterios_avaliacao&.nome || "Atributo Indefinido" %>
+													</td>
+													<td>
+														<fieldset>
+															<% nota = CompeticaoAvalicao.find_by(competicao_juri_id: juri.id, criterios_competicao_id: criterio.id, inscricao_id: params[:inscricao]) %>
+															<%= number_field(:nota, criterio.criterios_avaliacao_id, class: "form-control", value: (nota.nota if nota.present?)) %>
+														</fieldset>
+													</td>
+												</tr>
+											<% end %>
+										</tbody>
+									</table>
+									
+								<% end if false %>
+								<div class="col-sm-12">
+										<%= f.submit "Salvar", class: 'btn btn-bold btn-success pull-right' %>
+									</div>
+							<% end %>
+							<div class="col-sm-12">
+									<%= f.submit "Salvar", class: 'btn btn-bold btn-success pull-right' %>
+								</div>
+						<% end %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+
+		<div class="col-sm-4 ">
+			<%= link_to 'Voltar', :back, class: 'btn btn-bold btn-default ' %>
+		</div>
+
+	</div>
+
+	<%# <div class="col-md-12"> %>
+		<div class="card">
+			<div class="card-header">
+				<h5>Vertical Tabs</h5>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<%# <div class="col-lg-4 col-md-5 col-sm-12 col-6"> %>
+					<div class="col-lg-auto col-md-auto col-sm-12 col-12 custom-wd">
+						<div class="nav-tabs-navigation verical-navs mini-nav-verti custom-pd">
+							<div class="nav-tabs-wrapper">
+								<ul class="nav nav-tabs flex-column nav-stacked" role="tablist">
+									<% competicaojuris.each do |juri| %>
+										<li class="nav-item nav-item-c" data-action="click->competicao-avalicaos#navChange">
+											<a class="nav-link" href="#juri-set-<%= juri.id %>" role="tab" data-toggle="tab" aria-selected="false">
+												<%= juri.user.name %>
+											</a>
+										</li>
+									<% end %>
+									<li class="nav-item nav-item-c" data-action="click->competicao-avalicaos#navChange">
+										<a class="nav-link" href="#description" role="tab" data-toggle="tab" aria-selected="false">Warley Oliveira</a>
+									</li>
+									<li class="nav-item nav-item-c" data-action="click->competicao-avalicaos#navChange">
+										<a class="nav-link" href="#description" role="tab" data-toggle="tab" aria-selected="false">Warley</a>
+									</li>
+									<li class="nav-item nav-item-c" data-action="click->competicao-avalicaos#navChange">
+										<a class="nav-link" href="#description" role="tab" data-toggle="tab" aria-selected="false">Warley</a>
+									</li>
+									<%# <li class="nav-item nav-item-c" data-action="click->competicao-avalicaos#navChange">
+										<a class="nav-link" href="#description" role="tab" data-toggle="tab" aria-selected="false">Warley</a>
+									</li>
+									<li class="nav-item nav-item-c" data-action="click->competicao-avalicaos#navChange">
+										<a class="nav-link" href="#concept" role="tab" data-toggle="tab" aria-selected="false">Rafael</a>
+									</li>
+									<li class="nav-item nav-item-c" data-action="click->competicao-avalicaos#navChange">
+										<a class="nav-link" href="#support" role="tab" data-toggle="tab" aria-selected="false">Gustavo</a>
+									</li>
+									<li class="nav-item nav-item-c" data-action="click->competicao-avalicaos#navChange">
+										<a class="nav-link active" href="#extra" role="tab" data-toggle="tab" aria-selected="true">Daniel</a>
+									</li> %>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-8 col-md-7 col-sm-12 col-6">
+						<!-- Tab panes -->
+						<div class="tab-content tab-content-c">
+
+							<% competicaojuris.each do |juri| %>
+								<% competicao_avalicaos&.each do |competicao_avaliacao| %>
+									<div class="tab-pane" id="juri-set-<%= juri.id %>">
+										<%= form_for(competicao_avaliacao, html: {class: ""}) do |f| %>
+											<%= f.hidden_field(:evento_id, value: params[:evento_id]) %>
+											<%= f.hidden_field(:inscricao_id, value: params[:inscricao]) %>
+											<%= f.hidden_field(:competicao_id, value: params[:competicao_id]) %>
+											<%= f.hidden_field(:juri_id, value: juri.user.id) %>
+											<%= f.hidden_field(:catalogo_id, value: params[:catalogo_id]) %>
+
+											<div class="row mb-20">
+												<div class="col-lg-4">
+													<%= f.check_box :melhor_cabeca %>
+													<%= f.label :melhor_cabeca do %>
+														<strong>Melhor Cabeça?</strong>
+													<% end %>
+													<br>
+													<%= f.check_box :aprumacao %>
+													<%= f.label :aprumacao do %>
+														<strong>Aprumação?</strong>
+													<% end %>
+												</div>
+												<div class="col-lg-4">
+													<%= f.label :ocorrencia do %>
+														<strong>Ocorrência</strong>
+													<% end %>
+													<%= f.select :ocorrencia, options_for_select(OcorrenciaCompeticao.to_a, competicao_avaliacao.ocorrencia), {include_blank: "Nenhum"}, {class: "form-control"} %>
+												</div>
+											</div>
+													
+											<% @clusters&.each do |cluster| %>
+												<table class="table">
+													<thead>
+														<tr>
+															<th style="width: 250px">
+																<%= cluster&.nome %>
+															</th>
+														</tr>
+													</thead>
+													<tbody>
+														<%# @criterios_competicao.where(criterios_avaliacao_id: @criterios.where(cluster_criterios_avaliacao_id: cluster.id)).each do |criterio| %>
+														<% cluster.criterios_avaliacaos.map(&:criterios_competicaos).flatten.each do |criterio| %>
+															<tr id="criterio-item-<%= criterio.criterios_avaliacao_id %>">
+																<td>
+																	<%= criterio&.criterios_avaliacao&.nome || "Atributo Indefinido" %>
+																</td>
+																<td>
+																	<fieldset>
+																		<% nota = CompeticaoAvalicao.find_by(competicao_juri_id: juri.id, criterios_competicao_id: criterio.id, inscricao_id: params[:inscricao]) %>
+																		<%= number_field(:nota, criterio.criterios_avaliacao_id, class: "form-control", value: (nota.nota if nota.present?)) %>
+																	</fieldset>
+																</td>
+															</tr>
+														<% end %>
+													</tbody>
+												</table>
+												
+											<% end %>
+											<div class="col-sm-12">
+													<%= f.submit "Salvar", class: 'btn btn-bold btn-success pull-right' %>
+												</div>
+										<% end %>
+									</div>
+								<% end %>
+							<% end %>
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	<%# </div> %>
+	
+</div>
+
+
+

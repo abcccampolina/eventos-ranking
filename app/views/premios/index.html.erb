@@ -1,0 +1,93 @@
+<div class="row" data-controller="premios">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_premio_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Premios</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+                        <th>Colete</th>
+                        <th>Animal</th>
+						<th>Posto</th>
+						<th>Catalogo</th>
+                        <th>Expositor</th>
+                        <th>Criador</th>
+                        <th>Pontuação</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @premios&.sort_by{|i| i&.nome_catalogo}&.each do |premio| %>
+							<tr id="premio-item-<%= premio.id %>">
+                                <td>#<%= premio.numero_colete %></td>
+                                <td><%= premio.inscricao.nome_animal %></td>
+								<td><%= premio.posto %></td>
+                                <td><%= premio.nome_catalogo %></td>
+                                <td><%= premio.expositor %></td>
+                                <td><%= premio.criador %></td>
+                                <td><%= premio.pontuacao %></td>
+								<td class="project-actions">
+									<%= link_to edit_premio_path(premio), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, premio %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<% content_for :javascript do %>
+	<script type="text/javascript">
+		$(".delete").click(function(){
+			id = $(this).data('id');
+			 swal({
+				title: "Você tem certeza?",
+				text: "Não será possível recuperar esses dados!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Sim, quero remover!",
+				closeOnConfirm: false
+			}, function(isConfirm) {
+				if(isConfirm){
+					$.ajax({
+						type: "POST",
+						url: "/premios/" + id,
+						dataType: "json",
+						data: {"_method": "delete"},
+						success: function(){
+							$("#premio-item-" + id).remove();
+							swal("Excluido!", "Os dados foram eliminados.", "success");
+						},
+						error: function(){
+							swal("Erro!", "Os dados não foram excluidos.", "error");
+						}
+					});
+				}
+			});
+			event.preventDefault();
+		});
+	</script>
+<% end %>

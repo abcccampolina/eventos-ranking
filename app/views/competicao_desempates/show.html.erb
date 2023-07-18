@@ -1,0 +1,33 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Competicaos evento</strong><br>
+							<%= @competicao_desempate.competicaos_evento.name rescue nil %>
+						</address>
+						<address>
+						<strong>Inscricao</strong><br>
+							<%= @competicao_desempate.inscricao.name rescue nil %>
+						</address>
+						<address>
+						<strong>Competicao juri</strong><br>
+							<%= @competicao_desempate.competicao_juri.name rescue nil %>
+						</address>
+						<address>
+						<strong>Nota</strong><br>
+							<%= @competicao_desempate.nota %>
+						</address>
+						<address>
+						<strong>Criterios competicao</strong><br>
+							<%= @competicao_desempate.criterios_competicao.name rescue nil %>
+						</address>
+							
+		<%= link_to 'Editar', edit_competicao_desempate_path(@competicao_desempate), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', competicao_desempates_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>
