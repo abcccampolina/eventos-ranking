@@ -1,0 +1,143 @@
+<div class="card" data-controller="competicao_desempates" data-competicao_desempates-action-form="edit">
+
+	<div class="card" data-controller="competicao_desempates" data-competicao_desempates-action-form="new">
+		<div class="card-header">
+			<h4 class="card-title">Book de Desempate</h4>
+	</div>
+
+	<div class="card card-nav-tabs card-plain">
+		<div class="card-header card-header-danger">
+			<div class="nav-tabs-navigation">
+				<div class="nav">
+					<ul class="nav nav-tabs" data-tabs="tabs">
+					<% @competicaojuris.each do |juri| %>
+						<li class="nav-item">
+							<a class="nav-link btn btn-default" href="#juriuser<%=juri.user.id%>" data-toggle="tab"> <%= juri.user.name %></a>
+						</li>
+					<% end %>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="card-body ">
+			<div class="tab-content text-center">
+				<% @competicaojuris.each do |juri| %>
+					<div class="tab-pane" id="juriuser<%=juri.user.id%>">
+						<%= form_for(instance_variable_get("@competicao_desempate#{juri.user.id}"), html: {class: ""}) do |f| %>
+						<%= f.hidden_field(:evento_id, value: params[:evento_id]) %>
+							<%= f.hidden_field(:inscricao_id, value: params[:inscricao]) %>
+							<%= f.hidden_field(:competicao_id, value: params[:competicao_id]) %>
+							<%= f.hidden_field(:juri_id, value: juri.user.id) %>
+									
+							<% @clusters&.each do |cluster| %>
+								<div class="card-body">
+									<table class="table">
+										<thead>
+											<tr>
+											<th style="width: 250px"><%= cluster.nome %></th>
+											</tr>
+										</thead>
+										<tbody>
+											<% @criterios_competicao.where(criterios_avaliacao_id: @criterios.where(cluster_criterios_avaliacao_id: cluster.id)).each do |criterio| %>
+												<tr id="criterio-item-<%= criterio.criterios_avaliacao_id %>">
+													<td><%= criterio.criterios_desempate.nome rescue "Atributo Indefinido" %></td>
+													<td>
+													<fieldset class="col-sm-2 col-sm-offset-2">
+													<% nota = CompeticaoDesempate.where("competicao_juri_id = #{juri.id} and criterios_competicao_id = #{criterio.id} and inscricao_id = #{params[:inscricao]}").first %>
+														<%if nota.present? %>
+															<%= text_field(:nota, criterio.criterios_avaliacao_id, :class=>"form-control", value: nota.nota)%>
+														<%else%>
+															<%= text_field(:nota, criterio.criterios_avaliacao_id, :class=>"form-control")%>
+														<%end%>
+													
+													</fieldset>
+													</td>
+												</tr>
+											<% end %>
+
+											<%= f.hidden_field(:evento_id, value: params[:evento_id]) %>
+										<%= f.hidden_field(:inscricao_id, value: params[:inscricao]) %>
+										<%= f.hidden_field(:competicao_id, value: params[:competicao_id]) %>
+										<%= f.hidden_field(:juri_id, value: juri.user.id) %>
+										<%= f.hidden_field(:comp, value: params[:comp]) %>
+
+										</tbody>
+									</table>
+									<fieldset class="form-group">
+								<div class="col-sm-2 col-sm-offset-2">
+									<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+								</div>
+							</fieldset>
+								</div>
+							<% end %>
+						<% end %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	</div>
+
+	<div class="col-sm-4 col-sm-offset-2">
+		<%= link_to 'Voltar', :back, class: 'btn btn-bold btn-default' %>
+	</div>
+</div>
+
+<style>
+	body {font-family: Arial;}
+
+	/* Style the tab */
+	.tab {
+	overflow: hidden;
+	border: 1px solid #eee;
+	background-color: #f1f1f1;
+	}
+
+	/* Style the buttons inside the tab */
+	.tab button {
+	background-color: inherit;
+	float: left;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 14px 16px;
+	transition: 0.3s;
+	font-size: 17px;
+	}
+
+	/* Change background color of buttons on hover */
+	.tab button:hover {
+	background-color: #ddd;
+	}
+
+	/* Create an active/current tablink class */
+	.tab button.active {
+	background-color: #ccc;
+	}
+
+	/* Style the tab content */
+	.tabcontent {
+	display: none;
+	padding: 6px 12px;
+	border: 1px solid #ccc;
+	border-top: none;
+	}
+</style>
+
+
+
+<script>
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>

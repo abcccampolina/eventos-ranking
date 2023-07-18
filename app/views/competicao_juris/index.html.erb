@@ -1,0 +1,87 @@
+<div class="row" data-controller="competicao_juris">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_competicao_juri_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Competicao Juris</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Competicaos Evento</th>
+						<th>User</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @competicao_juris.each do |competicao_juri| %>
+							<tr id="competicao_juri-item-<%= competicao_juri.id %>">
+								<td><%= competicao_juri.competicaos_evento.name rescue "Atributo Indefinido" %></td>
+								<td><%= competicao_juri.user.name rescue "Atributo Indefinido" %></td>
+
+								<td class="project-actions">
+									<%= link_to edit_competicao_juri_path(competicao_juri), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, competicao_juri %>
+									<%= link_to "javascript:void(0);", 'data-competicao_juris-id': competicao_juri.id, "data-action": "competicao_juris#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, competicao_juri %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<% content_for :javascript do %>
+	<script type="text/javascript">
+		$(".delete").click(function(){
+			id = $(this).data('id');
+			 swal({
+				title: "Você tem certeza?",
+				text: "Não será possível recuperar esses dados!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Sim, quero remover!",
+				closeOnConfirm: false
+			}, function(isConfirm) {
+				if(isConfirm){
+					$.ajax({
+						type: "POST",
+						url: "/competicao_juris/" + id,
+						dataType: "json",
+						data: {"_method": "delete"},
+						success: function(){
+							$("#competicao_juri-item-" + id).remove();
+							swal("Excluido!", "Os dados foram eliminados.", "success");
+						},
+						error: function(){
+							swal("Erro!", "Os dados não foram excluidos.", "error");
+						}
+					});
+				}
+			});
+			event.preventDefault();
+		});
+	</script>
+<% end %>

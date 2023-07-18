@@ -1,0 +1,89 @@
+
+<title>	Mapa dos Campeões </title>
+<%= image_tag( root_url + "LOGO_1.png",  alt: "campolina-logo", style: "max-width: 8% !important" ) -%>
+<strong><h3 class="text-center"> <%= $evento.nome %> </strong></h3>
+<div>
+    <table class="text-center">
+
+        <thead>
+            <tr>
+                <th>Colete</th>
+                <th>Animal</th>
+                <th>Convencional/Nº Chip</th>
+                <th>Classificação</th>
+                <th>Expositor</th>
+                <th>Expositor Fazenda</th>
+            </tr>
+        </thead>
+
+        <tbody>
+    
+            <% @competicao_premios.each do |competicao_nome, premios| %>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td><h3><%= CompeticaosEvento.find(competicao_nome).competicao.nome.titlecase %></h3></td> 
+                    <td></td>
+                    <td></td> 
+                    <td></td> 
+                </tr>
+                
+                <% premios.sort_by(&:nome_catalogo).each do |premio| %>
+                    <% if premio.posto.include? "campeão" %>
+                        <tr>
+                            <td><b><%= premio.numero_colete %></b></td>
+                            <td><b><%= premio.inscricao.srg_nome_animal %></b></td>
+                            <td style="width: 300px;"><b><%= premio.inscricao.srg_registro_animal || "-INDEFINIDO-" %></b></td> 
+                            <td style="width: 300px;"><b><%= premio.posto %></b></td>
+                            <td><b><%= premio.inscricao.expositor.nome %></b></td>
+                            <td><b><%= premio.inscricao.expositor.fazenda %></b></td>
+                        </tr>
+                    <%else%>
+                         <tr>
+                            <td><%= premio.numero_colete %></td>
+                            <td><%= premio.inscricao.srg_nome_animal %></td>
+                            <td><%= premio.inscricao.srg_registro_animal || "-INDEFINIDO-" %></td> 
+                            <td><%= premio.posto %></td>
+                            <td><%= premio.inscricao.expositor.nome %></td>
+                            <td><%= premio.inscricao.expositor.fazenda %></td>
+                        </tr>
+                    <%end%>
+                <% end %>
+                <tr>
+                    <td colspan="6"><hr></td>
+                </tr>
+            <% end %>
+        </tbody>
+
+    </table>
+</div>
+    <div class="page-break"></div>     
+	
+<style>
+    table {
+        width: 100%;
+        border-spacing: 0px 8px;
+        border-collapse: separate;
+    }
+
+    table thead tr {
+        background-color: black;
+        color: white;
+        line-height: 35px;
+        font-size: 20px;
+    }
+
+    table tbody tr td {
+        vertical-align: baseline;
+        line-height: 1.4em;
+    }
+
+    table tbody tr td:first {
+        color: red;
+        font-size: 25px;
+    }
+
+    table tbody tr {
+        margin-top: 12px
+    }
+</style>

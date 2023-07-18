@@ -1,0 +1,44 @@
+<div class="card-body form-type-round">
+	<%% if @<%= singular_table_name %>.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%%= pluralize(@<%= singular_table_name %>.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<%% @<%= singular_table_name %>.errors.full_messages.each do |message| %>
+				<li><%%= message %></li>
+			<%% end %>
+			</ul>
+		</div>
+	<%% end %>
+	<%%= form_for(@<%= singular_table_name %>, html: {class: ""}) do |f| %>
+
+		<% attributes.each do |attribute| %>
+			<% if attribute.password_digest? %>
+					<%%= f.label :password %><br>
+					<%%= f.password_field :password %>
+
+					<%%= f.label :password_confirmation %><br>
+					<%%= f.password_field :password_confirmation %>
+			<%- elsif attribute.reference? -%>
+				<%%= f.label :<%= attribute.column_name %> %>
+				<fieldset class="form-group">
+					<%%= f.collection_select :<%= attribute.column_name %>, <%= attribute.name.camelize %>.all, :id, :name, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+					<%%= "<p>#{@<%= singular_table_name %>.errors.messages[:<%= attribute.column_name %>].first}</p>".html_safe if @<%= singular_table_name %>.errors.messages[:<%= attribute.column_name %>].present? %>
+				</fieldset>
+			<% else %>
+				<%%= f.label :<%= attribute.column_name %> %><br>
+				<fieldset class="form-group">
+					<%%= f.<%= attribute.field_type %> :<%= attribute.column_name %>, class: 'form-control' %>
+					<%%= "<p>#{@<%= singular_table_name %>.errors.messages[:<%= attribute.column_name %>].first}</p>".html_safe if @<%= singular_table_name %>.errors.messages[:<%= attribute.column_name %>].present? %>
+				</fieldset>
+			<% end %>
+		<% end %>
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%%= link_to 'Voltar', <%= index_helper %>_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<%% end %>
+</div>

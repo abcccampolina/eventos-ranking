@@ -1,0 +1,65 @@
+
+<title>	Campolina Completo </title>
+<%= image_tag( root_url + "LOGO_1.png",  alt: "campolina-logo", style: "max-width: 8% !important" ) -%>
+<strong><h3 class="text-center"> <%= $evento.nome %> </strong></h3>
+<strong><h3 class="text-center"> Campolina Completo </strong></h3>
+<div>
+    <table class="text-center">
+
+        <thead>
+            <tr>
+                <th>Animal</th>
+                <th>Classificação</th>
+                <th>Expositor</th>
+                <th>Criador</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td><%=@campeao_campolina_completo.nome_animal%></td>
+                <td>Campeão Campolina Completo</td>
+                <td><%=@campeao_campolina_completo.expositor.nome%></td> 
+                <td><%=@campeao_campolina_completo.criador.nome%></td>
+            </tr>
+
+             <tr>
+                <td><%=@reservado_campolina_completo.nome_animal%></td>
+                <td>Reservado Campolina Completo</td>
+                <td><%=@reservado_campolina_completo.expositor.nome%></td> 
+                <td><%=@reservado_campolina_completo.criador.nome%></td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>
+    <div class="page-break"></div>     
+	
+<style>
+    table {
+        width: 100%;
+        border-spacing: 0px 8px;
+        border-collapse: separate;
+    }
+
+    table thead tr {
+        background-color: black;
+        color: white;
+        line-height: 35px;
+        font-size: 20px;
+    }
+
+    table tbody tr td {
+        vertical-align: baseline;
+        line-height: 1.4em;
+    }
+
+    table tbody tr td:first {
+        color: red;
+        font-size: 25px;
+    }
+
+    table tbody tr {
+        margin-top: 12px
+    }
+</style>

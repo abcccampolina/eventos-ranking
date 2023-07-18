@@ -1,0 +1,61 @@
+<div class="card-body">
+			<div class="row">
+				<div class="col-12 border-tab">
+					<div class="nav-tabs-navigation">
+						<div class="nav-tabs-wrapper">
+							<ul class="nav nav-tabs nav-stacked" role="tablist">
+								<% competicaojuris.sort_by{|c| c.store_cluster_criterio_avaliacao_id}&.each_with_index do |juri, index| %>
+									<% if can? :lancar_notas, juri.user %>
+										<li class="nav-item nav-item-c
+											<%= " active" if juri.user.id == current_user.id && current_user.tipo_usuario == "Admin"%>" 
+											data-action="click->competicao-avalicaos#navChange">
+											<a class="nav-link" id="<%= juri.user.name %>
+												<%= " active show" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>"
+													href="#juri-set-<%= juri.id %>" role="tab" data-toggle="tab" aria-selected="false">
+												<%= juri.user.name %>
+											</a>
+											<% clusters&.each do |cluster| %>
+												<% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogo.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster.id}]'" ).present? %>
+													<small><strong class="text-danger"> <%= cluster&.nome %> <br/></strong></small>
+												<% end %>
+											<% end %>
+										</li>
+									<% end %>
+								<% end %>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-12">
+					<div class="tab-content tab-content-c">
+						<div class="table-responsive-y">
+							<table class="table" id="myTable">
+								<thead>
+									<tr  class="header">
+										<th style="width: 120px;">Jurado</th>
+										<th style="width: 110px;">Colete</th>
+										<th>Notas</th>
+									</tr>
+								</thead>
+								<% competicaojuris&.each_with_index do |juri, index| %>
+									<%= render('competicao_avalicaos/config_notas',
+										index: index,
+										juri: juri,
+										competicao_avalicaos: competicao_avalicaos,
+										clusters: clusters) if can? :lancar_notas, juri.user
+									%>
+								<% end %>
+							</table>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<%= content_tag :button, "Salvar", 
+									class: "btn btn-success float-right", 
+									data: {action: "click->competicao-avalicaos#bookSubmitForm"} 
+								%>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>

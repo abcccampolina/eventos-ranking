@@ -1,0 +1,277 @@
+<div class="card" data-controller="inscricaos-competicaos" data-inscricaos_competicaos-action-form="new">
+	<div class="card-header">
+		<h4 class="card-title">Nova Inscrição na categoria <%= params[:modalidade] %> </h4>
+	</div>
+    <div class="card-body form-type-round">
+        <% if @inscricaos_competicao&.errors&.any? %>
+            <div class="alert alert-warning alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <h2><%= pluralize(@inscricaos_competicao.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+                <ul style="margin-left: 20px;">
+                <% @inscricaos_competicao&.errors&.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                <% end %>
+                </ul>
+            </div>
+        <% end %>
+
+        <% if !@animal.present? && params[:modalidade] == "Competição Progênie" %>
+				<div class="card-body">
+					<%= form_for :filter, url: buscar_progenie_srg_path, method: :get, html: { class: "" } do |f| %>
+
+                    <div class="row">
+
+                        <div class="col-lg-5">
+                            <%= label_tag :nome_animal, "Nome do Animal Matriz / Garanhão" %>
+                            <%= f.hidden_field(:competicaos_evento_id, value: params[:competicaos_evento_id]) %>
+                            <fieldset class="form-group">
+                                <%= select_tag :nome_animal, options_for_select([]), class: 'form-control show-tick js-example-data-ajax', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+                            </fieldset>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <%= f.submit "Buscar dados do animal", class: "btn btn-primary", style: "float: left" %>
+                        </div>
+                    </div>
+					<% end %>
+				</div>
+
+                <div class="row" data-controller="inscricaos-competicaos">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Inscritos na Competição</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                        <th>Número Inscrição</th>
+                                        <th>Animal</th>
+                                        <th>Expositor</th>
+                                        <th>Criador</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% InscricaosCompeticao.where(competicaos_evento_id: params[:competicaos_evento_id]).each do |inscricaos_competicao| %>
+                                            <tr id="inscricaos_competicao-item-<%= inscricaos_competicao.id %>">
+                                                <td><%= inscricaos_competicao.inscricao.id rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.nome_animal rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.expositor.nome rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.criador.nome rescue "" %></td>
+                                            </tr>
+                                        <% end %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+		<% end %>
+
+
+        <% if (!@animal_pai.present? || !@animal_mae.present?) && params[:modalidade] == "Competição Acasalamento" %>
+				<div class="card-body">
+					<%= form_for :filter, url: buscar_casalamento_srg_path, method: :get, html: { class: "" } do |f| %>
+					<%= f.hidden_field(:competicaos_evento_id, value: params[:competicaos_evento_id]) %>
+
+						<div class="row">
+							<fieldset class="col-lg-4" >
+								<%= label_tag :nome_animal_pai, "Nome do Animal Garanhão" %><br>
+								<div class="form-group">
+                                    <fieldset class="form-group">
+                                        <%= select_tag :nome_animal_pai, options_for_select([]), class: 'form-control show-tick js-example-data-ajax', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+                                    </fieldset>
+								</div>
+							</fieldset>
+						</div>
+
+                        <div class="row">
+							<fieldset class="col-lg-4" >
+								<%= label_tag :nome_animal_mae, "Nome do Animal Matriz" %><br>
+								<div class="form-group">
+                                    <fieldset class="form-group">
+                                        <%= select_tag :nome_animal_mae, options_for_select([]), class: 'form-control show-tick js-example-data-ajax', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+                                    </fieldset>
+								</div>
+							</fieldset>
+						</div>
+
+						<div class="row">
+								<div class="col-md-4">
+									<%= f.submit "Buscar dados do animal", class: "btn btn-primary", style: "float: left" %>
+								</div>
+						</div>
+					<% end %>
+				</div>
+
+
+                <div class="row" data-controller="inscricaos-competicaos">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Inscritos na Competição</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                        <th>Número Inscrição</th>
+                                        <th>Animal</th>
+                                        <th>Expositor</th>
+                                        <th>Criador</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% InscricaosCompeticao.where(competicaos_evento_id: params[:competicaos_evento_id]).each do |inscricaos_competicao| %>
+                                            <tr id="inscricaos_competicao-item-<%= inscricaos_competicao.id %>">
+                                                <td><%= inscricaos_competicao.inscricao.id rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.nome_animal rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.expositor.nome rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.criador.nome rescue "" %></td>
+                                            </tr>
+                                        <% end %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+		<% end %>
+
+    <% if (@animal.present? || (params[:modalidade] != "Competição Progênie" && params[:modalidade] != "Competição Acasalamento") || (@animal_pai.present? && @animal_mae.present?)) %>
+        <%= form_for(@inscricaos_competicao, html: { class: "" }) do |f| %>
+                <% if @animal.present? %>
+                    <%= @animal.nome_completo %>
+                <% end %>
+
+                <% if @animal_pai.present? %>
+                    <%= @animal_pai.nome_completo %>
+                    x
+                <% end %>
+
+                <% if @animal_mae.present? %>
+                    <%= @animal_mae.nome_completo %>
+                <% end %>
+                <br>
+                <br>
+
+            <%= f.label :responsavel_expositor, "Responsável Expositor" %><br>
+            <fieldset class="form-group">
+                <%= f.text_field :responsavel_expositor, class: "form-control col-md-4" %>
+                <%= "<p>#{@inscricaos_competicao.errors.messages[:responsavel_expositor].first}</p>".html_safe if @inscricaos_competicao.errors.messages[:responsavel_expositor].present? %>
+            </fieldset>
+
+            <%= f.label "Animal 1:" %> <br>
+            <select name="inscricao_id_1" id="inscricao_id_1" class= 'form-control show-tick col-md-4' data-provide= "selectpicker" include_blank="" data-live-search= "true">
+                  <option value= "" >  </option>
+              <% @inscricaos.all.each do |inscrito| %>
+                  <option value= <%= inscrito.id %> > <%= inscrito.nome_animal %></option>
+              <% end %>
+            </select>
+
+            <% if @animal.present? || (@animal_pai.present? && @animal_mae.present?) %>
+                
+                <%= f.label "Animal 2:" %> <br>
+                <select name="inscricao_id_2" id="inscricao_id_2" class= 'form-control show-tick col-md-4' data-provide= "selectpicker" include_blank="" data-live-search= "true">
+                    <option value= "" >  </option>
+                <% @inscricaos.all.each do |inscrito| %>
+                    <option value= <%= inscrito.id %> > <%= inscrito.nome_animal %></option>
+                <% end %>
+                </select>
+
+
+                <%= f.label "Animal 3:" %> <br>
+                <select name="inscricao_id_3" id="inscricao_id_3" class= 'form-control show-tick col-md-4' data-provide= "selectpicker" include_blank="" data-live-search= "true">
+                    <option value= "" >  </option>
+                <% @inscricaos.all.each do |inscrito| %>
+                    <option value= <%= inscrito.id %> > <%= inscrito.nome_animal %></option>
+                <% end %>
+                </select>
+
+
+                <%= f.label "Animal 4:" %> <br>
+                <select name="inscricao_id_4" id="inscricao_id_4" class= 'form-control show-tick col-md-4' data-provide= "selectpicker" include_blank="" data-live-search= "true">
+                    <option value= "" >  </option>
+                <% @inscricaos.all.each do |inscrito| %>
+                    <option value= <%= inscrito.id %> > <%= inscrito.nome_animal %></option>
+                <% end %>
+                </select>
+
+
+                <%= f.label "Animal 5:" %> <br>
+                <select name="inscricao_id_5" id="inscricao_id_5" class= 'form-control show-tick col-md-4' data-provide= "selectpicker" include_blank="" data-live-search= "true">
+                    <option value= "" >  </option>
+                <% @inscricaos.all.each do |inscrito| %>
+                    <option value= <%= inscrito.id %> > <%= inscrito.nome_animal %></option>
+                <% end %>
+                </select>
+            <% end %>
+
+            <%= f.hidden_field(:evento_id, value: $evento.id) %>
+            <% if @competicaos_evento_id.present? %>
+                <%= f.hidden_field(:competicaos_evento_id, value: @competicaos_evento_id) %>
+            <% else %>
+                <%= f.hidden_field(:competicaos_evento_id, value: params[:competicaos_evento_id]) %>
+            <% end %>
+
+            <%= f.hidden_field(:cadastro_admin, value: true) %>
+            <%= f.hidden_field(:progenie, value: @animal&.id) rescue nil %>
+            <%= f.hidden_field(:acasalamento_pai, value: @animal_pai&.id) rescue nil %>
+            <%= f.hidden_field(:acasalamento_mae, value: @animal_mae&.id) rescue nil %>
+        
+            <fieldset class="form-group">
+                <div class="col-sm-4 col-sm-offset-2">
+                    <%= f.submit "Salvar", class: "btn btn-bold btn-success" %>
+                </div>
+            </fieldset>
+        <% end %>
+
+
+        <div class="row" data-controller="inscricaos-competicaos">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Inscritos na Competição</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                        <th>Número Inscrição</th>
+                                        <th>Animal</th>
+                                        <th>Expositor</th>
+                                        <th>Criador</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% InscricaosCompeticao.where(competicaos_evento_id: params[:competicaos_evento_id]).each do |inscricaos_competicao| %>
+                                            <tr id="inscricaos_competicao-item-<%= inscricaos_competicao.id %>">
+                                                <td><%= inscricaos_competicao.inscricao.id rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.nome_animal rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.expositor.nome rescue "" %></td>
+                                                <td><%= inscricaos_competicao.inscricao.criador.nome rescue "" %></td>
+                                            </tr>
+                                        <% end %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+    <% end %>
+
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="card" data-controller="inscricaos" data-inscricaos-action-form="edit">
+	<div class="card-header">
+		<h4 class="card-title">Inscrição <%= @inscricao.srg_nome_animal %> </h4>
+	</div>
+    <div class="card-body form-type-round">
+		<% if @inscricao&.errors&.any? %>
+            <div class="alert alert-warning alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <h2><%= pluralize(@inscricao&.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+                <ul style="margin-left: 20px;">
+                    <% @inscricao&.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                    <% end %>
+                </ul>
+            </div>
+        <% end %>
+
+        <%= form_for(@inscricao, html: {class: ""}) do |f| %>
+			<div class="row">
+
+				<div class="col-lg-4 mb-2">
+					<h6>Criador</h6> <%= @inscricao.criador.nome %>
+				</div>
+
+				<div class="col-lg-4 mb-2">
+					<h6>Expositor</h6> <%= @inscricao.expositor.nome %>
+				</div>
+
+				<div class="col-lg-2 mb-2">
+					<h6>Marcha</h6> <%= @inscricao.marcha %>
+				</div>
+
+				<div class="col-lg-2 mb-2">
+					<h6>Só Marcha?</h6> 
+					<%= f.check_box :so_marcha %>
+					<%= f.label :so_marcha do %>
+						<strong><%= @inscricao.so_marcha ? 'Sim' : 'Não' %></strong>
+					<% end %>
+				</div>
+
+				<div class="col-12 mt-4">
+	                <%= f.submit "Salvar", class: 'float-right btn btn-bold btn-success' %>
+				</div>
+			</div>
+        <% end %>
+	</div>
+</div>

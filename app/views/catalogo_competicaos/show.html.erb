@@ -1,0 +1,20 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Qtd inscritos</strong><br>
+							<%= @catalogo_competicao.qtd_inscritos %>
+						</address>
+						<address>
+						<strong>Qtd catalogos</strong><br>
+							<%= @catalogo_competicao.qtd_catalogos %>
+						</address>
+		<%= link_to 'Editar', edit_catalogo_competicao_path(@catalogo_competicao), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', catalogo_competicaos_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,5 @@
+<%if $cpf_pessoa&.present? || current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador') || @animal.present? %>
+    <%= render 'form' %>
+<%else%>
+    <%= render 'form_cpf' %>
+<%end%>

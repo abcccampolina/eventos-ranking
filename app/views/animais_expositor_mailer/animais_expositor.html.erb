@@ -1,0 +1,72 @@
+<td align="left"
+style="padding:0;Margin:0;padding-bottom:20px;padding-left:20px;padding-right:20px">
+    <table width="100%" cellspacing="0" cellpadding="0"
+        style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+        <tr style="border-collapse:collapse">
+            <td valign="top" align="center" style="padding:0;Margin:0;width:600px">
+                <table
+                    style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:separate;border-spacing:0px;background-color:#FFFFFF;border-radius:3px"
+                    width="100%" cellspacing="0" cellpadding="0" bgcolor="#ffffff" role="presentation">
+                    <tr style="border-collapse:collapse">
+                        <td align="justify" bgcolor="transparent"
+                        style="Margin:0;padding-bottom:10px;padding-top:40px;padding-left:40px;padding-right:40px">
+                            <p
+                                style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'open sans', 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#000000;font-size:16px">
+                                <font style="vertical-align:inherit">
+                                    <font style="vertical-align:justify"> Prezado(a), <strong><%= @inscricao.first.expositor.nome %></strong>.</font>
+                                </font>
+                            </p>
+                            <br>
+                            <p
+                                style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:'open sans', 'helvetica neue', helvetica, arial, sans-serif;line-height:24px;color:#000000;font-size:16px">
+                                <font style="vertical-align:inherit">
+                                    <font style="vertical-align:inherit">
+                                        Sua inscrição no evento <strong><%= @inscricao.first.evento.nome %></strong> foi realizada. Em breve, você receberá em seu e-mail o boleto para pagamento da sua inscrição.
+                                    <br> OBS: Sua inscrição será confirmada após a identificação do pagamento do boleto.
+                                    </font>
+                                    <font style="vertical-align:inherit">
+                                        <br><br>
+                                    </font>
+                                    <font style="vertical-align:inherit">
+                                        <br><br>
+                                        Abaixo segue o animal inscrito:
+                                        <br><br>
+                                    </font>
+                                </font>
+                                <table class="table">
+                                    <thead>
+                                        <tr align="center" style="background-color:black; color:white;">
+                                            <th>Registro</th>
+                                            <th>Animal</th>
+                                            <th>Sexo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% @inscricao.each do |inscricao| %>
+                                            <tr align="center">
+                                                <td style="width:120px">
+                                                    <%= inscricao.srg_registro_animal || "-" %>
+                                                </td>
+                                                <td style="width: 250px">
+                                                    <%= inscricao.srg_animal&.nome_completo || "-"  %>
+                                                </td>
+                                                <td style="width:120px">
+                                                    <%= inscricao.srg_animal&.sexo&.titlecase || "-" %>
+                                                </td>
+                                            </tr>
+                                        <% end %>    
+                                    </tbody>
+                                </table>
+                                <br>
+                            </p>
+                            <p align="center">
+                                <%= content_tag :img, nil, src: "data:image/png;base64, #{@img_qrcode.to_base64}", alt: "QR Code" %>
+                            </p>
+                            <br><br>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</td>

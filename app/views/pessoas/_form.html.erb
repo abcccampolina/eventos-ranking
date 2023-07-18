@@ -1,0 +1,104 @@
+<div class="card-body form-type-round">
+	<% if @pessoa.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@pessoa.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @pessoa.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@pessoa, html: {class: ""}) do |f| %>
+
+		
+			
+				<%= f.label :nome %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :nome, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:nome].first}</p>".html_safe if @pessoa.errors.messages[:nome].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :email %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :email, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:email].first}</p>".html_safe if @pessoa.errors.messages[:email].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :status %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :status, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:status].first}</p>".html_safe if @pessoa.errors.messages[:status].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :cpf %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :cpf, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:cpf].first}</p>".html_safe if @pessoa.errors.messages[:cpf].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :cep %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :cep, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:cep].first}</p>".html_safe if @pessoa.errors.messages[:cep].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :endereco %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :endereco, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:endereco].first}</p>".html_safe if @pessoa.errors.messages[:endereco].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :numero %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :numero, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:numero].first}</p>".html_safe if @pessoa.errors.messages[:numero].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :bairro %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :bairro, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:bairro].first}</p>".html_safe if @pessoa.errors.messages[:bairro].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :cidade %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :cidade, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:cidade].first}</p>".html_safe if @pessoa.errors.messages[:cidade].present? %>
+				</fieldset>
+			
+		
+			
+				<%= f.label :uf %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :uf, class: 'form-control' %>
+					<%= "<p>#{@pessoa.errors.messages[:uf].first}</p>".html_safe if @pessoa.errors.messages[:uf].present? %>
+				</fieldset>
+			
+		
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', pessoas_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

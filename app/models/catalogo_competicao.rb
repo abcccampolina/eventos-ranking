@@ -1,0 +1,2 @@
+class CatalogoCompeticao < ApplicationRecord
+end

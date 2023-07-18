@@ -1,0 +1,33 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Nome</strong><br>
+							<%= @parametro_inscricao.nome %>
+						</address>
+						<address>
+						<strong>Competição</strong><br>
+							<%= @parametro_inscricao.competicao.name rescue nil %>
+						</address>
+						<address>
+						<strong>Coluna parâmetro</strong><br>
+							<%= @parametro_inscricao.coluna_parametro %>
+						</address>
+						<address>
+						<strong>Operador parâmetro</strong><br>
+							<%= @parametro_inscricao.operador_parametro %>
+						</address>
+						<address>
+						<strong>Valor parâmetro</strong><br>
+							<%= @parametro_inscricao.valor_parametro %>
+						</address>
+							
+		<%= link_to 'Editar', edit_parametro_inscricao_path(@parametro_inscricao), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', parametro_inscricaos_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

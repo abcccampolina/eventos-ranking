@@ -1,0 +1,33 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Competicao juri</strong><br>
+							<%= @competicao_avalicao.competicao_juri.name rescue nil %>
+						</address>
+						<address>
+						<strong>Criterios competicao</strong><br>
+							<%= @competicao_avalicao.criterios_competicao.name rescue nil %>
+						</address>
+						<address>
+						<strong>Inscricao</strong><br>
+							<%= @competicao_avalicao.inscricao.name rescue nil %>
+						</address>
+						<address>
+						<strong>Nota</strong><br>
+							<%= @competicao_avalicao&.nota %>
+						</address>
+						<address>
+						<strong>Data</strong><br>
+							<%= @competicao_avalicao&.data %>
+						</address>
+							
+		<%= link_to 'Editar', edit_competicao_avalicao_path(@competicao_avalicao), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', competicao_avalicaos_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

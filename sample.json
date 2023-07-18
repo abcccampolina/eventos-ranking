@@ -1,0 +1,3 @@
+{ "empresa_mae": "Eleva", "agencia": "0001", "conta_corrente": "0001", "documento_cedente": "12345678909", "byte_idt": "1", "posto": "BR", "convenio": "1", "digit
+o_conta": "1", "pagamentos": [{ "valor": 45.0, "data_vencimento": "2021-06-10", "nosso_numero": "592435462680112", "documento_sacado": "13393971611", "nome_sacado": "Warley Oliveira", "endereco_sacado": "Avenida Professor Mário Werneck",
+"bairro_sacado": "Buritis", "cep_sacado": "30575180", "cidade_sacado": "Belo Horizonte", "uf_sacado": "MG" }] }

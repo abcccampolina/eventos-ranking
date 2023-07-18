@@ -1,0 +1,75 @@
+<%# title 'Login', reverse: true %>
+<% set_meta_tags title: 'Login', reverse: true %>
+
+<div class="full-page section-image" filter-color="blue">
+  <!--   you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " -->
+  <div class="content">
+
+    <% flash.each do |key, value| %>
+      <div class="alert alert-danger alert-with-icon notify-error-login" data-notify="container flash <%= key %>">
+        <button type="button" aria-hidden="true" class="close" data-dismiss="alert">
+          <i class="nc-icon nc-simple-remove"></i>
+        </button>
+        <span data-notify="icon" class="nc-icon nc-key-25"></span>
+        <%= value %>
+      </div>
+    <% end %>
+
+    <div class="container">
+      <div class="col-lg-4 col-md-6 ml-auto mr-auto">
+        <%= form_for(resource, as: resource_name, url: session_path(resource_name), class: "form") do |f| %>
+          <div class="card card-login">
+            <div class="card-header mt-2">
+              <div class="img-align-center">
+                <img src="/LOGO_2.png" class="login-logo">
+              </div>
+            </div>
+            <div class="card-body mt-3">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="nc-icon nc-single-02"></i>
+                  </span>
+                </div>
+                <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "Email" %>
+              </div>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="nc-icon nc-key-25"></i>
+                  </span>
+                </div>
+                <%= f.password_field :password, autocomplete: "current-password", class: "form-control", placeholder: "Senha" %>
+              </div>
+              <br>
+              <div class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <!-- <input class="form-check-input" type="checkbox" value="" checked=""> -->
+                    <%= f.check_box :remember_me, class: "form-check-input" %>
+                    <span class="form-check-sign"></span>
+                    Permanecer logado
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer ">
+              <%= f.submit "Entrar", class: "btn btn-warning btn-round btn-block mb-3" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <footer class="footer footer-black  footer-white ">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="credits ml-auto">
+          <span class="copyright">
+            © 2020 Elevatech
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+ <div class="full-page-background" style="background-image: url(/login.jpg);"></div></div>

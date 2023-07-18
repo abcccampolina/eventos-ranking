@@ -1,0 +1,4 @@
+<% competicao_avalicaos&.select {|ca| ca.competicao_juri_id == juri.id  }&.sort {|i| i.catalogo&.numero_colete }&.each do |competicao_avaliacao| %>
+    <%= render 'competicao_avalicaos/notas', competicao_avaliacao: competicao_avaliacao, clusters: clusters, juri: juri, reject_nota: true %>
+    <%= render 'competicao_avalicaos/notas', competicao_avaliacao: competicao_avaliacao, clusters: clusters, juri: juri, reject_nota: false %>
+<% end %>

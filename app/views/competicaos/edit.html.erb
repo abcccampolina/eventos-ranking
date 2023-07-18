@@ -1,0 +1,119 @@
+<div class="card" data-controller="competicaos" data-competicaos-action-form="edit">
+	<div class="card-header">
+		<h4 class="card-title">Competição</h4>
+	</div>
+	<%= render 'form' %>
+</div>
+
+
+
+<div class="row" data-controller="parametro_inscricaos">
+
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Parâmetros de Inscrição na Competição</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Nome</th>
+						<th>Coluna Parametro</th>
+						<th>Operador Parametro</th>
+						<th>Valor Parametro</th>
+						<th>Tipo</th>
+						<th>Categoria</th>
+						<th>Posição</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @parametro_inscricaos.each do |parametro_inscricao| %>
+							<tr id="parametro_inscricao-item-<%= parametro_inscricao.id %>">
+								<td><%= parametro_inscricao.nome %></td>
+								<td><%= parametro_inscricao.coluna_parametro %></td>
+								<td><%= parametro_inscricao.operador_parametro %></td>
+								<td><%= parametro_inscricao.valor_parametro %></td>
+								<td><%= parametro_inscricao.tipo_marcha_select %></td>
+								<td><%= parametro_inscricao.comp_or_table %></td>
+								<td><%= parametro_inscricao.comp_posicao_inicio %> - <%= parametro_inscricao.comp_posicao_fim %></td>
+								
+
+								<td class="project-actions">
+									<%= link_to edit_parametro_inscricao_path(parametro_inscricao), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, parametro_inscricao %>
+									<%= link_to "javascript:void(0);", 'data-parametro_inscricaos-id': parametro_inscricao.id, "data-action": "parametro_inscricaos#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, parametro_inscricao %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+			<div class="col-lg-12">
+				<div class="float-right">
+					<%= link_to "Novo", new_parametro_inscricao_path(competicao_id: params[:id]), class: "btn btn-bold btn-success" %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="row" data-controller="criterios_competicaos">
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Critérios de Avaliação da Competição</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Critérios de Avaliação</th>
+						<th>Peso</th>
+						<th>Método</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @criterios_competicaos.each do |criterios_competicao| %>
+							<tr id="criterios_competicao-item-<%= criterios_competicao.id %>">
+								<td><%= criterios_competicao.criterios_avaliacao.nome rescue "Atributo Indefinido" %></td>
+								<td><%= criterios_competicao.peso rescue "" %></td>
+								<td><%= criterios_competicao.metodo rescue "" %></td>
+								<td class="project-actions">
+									<%= link_to edit_criterios_competicao_path(criterios_competicao), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, criterios_competicao %>
+									<%= link_to "javascript:void(0);", 'data-criterios_competicaos-id': criterios_competicao.id, "data-action": "criterios_competicaos#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, criterios_competicao %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="col-lg-12">
+				<div class="float-right">
+					<%= link_to "Novo", new_criterios_competicao_path(competicao_id: params[:id]), class: "btn btn-bold btn-success" %>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+

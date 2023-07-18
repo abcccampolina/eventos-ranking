@@ -1,0 +1,124 @@
+<div class="text-right"> 
+  <small><%= $evento.nome%>  </small>
+</div>
+<img src="/LOGO_1.png" alt="logo-campolina" style="max-width: 6% !important">
+
+<h3 class="text-center"> <%= @pdf_campeao.first.catalogo.nome_catalogo %> </h3>
+
+<h4> Campeões </h4>
+
+<% @pdf_campeao.order('classificacao_final').group_by{|i| [i.animal, i.posto_competicao]}.each do |nome_animal,notas_campeao| %>
+  <table>
+    <tr>
+      <td style="width: 700px;"># <%= notas_campeao&.first&.colete %> - <%= nome_animal.first %>  </td>
+      <% notas_campeao.each do |notas|%>
+        <td style="width: 250px;"><%= notas.criterios_competicao.criterios_avaliacao.nome %>: <%= notas&.classificacao %> </td>
+      <%end%>
+      <td style="width: 100px;">Total: <%= notas_campeao.map{|i| i.classificacao}.sum %></td>
+      <td style="width: 250px;">Classificação: <%= notas_campeao&.first&.classificacao_final %></td>
+      <td style="width: 200px;"> <%= notas_campeao&.first&.posto_final %></td>
+    </tr>
+  </table>
+<%end%>
+
+<br>
+<br>
+<h4> Reservados </h4>
+<% @pdf_reservado.order('classificacao_final').group_by{|i| [i.animal, i.posto_competicao]}.each do |nome_animal,notas_campeao| %>
+  <table>
+    <tr>
+      <td style="width: 700px;"># <%= notas_campeao&.first&.colete %> - <%= nome_animal.first %>  </td>
+      <% notas_campeao.each do |notas|%>
+        <td style="width: 250px;"><%= notas.criterios_competicao.criterios_avaliacao.nome %>: <%= notas&.classificacao %> </td>
+      <%end%>
+      <td style="width: 100px;">Total: <%= notas_campeao.map{|i| i.classificacao}.sum %></td>
+      <td style="width: 250px;">Classificação: <%= notas_campeao&.first&.classificacao_final %></td>
+      <td style="width: 200px;"> <%= notas_campeao&.first&.posto_final %></td>
+    </tr>
+  </table>
+<%end%>
+
+<br>
+<br>
+<h4>Campeão:</h4>
+<h4>
+  <% @camp = @pdf_campeao.find_by(posto_final: 'campeão') rescue nil%> # <%= @camp&.colete %> <%= @camp&.catalogo&.inscricao&.nome_animal %> - <%= @camp&.catalogo&.inscricao&.criador&.nome %> - Expositor: <%= @camp&.catalogo&.inscricao&.expositor&.nome %> - <%= @camp&.catalogo&.inscricao&.expositor&.fazenda %>
+<%        
+          aval_final_desempate = InscricaosCompeticao.find_by(inscricao_id: @camp&.catalogo&.inscricao_id, competicaos_evento_id: @camp&.competicaos_evento_id)
+          aval = CompeticaoAvalicao.where(inscricao_id: @camp&.catalogo&.inscricao_id)
+
+          if aval_final_desempate.present?
+            Premio.where("inscricaos_competicao_id = #{aval_final_desempate&.id} and posto like '%grande da raça%'").delete_all
+            qtde_competidores = Inscricao.where(evento_id: $evento.id, pelagem: aval_final_desempate&.inscricao.pelagem, marcha: aval_final_desempate&.inscricao.marcha).count
+            Premio.create(
+            posto: 'campeão grande da raça',
+            nome_catalogo: 'grande da raça' ,
+            numero_colete: aval.first.catalogo.numero_colete ,
+            inscricao_id: aval_final_desempate&.inscricao_id , 
+            inscricaos_competicao_id: aval_final_desempate&.id, 
+            competicaos_evento_id: aval_final_desempate&.competicaos_evento_id ,
+            inscricao_campeao_id: @camp&.catalogo&.inscricao_id,
+            expositor: aval_final_desempate&.inscricao&.expositor&.nome,
+            pontuacao_expositor: 40  ,
+            criador: aval_final_desempate&.inscricao&.criador&.nome, 
+            pontuacao_criador: 40 , 
+            pontuacao: 40 ,
+            animais_julgados: qtde_competidores,
+            nome_animal: aval_final_desempate&.inscricao&.nome_animal
+            )
+          end
+%>
+
+</h4>
+<br>
+<br>
+<h4>Reserva Campeão:</h4>
+<h4>
+  <% @reserva = @pdf_reservado.find_by(posto_final: 'reservado') %>  # <%= @reserva.colete %> <%= @reserva.catalogo&.inscricao&.nome_animal %> - <%= @reserva&.catalogo&.inscricao&.criador&.nome %> - Expositor: <%= @reserva&.catalogo&.inscricao&.expositor&.nome %> - <%= @reserva&.catalogo&.inscricao&.expositor&.fazenda %>
+<%         
+          aval_final_desempate = InscricaosCompeticao.find_by(inscricao_id: @reserva&.catalogo&.inscricao_id, competicaos_evento_id: @reserva.competicaos_evento_id)
+          aval = CompeticaoAvalicao.where(inscricao_id: @reserva&.catalogo&.inscricao_id)
+
+          Premio.where("inscricaos_competicao_id = #{aval_final_desempate&.id} and posto like '%grande da raça%'").delete_all
+          qtde_competidores = Inscricao.where(evento_id: $evento.id, pelagem: aval_final_desempate&.inscricao.pelagem, marcha: aval_final_desempate&.inscricao.marcha).count
+          Premio.create(
+          posto: 'reservado grande da raça',
+          nome_catalogo: 'grande da raça' ,
+          numero_colete: aval.first.catalogo.numero_colete ,
+          inscricao_id: aval_final_desempate&.inscricao_id , 
+          inscricaos_competicao_id: aval_final_desempate&.id, 
+          competicaos_evento_id: aval_final_desempate&.competicaos_evento_id ,
+          inscricao_campeao_id: @reserva&.catalogo&.inscricao_id,
+          expositor: aval_final_desempate&.inscricao.expositor.nome,
+          pontuacao_expositor: 30  ,
+          criador: aval_final_desempate&.inscricao.criador.nome, 
+          pontuacao_criador: 30 , 
+          pontuacao: 30 ,
+          animais_julgados: qtde_competidores,
+          nome_animal: aval_final_desempate&.inscricao&.nome_animal
+          )
+%>
+
+
+</h4>
+<div class="text-right"> 
+    <img src="/logo_eleva.jpg" alt="" width="100" height="40">
+    <br>
+    <small style="color: #c0c2bc">www.elevatech.com.br </small>
+</div>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>

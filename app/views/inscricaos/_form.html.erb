@@ -1,0 +1,251 @@
+<img src="/LOGO_1.png" alt="logo-campolina" style="max-width: 6% !important">
+<div class="card" data-controller="inscricaos">
+    <div class="card-header">
+        <h4 class="card-title">Inscrição <%= @animal.nome_completo if @animal.present? %> </h4>
+    </div>
+    <div class="card-body form-type-round">
+        <% if @inscricao&.errors&.any? %>
+            <div class="alert alert-warning alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <h2><%= pluralize(@inscricao&.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+                <ul style="margin-left: 20px;">
+                    <% @inscricao&.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                    <% end %>
+                </ul>
+            </div>
+        <% end %>
+
+        <%if !@animal.present? %>
+            <%= form_for :filter_horarios, url: buscar_numero_registro_srg_path, method: :get, html: { class: "" } do |f| %>
+                <div class="row">
+                    <div class="col-lg-5">
+                        <%= label_tag :nome_animal, "Digite o nome do animal" %>
+                        <fieldset class="form-group">
+                            <%= select_tag :nome_animal, options_for_select([]),
+                                class: 'form-control show-tick js-example-data-ajax', 
+                                'data-provide': "selectpicker", 'data-live-search': "true", required: true
+                            %>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <%= f.submit "Buscar dados do animal", class: "btn btn-primary", style: "float: left" %>
+                    </div>
+                </div>
+                
+                <% if !current_user&.tipo_usuario&.eql?('Administrador') || !current_user&.tipo_usuario&.eql?('Organizador')  %>
+                <div class="float-right mr-20">
+                    <%= link_to "Encerrar Seção", encerrar_secao_cpf_path(evento: $evento.id), class: "btn btn-bold btn-danger", data: {turbolinks: "false"} %>
+                </div>      
+                <%end%>
+
+                <li class="text-danger"><%= @message_erro %></li>
+
+            <% end %>
+        <% end %>
+
+        <%= render("animal_ja_inscrito") if params[:inscricao].present? %>
+
+        <% if @animal.present? %>
+
+        <%= form_for(@inscricao, html: {class: "", id: "MyForm"}) do |f| %>
+
+            <%= f.hidden_field(:srg_animal_id, value: @animal.id) %>
+            <%= f.hidden_field(:srg_nome_animal, value: @animal.nome) %>
+            <%= f.hidden_field(:srg_registro_animal, value: @animal.id) %>
+            <%= f.hidden_field(:nome_animal, value: @animal.nome_completo) %>
+            <%= f.hidden_field(:pai_animal_id, value: @animal.pai) %>
+            <%= f.hidden_field(:mae_animal_id, value: @animal.mae) %>
+
+
+            <%= f.label :evento_id %>
+            <fieldset class="form-group">
+                <%= f.collection_select :evento_id, Evento.all, :id, :nome, 
+                    {prompt: true, selected: $evento.id}, 
+                    class: 'form-control show-tick col-lg-6', 'data-provide': "selectpicker", 'data-live-search': "true", 
+                    id: 'evento_id', required: true, readonly: true %>
+                <%#= "<p>#{@inscricao.errors.messages[:evento_id].first}</p>".html_safe if @inscricao.errors.messages[:evento_id].present? %>
+            </fieldset>
+
+            <br>
+            <%= f.hidden_field(:pelagem, value: "nao pampa") %>
+            <%= f.label "Marcha", "Marcha" %>
+            <select name="inscricao[marcha]" id="marcha" class='form-control show-tick col-lg-6' data-provide="selectpicker" data-live-search="true">
+                <option value="picada"> Picada </option>
+                <option value="batida"> Batida </option>
+            </select>
+
+            <div class="row mb-20 mt-20">
+                <div class="col-lg-4">
+                    <%= f.check_box :so_marcha %>
+                    <%= f.label :so_marcha do %>
+                    <strong>Só Marcha?</strong>
+                    <% end %>
+                    <br>
+                </div>
+            </div>
+            <%= label :sexo, :sexo, "sexo" %><br>
+            <div class="form-group">
+                <%= text_field :sexo, :sexo,  class: 'col-lg-2 form-control', value: @animal&.sexo, required: false, readonly: true %>
+            </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4 class="card-title">Criador</h4>
+    </div>
+    <div class="card-body form-type-round">
+        <div class="row">
+
+            <%= hidden_field :criador, :numero %>
+            <fieldset class="col-lg-4">
+                <%= label :criador, :nome %><br>
+                <div class="form-group">
+                    <%= text_field :criador, :nome, id: "nome_criador", class: 'form-control', readonly: true, value: @srg_criador&.nome %>
+                    <%#= "<p>#{@criador.errors.messages[:nome].first}</p>".html_safe if @criador.errors.messages[:nome].present? %>
+                </div>
+            </fieldset>
+
+            <%if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador')%>
+            <fieldset class="col-lg-4">
+                <%= label :criador, :cpf, "CPF" %><br>
+                <div class="form-group">
+                    <%= text_field :criador, :cpf, id: "cpf_criador", class: 'form-control', readonly: true, value: @srg_criador&.cpf %>
+                    <%#= "<p>#{@criador.errors.messages[:cpf].first}</p>".html_safe if @criador.errors.messages[:cpf].present? %>
+                </div>
+            </fieldset>
+            <%end%>
+
+            <fieldset class="col-lg-4">
+                <%= label :criador, :email, "E-mail" %><br>
+                <div class="form-group">
+                    <%= text_field :criador, :email,  class: 'form-control', value: @srg_criador&.email, required: true %>
+                    <%#= "<p>#{@criador.errors.messages[:email].first}</p>".html_safe if @criador.errors.messages[:email].present? %>
+                </div>
+            </fieldset>
+
+            <fieldset class="col-lg-4">
+                <%= label :criador, :fazenda %><br>
+                <div class="form-group">
+                    <%= text_field :criador, :fazenda, id: "fazenda_criador", class: 'form-control', readonly: true, value: @animal&.fazenda_nascimento%>
+                    <%#= "<p>#{@criador.errors.messages[:email].first}</p>".html_safe if @criador.errors.messages[:email].present? %>
+                </div>
+            </fieldset>
+
+            <fieldset class="col-lg-4">
+                <%= label :criador, :cidade %><br>
+                <div class="form-group">
+                    <%= text_field :criador, :cidade,  id: "cidade_criador", class: 'form-control', readonly: true, value: @animal&.cidade_nascimento %>
+                    <%#= "<p>#{@criador.errors.messages[:cidade].first}</p>".html_safe if @criador.errors.messages[:cidade].present? %>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <!--<a href="#copiar" id="bt-copiar" class ="btn btn-bold btn-success" style="float:right" data-action="inscricaos#copiaValor" >Copiar</a>-->
+        <h4 class="card-title">Expositor</h4>
+    </div>
+    <div class="card-body form-type-round">
+        <div class="row">
+            <%= hidden_field :expositor, :numero %>
+
+            <fieldset class="col-lg-4">
+            <%if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador')%>
+                <%= label_tag :expositor_id, "Expositor" %>
+                <div class="form-group">
+                    <%= collection_select :expositor_id, :nome, 
+                        Pessoa.where(id: nil), :id, :nome, {prompt: true}, 
+                        class: 'form-control show-tick js-example-data-ajax', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+                    <%#= "<p>#{@expositor.errors.messages[:nome].first}</p>".html_safe if @expositor.errors.messages[:nome].present? %>
+                </div>
+            <%end%>
+            </fieldset>
+
+            <fieldset class="col-lg-8"></fieldset>
+
+            <fieldset class="col-lg-4">
+                <%= label :expositor, :nome %><br>
+                <div class="form-group">
+                    <%= text_field :expositor, :nome, class: 'form-control', required: true, value: @srg_proprietario&.nome %>
+                    <%#= "<p>#{@expositor.errors.messages[:nome].first}</p>".html_safe if @expositor.errors.messages[:nome].present? %>
+                </div>
+            </fieldset>
+
+            <fieldset class="col-lg-4">
+                <%= label :expositor, :cpf, "CPF" %><br>
+                <div class="form-group">
+                    <%= text_field :expositor, :cpf, class: 'form-control', value: @srg_proprietario&.cpf%>
+                    <%#= "<p>#{@expositor.errors.messages[:cpf].first}</p>".html_safe if @expositor.errors.messages[:cpf].present? %>
+                </div>
+            </fieldset>
+
+            <fieldset class="col-lg-4">
+                <%= label :expositor, :email, "E-mail" %><br>
+                <div class="form-group">
+                    <%= text_field :expositor, :email, class: 'form-control', required: true, value: @srg_proprietario&.email %>
+                    <%#= "<p>#{@expositor.errors.messages[:email].first}</p>".html_safe if @expositor.errors.messages[:email].present? %>
+                </div>
+            </fieldset>
+
+            <fieldset class="col-lg-4">
+                <%= label :expositor, :fazenda %><br>
+                <div class="form-group">
+                    <%= text_field :expositor, :fazenda, class: 'form-control', value: @srg_proprietario&.associado_nome_fazenda, required: true %>
+                    <%#= "<p>#{@expositor.errors.messages[:email].first}</p>".html_safe if @expositor.errors.messages[:email].present? %>
+                </div>
+            </fieldset>
+
+            <fieldset class="col-lg-4">
+                <%= label :expositor, :cidade %><br>
+                <div class="form-group">
+                    <%= text_field :expositor, :cidade, class: 'form-control', value: @srg_proprietario&.associado_cidade_fazenda, required: true %>
+                    <%#= "<p>#{@expositor.errors.messages[:cidade].first}</p>".html_safe if @expositor.errors.messages[:cidade].present? %>
+                </div>
+            </fieldset>
+
+            <fieldset class="col-lg-4">
+                <%= label :expositor, "Estado" %><br>
+                <div class="form-group">
+                    <%= text_field :expositor, :uf, class: 'form-control', required: true %>
+                    <%#= "<p>#{@expositor.errors.messages[:uf].first}</p>".html_safe if @expositor.errors.messages[:uf].present? %>
+                </div>
+            </fieldset>
+        </div>
+       
+        <fieldset>
+            <div>
+                <button class="btn btn-bold btn-success" onclick="javascript:envia_form()">Próximo</button>
+                <%#= f.submit "Avançar", class: 'btn btn-bold btn-success' %>
+            </div>
+        </fieldset>
+
+    </div>
+</div>
+
+
+<% end %>
+<% end %>
+<script type="text/javascript">
+    function envia_form() {
+
+        var evento = document.forms["MyForm"]["evento_id"].value;
+        // var num_criador = document.forms["myForm"]["numero_criador"].value;
+        var criador_email = document.forms["MyForm"]["criador_email"].value;
+        // var num_expositor = document.forms["myForm"]["numero_expositor"].value;  
+        var expositor_email = document.forms["MyForm"]["expositor_email"].value;
+
+
+        if (evento == "" || criador_email == "" || expositor_email == "") {
+            return false;
+        }
+
+        document.getElementById("MyForm").submit();
+    };
+</script>

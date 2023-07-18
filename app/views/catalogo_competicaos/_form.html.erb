@@ -1,0 +1,49 @@
+<div class="card-body form-type-round">
+	<% if @catalogo_competicao.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@catalogo_competicao.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @catalogo_competicao.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@catalogo_competicao, html: {class: ""}) do |f| %>
+
+		
+			
+				<%= f.label :qtd_inscritos %><br>
+				<fieldset class="form-group">
+					<%= f.number_field :qtd_inscritos, class: 'form-control' %>
+					<%= "<p>#{@catalogo_competicao.errors.messages[:qtd_inscritos].first}</p>".html_safe if @catalogo_competicao.errors.messages[:qtd_inscritos].present? %>
+				</fieldset>
+				
+				<%= f.label :qtd_inscritos_fim %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :qtd_inscritos_fim, class: 'form-control' %>
+					<%= "<p>#{@catalogo_competicao.errors.messages[:qtd_inscritos_fim].first}</p>".html_safe if @catalogo_competicao.errors.messages[:qtd_inscritos_fim].present? %>
+				</fieldset>
+			
+				<%= f.label :qtd_catalogos %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :qtd_catalogos, class: 'form-control' %>
+					<%= "<p>#{@catalogo_competicao.errors.messages[:qtd_catalogos].first}</p>".html_safe if @catalogo_competicao.errors.messages[:qtd_catalogos].present? %>
+				</fieldset>
+
+				
+				<fieldset class="form-group">
+					<%= f.hidden_field(:competicaos_evento_id, value: params[:competicaos_evento_id]) %>
+				</fieldset>
+			
+		
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%#= link_to 'Voltar', catalogo_competicaos_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

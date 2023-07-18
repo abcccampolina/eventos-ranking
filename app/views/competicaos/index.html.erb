@@ -1,0 +1,86 @@
+<div class="row" data-controller="competicaos">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_competicao_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Competições</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Nome</th>
+						<th>Modalidade</th>
+						<th>Status</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @competicaos.each do |competicao| %>
+							<tr id="competicao-item-<%= competicao.id %>">
+								<td><%= competicao.nome %></td>
+								<td><%= competicao.modalidade.nome rescue "Atributo Indefinido" %></td>
+								<td><%= competicao.status %></td>
+
+								<td class="project-actions">
+									<%= link_to edit_competicao_path(competicao), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, competicao %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<% content_for :javascript do %>
+	<script type="text/javascript">
+		$(".delete").click(function(){
+			id = $(this).data('id');
+			 swal({
+				title: "Você tem certeza?",
+				text: "Não será possível recuperar esses dados!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Sim, quero remover!",
+				closeOnConfirm: false
+			}, function(isConfirm) {
+				if(isConfirm){
+					$.ajax({
+						type: "POST",
+						url: "/competicaos/" + id,
+						dataType: "json",
+						data: {"_method": "delete"},
+						success: function(){
+							$("#competicao-item-" + id).remove();
+							swal("Excluido!", "Os dados foram eliminados.", "success");
+						},
+						error: function(){
+							swal("Erro!", "Os dados não foram excluidos.", "error");
+						}
+					});
+				}
+			});
+			event.preventDefault();
+		});
+	</script>
+<% end %>

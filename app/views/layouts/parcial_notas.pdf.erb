@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<html>
+    <head>
+        <style>
+            <%= File.open('public/bootstrap.css').read %>
+        </style>
+        <style>
+            
+            body { font-family: sans-serif !important; line-height: 1 !important }
+            .ws-nowarp { white-space: nowrap }
+            hr { border-top: 1px solid #d4d4d4 !important }
+            
+            #catalogo {
+                font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            #catalogo td,
+            #catalogo th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            #catalogo tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            #catalogo tr:hover {
+                background-color: #ddd;
+            }
+
+            #catalogo th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #66615b;
+                color: white;
+            }
+        </style>
+    </head>
+
+    <body>
+        <%= yield %>
+    </body>
+</html>

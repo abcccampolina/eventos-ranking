@@ -1,0 +1,39 @@
+<div class="card-body form-type-round">
+	<% if @criterios_avaliacao.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@criterios_avaliacao.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @criterios_avaliacao.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@criterios_avaliacao, html: {class: ""}) do |f| %>
+
+		
+			
+				<%= f.label :nome %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :nome, class: 'form-control' %>
+					<%= "<p>#{@criterios_avaliacao.errors.messages[:nome].first}</p>".html_safe if @criterios_avaliacao.errors.messages[:nome].present? %>
+				</fieldset>
+			
+			
+				<%= f.label :cluster_criterios_avaliacao_id %>
+				<fieldset class="form-group">
+					<%= f.collection_select :cluster_criterios_avaliacao_id, ClusterCriteriosAvaliacao.all, :id, :nome, {prompt: true}, class: 'form-control show-tick', 'data-provide': "selectpicker", 'data-live-search': "true"  %>
+					<%= "<p>#{@criterios_avaliacao.errors.messages[:cluster_criterios_avaliacao_id].first}</p>".html_safe if @criterios_avaliacao.errors.messages[:cluster_criterios_avaliacao_id].present? %>
+				</fieldset>
+			
+		
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', criterios_avaliacaos_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

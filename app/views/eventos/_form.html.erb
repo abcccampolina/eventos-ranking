@@ -1,0 +1,144 @@
+<%= form_for(@evento, html: {class: ""}) do |f|%>
+    <div class="card">
+    <%if @evento&.id.present?%>
+        link externo para inscrição: http://3.229.198.7/inscricaos/new?evento=<%=@evento.id%>
+    <%end%>
+        <div class="card-header">
+            <h4 class="card-title">Evento</h4>
+        </div>
+
+        <div class="card-body form-type-round">
+            <% if @evento.errors.any? %>
+                <div class="alert alert-warning alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <h2><%= pluralize(@evento.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+                    <ul style="margin-left: 20px;">
+                        <% @evento.errors.full_messages.each do |message| %>
+                            <li><%= message %></li>
+                        <% end %>
+                    </ul>
+                </div>
+            <% end %>
+
+            <div class="row">
+                <% if @evento.new_record? %>
+                    <div class="col-lg-6 form-group">
+                        <%= f.label :template, "Template" %><br>
+                        <%= f.select :template, Evento.all.pluck(:nome, :id), {include_blank: true}, class: "form-control" %>
+                    </div> 
+                <% end %>    
+
+                <fieldset class="col-lg-6 form-group">
+                    <%= f.label "Nome do Evento" %><br>
+                    <%= f.text_field :nome, class: 'form-control', autocomplete: 'off', required: true %>
+                    <%= "<p>#{@evento.errors.messages[:nome].first}</p>".html_safe if @evento.errors.messages[:nome].present? %>
+                </fieldset>
+
+                <fieldset class="col-lg-2 form-group">
+                    <%= f.label "Data Inicio Inscrição" %><br>
+                    <%= f.text_field :dataInicio, class: 'form-control datepicker', placeholder: "__/__/____", autocomplete: 'off', required: true %>
+                    <%= "<p>#{@evento.errors.messages[:dataInicio].first}</p>".html_safe if @evento.errors.messages[:dataInicio].present? %>
+                </fieldset>
+
+                <fieldset class="col-lg-2 form-group">
+                    <%= f.label "Data Fim Inscrição" %><br>
+                    <%= f.text_field :dataFim, class: 'form-control datepicker', placeholder: "__/__/____", autocomplete: 'off', required: true %>
+                    <%= "<p>#{@evento.errors.messages[:dataFim].first}</p>".html_safe if @evento.errors.messages[:dataFim].present? %>
+                </fieldset>
+
+                <fieldset class="col-lg-2 form-group">
+                    <%= f.label "Data Avaliação" %><br>
+                    <%= f.text_field :data_avaliacao, class: 'form-control datepicker', placeholder: "__/__/____", autocomplete: 'off', required: true %>
+                    <%= "<p>#{@evento.errors.messages[:data_avaliacao].first}</p>".html_safe if @evento.errors.messages[:data_avaliacao].present? %>
+                </fieldset>
+                
+                <fieldset class="col-lg-2 form-group">
+                    <%= f.label "Ano Hípico" %><br>
+                    <%= f.select :anoHipico, (Time.zone.now.year)..(Time.zone.now.year + 5), {}, class: 'form-control', required: true %>
+                    <%= "<p>#{@evento.errors.messages[:anoHipico].first}</p>".html_safe if @evento.errors.messages[:anoHipico].present? %>
+                </fieldset> 
+
+                <div class="col-lg-12 mt-2 mb-20">
+                    <fieldset class="form-group">
+                        <%= f.check_box :ativo, {}, "Ativo", "Inativo" %>
+                        <%= f.label :ativo, "Ativo" %>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <%= f.check_box :aceitar_inadiplentes, {}, "Ativo", "Inativo" %>
+                        <%= f.label :aceitar_inadiplentes, "Aceitar Inadimplentes" %>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Organizadores do Evento</h5>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12 mb-30">
+                    <%= f.collection_select :user_ids, User.sem_juris, :id, :name, {},
+                        class: "form-control", prompt: "Selecione", multiple: true %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if $evento %>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Juris do Evento</h5>
+            </div>
+            
+
+            <table id="myTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>Cluster</th>
+                            <th>Nome</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    
+                        <% @juris_evento&.each do |juri, item_juri| %>
+                            <tr id="competicao_juri-item-<%= juri %>">
+                                <td><%= item_juri.pluck(:store_cluster_criterio_avaliacao_id).flatten.uniq.map{|i| ClusterCriteriosAvaliacao.find(i).nome }.join(", ") %></td>
+                                <td><%= User.find(juri).name %></td>
+                                 <td>
+                                    <%= link_to "javascript:void(0);", 'data-competicao_juris-id': juri, "data-action": "eventos#delete_juri", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end %>
+                                </td>
+
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-12" id="juris-fields-template">
+                        <%= render 'eventos/forms/juris_fields' %>				
+                    </div>
+                    <div class="col-lg-12 mb-10">
+                        <%= link_to_add_template_fields "#{content_tag(:i, nil, class: "fas fa-plus")} Adicionar Item", 
+                            'eventos/forms/juris_fields', "click->eventos#addTemplateFields" %>
+                    </div>
+                </div>	
+            </div>
+        </div>
+    <% end %>
+
+    <div class="col-lg-12">
+        <fieldset class="form-group">
+            <%= f.submit "Salvar", class: 'btn btn-bold btn-success float-right' %>
+            <%= link_to 'Voltar', eventos_path, class: 'btn btn-bold btn-secundary' %>
+        </fieldset>
+    </div>
+<% end %>

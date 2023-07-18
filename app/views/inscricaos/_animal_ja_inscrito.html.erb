@@ -1,0 +1,28 @@
+<% inscricao = Inscricao.find(params[:inscricao]) %>
+<% competicoes = InscricaosCompeticao.where(inscricao_id: inscricao)%>
+<div class="row">
+    <fieldset class="col-lg-12" >
+        <h5>
+            <span class="btn-danger">
+                Seu animal já está inscrito na competição.
+            </span>
+        </h5>
+        <br>
+        <h5>
+            O número de inscrição desse animal é: <strong> <%= inscricao.id %> </strong>
+            <br>
+            Criador: <%= inscricao.criador.nome %>
+            <br>
+            Expositor: <%= inscricao.expositor.nome %>
+            <br>
+            <br>
+            Inscrito nas seguintes competições:
+            <br>
+            <% competicoes.each do |competicao| %>
+            <br>
+               <li> <%= competicao.competicao.nome %> </li>
+            <%end%>
+        </h5>
+        
+    </fieldset>
+</div>

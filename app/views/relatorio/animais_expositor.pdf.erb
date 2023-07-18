@@ -1,0 +1,31 @@
+<h4 class="text-center">
+    <strong>
+        <%= $evento.nome %>
+    </strong>
+</h4>
+
+<% $evento.inscricaos.includes(:catalogos, :srg_animal, :expositor).sort_by {|i| i.expositor.nome }.group_by {|i| i.expositor.nome.parameterize }.each do |_expositor, inscricoes| %>
+    <% expositor = inscricoes.first.expositor %>
+    <h6>
+        <strong><%= expositor.nome %></strong> | <%= inscricoes.count %> animais | <%= montar_fazenda_expositor(expositor) %>
+    </h6>
+    <table class="table">
+        <tbody>
+            <% inscricoes.sort_by {|i| i.srg_nome_animal }.group_by do |inscricao| %>
+            <%# binding.pry %>
+                <tr>
+                    <td width="25"><%= inscricao.catalogos&.first&.numero_colete %></td>
+                    <td width="300"><%= inscricao.srg_animal&.nome_completo %></td>
+                    <td width="125"><%= inscricao.srg_registro_animal || "-" %></td>
+                    <td width="100"><%= inscricao.srg_animal&.sexo&.titlecase %></td>
+                    <td width="100"><%= inscricao.srg_animal&.data_nascimento %></td>
+                    <td width="200"><%= to_word_md(inscricao.faixa_etaria, inscricao.faixa_etaria_dia) %></td>
+
+                    <td width="150"><%= inscricao.pelagem&.titlecase %></td>
+                    <td width="150"><%= inscricao.marcha&.titlecase %></td>
+                    <td width="150"><%= inscricao.so_marcha ? "Só Marcha" : "Convencional" %></td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+<% end %>

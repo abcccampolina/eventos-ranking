@@ -1,0 +1,155 @@
+		<div class="card-body">
+			<div class="row">
+				<%# <div class="col-lg-4 col-md-5 col-sm-12 col-6"> %>
+				<div class="col-lg-auto col-md-auto col-sm-12 col-12 custom-wd">
+					<div class="nav-tabs-navigation verical-navs mini-nav-verti custom-pd">
+						<div class="nav-tabs-wrapper">
+							<ul class="nav nav-tabs flex-column nav-stacked" role="tablist">
+								<% competicaojuris&.each_with_index do |juri, index| %>
+								<li class="nav-item nav-item-c<%= "active" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>"
+									 data-action="click->competicao-avalicaos#navChange">
+									<a class="nav-link<%= "active show" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>"
+										href="#juri-set-<%= juri.id %>" role="tab" data-toggle="tab" aria-selected="false">
+										<%= juri.user.name %>
+									</a>
+								</li>
+								<% end %>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-9 col-md-9 col-sm-12 col-12 fix-wd-nav">
+					<!-- Tab panes -->
+					<div class="tab-content tab-content-c">
+						<% competicaojuris&.each_with_index do |juri, index| %>
+							<div class="tab-pane<%= " active show" if juri.user.id == current_user.id && current_user.tipo_usuario == 'Admin' %>" id="juri-set-<%= juri.id %>">
+								<div id="accordion-<%= juri.id %>" role="tablist" aria-multiselectable="true" class="card-collapse">
+									<% competicao_progenie = competicao_avalicaos&.select {|ca| ca.competicao_juri_id == juri.id  }  %>
+										<% competicao_progenie.group_by{|i| i.catalogo.numero_colete_progenie}&.sort.uniq.each do |progenie, competicao_avaliacao| %>
+										<%# <h4 class="card-title">Collapsible Accordion</h4> %>
+										<% key_id = SecureRandom.hex %>
+										<div class="card card-plain">
+
+											<div class="card-header" role="tab" id="it<%= key_id %>">
+												<% clusters&.each do |cluster| %>
+													<% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogo.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster.id}]'" ).present? %>
+														<!--<h5 class="text-danger"> <strong><%= cluster&.nome %></strong> </h5>-->
+													<%end%>
+												<%end%>
+
+												<a data-toggle="collapse" id="lk<%= key_id %>" data-parent="#accordion" href="#<%= key_id %>" aria-expanded="false" aria-controls="collapseOne" class="collapsed <%= competicao_avaliacao.first.new_record? ? "text-danger" : "text-danger" %>">
+													<% notas = InscricaosCompeticao.find_by(inscricao_id: competicao_avaliacao&.first.inscricao_id, competicaos_evento_id: competicao_avaliacao&.first.competicao_juri.competicaos_evento_id)%>
+													<strong>#<%= competicao_avaliacao.first.catalogo&.numero_colete_progenie %></strong> <%#= competicao_avaliacao&.first.inscricao&.nome_animal %> </small>
+													<i class="nc-icon nc-minimal-up"></i>
+												</a>
+											</div>
+
+											<div id="<%= key_id %>" class="collapse show" role="tabpanel" aria-labelledby="<%= key_id %>">
+
+												<div class="card-body">
+
+													<%= form_for(competicao_avaliacao.first, remote: true, html: {class: "post-form-nota", data: {action: "ajax:success->competicao-avalicaos#onPostSuccess", key: key_id}, remote: true}) do |f| %>
+													<%= f.hidden_field(:evento_id) %>
+													<%= f.hidden_field(:inscricao_id) %>
+													<%= f.hidden_field(:competicao_id) %>
+													<%= f.hidden_field(:competicao_juri_id) %>
+													<%= f.hidden_field(:catalogo_id) %>
+													<%= hidden_field_tag :key_id, key_id %>
+													<small>
+														<div class="row mb-20">
+															<div class="col-lg-4">
+																<% clusters&.each do |cluster| %>
+																	<% if CompeticaoJuri.where("user_id = #{juri.user_id} and competicaos_evento_id = #{@catalogo.first.competicaos_evento_id} and store_cluster_criterio_avaliacao_id @> '[#{cluster.id}]'" ).present? %>
+																		<% criterios = cluster.criterios_avaliacaos.map{ |ca| ca.criterios_competicaos.where(competicao_id: @competicao.id) }.flatten %>
+																		<div class="table-responsive-y">
+																			<table>
+																				<tbody>
+																					<%# @criterios_competicao.where(criterios_avaliacao_id: @criterios.where(cluster_criterios_avaliacao_id: cluster.id)).each do |criterio| %>
+																					<tr id="cluster-<%= cluster.id %>">
+																						<% conector = SecureRandom.hex %>
+																						<% if cluster.funcional %>
+																							<%= f.label :tempo_executado, "Executado", class: 'font-weight-bold' %>
+																							<td  class="min-w-100">
+																								<%= f.text_field :tempo_executado, class: "form-control input-time", 
+																									value: tempo_formatado(competicao_avaliacao.first.tempo_executado),
+																									id: "el#{conector}", 
+																									data: {conector: conector, action: cluster.funcional ? "change->competicao-avalicaos#changeElements" : nil} 
+																								%>
+																							</td>
+																						<% end %>
+																						<% criterios.each do |criterio| %>
+																							<td class="min-w-100">
+																								<%= f.label :criterio do %>
+																									<strong> <%= criterio&.criterios_avaliacao&.nome || "Atributo Indefinido" %> </strong>
+																								<% end %>
+																								<fieldset>
+																									<% nota = CompeticaoAvalicao.find_by(competicao_juri_id: competicao_avaliacao.first.competicao_juri_id, criterios_competicao_id: criterio.id, inscricao_id: competicao_avaliacao.first.inscricao_id) %>
+																									<%= number_field(:nota, criterio.criterios_avaliacao_id, class: "form-control #{"co#{conector}" if cluster.funcional}", data: {conector: cluster.funcional ? conector : nil, action: cluster.funcional ? "change->competicao-avalicaos#changeElements" : nil}, value: nota&.nota&.round.to_i ) %>
+																								</fieldset>
+																							</td>
+																						<% end %>
+
+																						<% if cluster.funcional %>
+																							<strong> Resultado </strong>
+																							<td class="text-center">
+																								<strong id="<%= "fn#{conector}" %>" class="text-danger"><%= tempo_formatado(competicao_avaliacao.first.tempo_final) %></strong>
+																							</td>
+																						<% end %>
+
+																					</tr>
+																				</tbody>
+																			</table>
+																		</div>	
+																	<%end%>
+																<% end %>
+															</div>
+															<div class="col-lg-3">
+																<%= f.check_box :melhor_cabeca %>
+																<%= f.label :melhor_cabeca do %>
+																<strong>Melhor Cabeça?</strong>
+																<% end %>
+																<br>
+																<%= f.check_box :aprumacao %>
+																<%= f.label :aprumacao do %>
+																<strong>Aprumação?</strong>
+																<% end %>
+															</div>
+															<div class="col-lg-4">
+																<%= f.label :ocorrencia do %>
+																<strong>Ocorrência</strong>
+																<% end %>
+																<%= f.select :ocorrencia, 
+																	options_for_select(OcorrenciaCompeticao.to_a, competicao_avaliacao.first.ocorrencia), 
+																	{include_blank: "Nenhum"}, {class: "form-control"} 
+																%>
+															</div>
+															
+														</div>
+
+													</small>
+
+													<% end %>
+
+												</div>
+
+											</div>
+										</div>
+									<% end %>
+								</div>
+							</div>
+						<% end %>
+						
+						<div class="row">
+						
+							<div class="col-12">
+								<%= content_tag :button, "Salvar", 
+									class: "btn btn-success float-right", 
+									data: {action: "click->competicao-avalicaos#bookSubmitForm"} %>
+							</div>
+
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>

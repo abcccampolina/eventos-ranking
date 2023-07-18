@@ -1,0 +1,47 @@
+<div class="row" data-controller="catalogo-nomes">
+
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Nome da Categoria</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Nome</th>
+						<th>Ordem Nome</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @catalogo_nomes.each do |catalogo_nome| %>
+							<tr id="catalogo_nome-item-<%= catalogo_nome.id %>">
+								<td><%= catalogo_nome.nome %></td>
+								<td><%= catalogo_nome.ordem_nome %></td>
+
+								<td class="project-actions">
+
+									<%= link_to "/catalogo_nomes/#{catalogo_nome.id}/edit?competicaos_evento_id=#{params[:id]}", class: "btn btn-icona btn-neutral btn-info btn-sm" do  %>
+										<i class="fas fa-pen"></i>
+									<% end if can? :update, catalogo_nome %>
+									<%= link_to "javascript:void(0);", 'data-catalogo_nomes-id': catalogo_nome.id, "data-action": "catalogo_nomes#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, catalogo_nome %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", "/catalogo_nomes/new?competicaos_evento_id=#{params[:id]}", class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+		</div>
+	</div>
+</div>

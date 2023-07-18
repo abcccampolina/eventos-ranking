@@ -1,0 +1,217 @@
+<h2>Configuração do evento - <%= $evento&.nome rescue nil%></h2> <hr>
+
+<div class="row">
+
+<!-- Inscrições -->
+    <div class="col-lg-3" s>
+        <a href="<%= inscricaos_path%>" >
+            <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                <div class="card">
+                    <div style="color: black;width: 100%;padding: 4px;">
+                        Inscrições
+                    </div>
+                </div>
+                <div class="m-b-md">
+                    <i class="fa fa-users fa-4x" style = "color: #66615b"></i>
+                    <h3 class="font-bold no-margins"style="padding: 10px">
+                    <br><br>
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+<!-- Fim Inscrições -->
+
+
+<!-- Competições do Evento -->
+    <div class="col-lg-3" s>
+        <a href="<%= competicaos_eventos_path %>" >
+            <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                <div class="card">
+                    <div style="color: black;width: 100%;padding: 4px;">
+                        Competições do Evento
+                    </div>
+                </div>
+                <div class="m-b-md">
+                    <i class="fa fa-cubes fa-4x" style = "color: #66615b"></i>
+                    <h3 class="font-bold no-margins"style="padding: 10px">
+                    <br><br>
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+<!-- Fim Competições do Evento -->
+
+
+
+<!-- Competições do Evento -->
+    <div class="col-lg-3" s>
+        <a href="<%= premios_path %>" >
+            <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                <div class="card">
+                    <div style="color: black;width: 100%;padding: 4px;">
+                        Premios
+                    </div>
+                </div>
+                <div class="m-b-md">
+                    <i class="fa fa-trophy fa-4x" style = "color: #66615b"></i>
+                    <h3 class="font-bold no-margins"style="padding: 10px">
+                    <br><br>
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+<!-- Fim Competições do Evento -->
+</div>
+
+
+<% if current_user.tipo_usuario.eql?('Administrador') %>
+    <h2>Configuração Geral </h2> <hr>
+    <div class="row">
+        <!-- Usuário -->
+            <div class="col-lg-3">
+                <a href="<%= manage_users_path%>" >
+                    <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                        <div class="card">
+                            <div style="color: black;width: 100%;padding: 4px;">
+                                Usuários
+                            </div>
+                        </div>
+                        <div class="m-b-md">
+                            <i class="fa fa-user-plus fa-4x" style = "color: #66615b"></i>
+                            <h3 class="font-bold no-margins"style="padding: 10px">
+                            <br><br>
+                            </h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <!-- Fim Usuário -->
+
+        <!-- Eventos -->
+            <div class="col-lg-3">
+                <a href="<%= eventos_path%>" >
+                    <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                        <div class="card">
+                            <div style="color: black;width: 100%;padding: 4px;">
+                                Eventos
+                            </div>
+                        </div>
+                        <div class="m-b-md">
+                            <i class="fa fa-calendar-alt fa-4x" style = "color: #66615b"></i>
+                            <h3 class="font-bold no-margins"style="padding: 10px">
+                            <br><br>
+                            </h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <!-- Fim Eventos -->
+
+        <!-- Modalidade Competições -->
+            <div class="col-lg-3">
+                <a href="<%= modalidades_path%>" >
+                    <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                        <div class="card">
+                            <div style="color: black;width: 100%;padding: 4px;">
+                                Modalidades de Competição
+                            </div>
+                        </div>
+                        <div class="m-b-md">
+                            <i class="fa fa-cube fa-4x" style = "color: #66615b"></i>
+                            <h3 class="font-bold no-margins"style="padding: 10px">
+                            <br><br>
+                            </h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <!-- Fim Modalidade Competições -->
+
+        <!-- Competições -->
+            <div class="col-lg-3">
+                <a href="<%= competicaos_path%>" >
+                    <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                        <div class="card">
+                            <div style="color: black;width: 100%;padding: 4px;">
+                                Competições
+                            </div>
+                        </div>
+                        <div class="m-b-md">
+                            <i class="fa fa-cubes fa-4x" style = "color: #66615b"></i>
+                            <h3 class="font-bold no-margins"style="padding: 10px">
+                            <br><br>
+                            </h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <!-- Fim Competições -->
+
+        <!-- Critérios de Avação -->
+            <div class="col-lg-3">
+                <a href="<%= criterios_avaliacaos_path%>" >
+                    <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                        <div class="card">
+                            <div style="color: black;width: 100%;padding: 4px;">
+                                Critérios de Avaliação
+                            </div>
+                        </div>
+                        <div class="m-b-md">
+                            <i class="fa fa-clipboard-check fa-4x" style = "color: #66615b"></i>
+                            <h3 class="font-bold no-margins"style="padding: 10px">
+                            <br><br>
+                            </h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <!-- Fim Critérios de Avaliação -->
+
+        <!--Cluster Critérios de Avação -->
+            <div class="col-lg-3">
+                <a href="<%= cluster_criterios_avaliacaos_path%>" >
+                    <div class="widget red-bg p-lg text-center" style="padding: 4px; background-color: white; border-radius: 15px; padding-top: 0px; padding: 0px">
+                        <div class="card">
+                            <div style="color: black;width: 100%;padding: 4px;">
+                                Cluster Critérios de Avaliação
+                            </div>
+                        </div>
+                        <div class="m-b-md">
+                            <i class="fa fa-clipboard-list fa-4x" style = "color: #66615b"></i>
+                            <h3 class="font-bold no-margins"style="padding: 10px">
+                            <br><br>
+                            </h3>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <!-- Fim Cluster Critérios de Avaliação -->
+    </div>
+<% end %>
+
+<style type="text/css">
+    a:link {color: #FFFFFF; }
+    i:before { color:white; }
+    h2 {
+        font-size: 20px;
+        font-weight: bold
+    }
+    h3 {
+        font-size: 11px;
+    }
+    h6 {
+        text-align: center;
+        background-color: white;
+    }
+    .card{
+        position: relative;
+        min-height: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
+        border-radius: 15x;
+        background-color: white;
+    }
+</style>

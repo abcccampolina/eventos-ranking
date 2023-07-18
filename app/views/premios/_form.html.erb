@@ -1,0 +1,61 @@
+<div class="card-body form-type-round">
+	<% if @premio.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@premio.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @premio.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@premio, html: {class: ""}) do |f| %>
+
+        <%= f.label "Animal:" %> <br>
+        <select name="inscricao_id" id="inscricao_id" class= 'form-control show-tick col-md-4' data-provide= "inscricao_id" include_blank="" data-live-search= "true">
+                <option value= "" >  </option>
+            <% Inscricao.where(evento_id: $evento.id).each do |inscrito| %>
+                <option value= <%= inscrito.id %> > <%= inscrito.nome_animal %></option>
+            <% end %>
+        </select>
+        			
+        <%= f.label :posto %><br>
+        <fieldset class="form-group">
+            <%= f.text_field :posto, class: 'form-control', required: true %>
+            <%= "<p>#{@premio.errors.messages[:posto].first}</p>".html_safe if @premio.errors.messages[:posto].present? %>
+        </fieldset>
+
+        <%= f.label :nome_catalogo %><br>
+        <fieldset class="form-group">
+            <%= f.text_field :nome_catalogo, class: 'form-control', required: true %>
+            <%= "<p>#{@premio.errors.messages[:nome_catalogo].first}</p>".html_safe if @premio.errors.messages[:nome_catalogo].present? %>
+        </fieldset>
+
+        <%= f.label :pontuacao %><br>
+        <fieldset class="form-group">
+            <%= f.text_field :pontuacao, class: 'form-control', required: true %>
+            <%= "<p>#{@premio.errors.messages[:pontuacao].first}</p>".html_safe if @premio.errors.messages[:pontuacao].present? %>
+        </fieldset>
+
+        <%= f.label :pontuacao_expositor %><br>
+        <fieldset class="form-group">
+            <%= f.text_field :pontuacao_expositor, class: 'form-control', required: true %>
+            <%= "<p>#{@premio.errors.messages[:pontuacao_expositor].first}</p>".html_safe if @premio.errors.messages[:pontuacao_expositor].present? %>
+        </fieldset>
+
+           <%= f.label :pontuacao_criador %><br>
+        <fieldset class="form-group">
+            <%= f.text_field :pontuacao_criador, class: 'form-control', required: true %>
+            <%= "<p>#{@premio.errors.messages[:pontuacao_criador].first}</p>".html_safe if @premio.errors.messages[:pontuacao_criador].present? %>
+        </fieldset>
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', premios_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+
+	<% end %>
+</div>

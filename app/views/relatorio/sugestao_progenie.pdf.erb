@@ -1,0 +1,96 @@
+<h4 class="text-center">
+    <strong>
+        <%= $evento.nome %>
+    </strong>
+</h4>
+
+    <table class="table" style="background:#fafafa">
+        <thead>
+            <tr>
+            <th style="width: 120px; text-align: center;">Pai</th>
+            <th style="width: 120px; text-align: center;" >Animal </th>
+            </tr>
+        </thead>
+        <tbody>
+        <% @inscritos_evento.sort_by {|i| i.pai_animal_id }.group_by {|i| i.pai_animal_id }.each do |pai_animal, inscricoes| %>
+            <%if inscricoes.count > 1%>
+                <tr>
+                    <td>
+                        <strong><%= SrgAnimal.find(pai_animal).nome_completo %></strong>
+                    </td>
+                    <td>
+                        <% inscricoes.each do |animal| %>
+                            <%= animal.nome_animal %> <br>
+                        <%end%>
+                    </td>
+                </tr>
+            <% end %>
+        <% end %>
+        </tbody>
+    </table>
+
+<div class="page-break"></div>
+
+    <table class="table" style="background:#fafafa">
+        <thead>
+            <tr>
+            <th style="width: 120px; text-align: center;">Mãe</th>
+            <th style="width: 120px; text-align: center;" >Animal </th>
+            </tr>
+        </thead>
+        <tbody>
+        <% @inscritos_evento.sort_by {|i| i.mae_animal_id }.group_by {|i| i.mae_animal_id }.each do |pai_animal, inscricoes| %>
+            <%if inscricoes.count > 1%>
+                <tr>
+                    <td>
+                        <strong><%= SrgAnimal.find(pai_animal).nome_completo %></strong>
+                    </td>
+                    <td>
+                        <% inscricoes.each do |animal| %>
+                            <%= animal.nome_animal %> <br>
+                        <%end%>
+                    </td>
+                </tr>
+            <% end %>
+        <% end %>
+        </tbody>
+    </table>
+
+<div class="page-break"></div>
+
+    <table class="table" style="background:#fafafa">
+        <thead>
+            <tr>
+            <th style="width: 120px; text-align: center;">Acasalamento</th>
+            <th style="width: 120px; text-align: center;" >Animal </th>
+            </tr>
+        </thead>
+        <tbody>
+
+        
+        <% @inscritos_evento.sort_by {|i| i.mae_animal_id }.group_by {|i| [i.mae_animal_id, i.pai_animal_id ]}.each do |casal, inscricoes| %>
+            <%if inscricoes.count > 1%>
+                <tr>
+                    <td>
+                        <strong><%= SrgAnimal.find(casal[0]).nome_completo %> x <%= SrgAnimal.find(casal[1]).nome_completo%> </strong>
+                    </td>
+                    <td>
+                        <% inscricoes.each do |animal| %>
+                            <%= animal&.nome_animal %> <br>
+                        <%end%>
+                    </td>
+                </tr>
+            <% end %>
+        <% end %>
+        </tbody>
+    </table>
+
+
+    <style>
+        tr:nth-child(even) {
+            background:lightgray;
+        }
+        td {
+            text-align: center;
+        }
+    </style>

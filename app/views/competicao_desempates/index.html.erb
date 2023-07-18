@@ -1,0 +1,93 @@
+<div class="row" data-controller="competicao_desempates">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_competicao_desempate_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Competicao Desempates</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Competicaos Evento</th>
+						<th>Inscricao</th>
+						<th>Competicao Juri</th>
+						<th>Nota</th>
+						<th>Criterios Competicao</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @competicao_desempates.each do |competicao_desempate| %>
+							<tr id="competicao_desempate-item-<%= competicao_desempate.id %>">
+								<td><%= competicao_desempate.competicaos_evento.name rescue "Atributo Indefinido" %></td>
+								<td><%= competicao_desempate.inscricao.name rescue "Atributo Indefinido" %></td>
+								<td><%= competicao_desempate.competicao_juri.name rescue "Atributo Indefinido" %></td>
+								<td><%= competicao_desempate.nota %></td>
+								<td><%= competicao_desempate.criterios_competicao.name rescue "Atributo Indefinido" %></td>
+
+								<td class="project-actions">
+									<%= link_to edit_competicao_desempate_path(competicao_desempate), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, competicao_desempate %>
+									<%= link_to "javascript:void(0);", 'data-competicao_desempates-id': competicao_desempate.id, "data-action": "competicao_desempates#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, competicao_desempate %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<% content_for :javascript do %>
+	<script type="text/javascript">
+		$(".delete").click(function(){
+			id = $(this).data('id');
+			 swal({
+				title: "Você tem certeza?",
+				text: "Não será possível recuperar esses dados!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Sim, quero remover!",
+				closeOnConfirm: false
+			}, function(isConfirm) {
+				if(isConfirm){
+					$.ajax({
+						type: "POST",
+						url: "/competicao_desempates/" + id,
+						dataType: "json",
+						data: {"_method": "delete"},
+						success: function(){
+							$("#competicao_desempate-item-" + id).remove();
+							swal("Excluido!", "Os dados foram eliminados.", "success");
+						},
+						error: function(){
+							swal("Erro!", "Os dados não foram excluidos.", "error");
+						}
+					});
+				}
+			});
+			event.preventDefault();
+		});
+	</script>
+<% end %>

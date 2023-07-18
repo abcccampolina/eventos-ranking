@@ -1,0 +1,28 @@
+pt-BR:
+  srg_animals:
+    column:
+      sexo: Sexo
+      pai: Pai
+      mae: Mãe
+      data_nascimento: Data Nascimento
+      fazenda_nascimento: Fazenda Nascimento
+      cidade_nascimento: Cidade Nascimento
+      uf_nascimento: UF Nascimento
+      pelagem_padrao: Pelagem Padrão
+      pelagem: Pelagem
+      dna_tipo: Tipo DNA
+      dna_data_exame: DNA Data Exame
+      dna_laboratorio: DNA Laboratório
+      homozigose_tipo: Homozigose Tipo
+      homozigose_data_exame: Homozigose Data Exame
+      homozigose_laboratorio: Homozigose Laboratório
+      dna_exposicao_nome: DNA Exposição Nome
+      dna_exposicao_ano: DNA Exposição Ano
+      clone: Clone
+      data_clone: Data Clone
+      laboratorio_clone: Laboratório Clone
+      animal_origem: Animal Origem
+      data_castracao: Data Castração
+      status: Status
+      data_desbloqueio: Data Desbloqueio
+      observacoes: Observações

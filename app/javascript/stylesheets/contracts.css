@@ -1,0 +1,7 @@
+.payment-type{
+	display: none;
+}
+
+.payment-type.payment-type--current {
+  display: block;
+}

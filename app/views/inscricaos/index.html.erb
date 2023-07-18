@@ -1,0 +1,205 @@
+<div class="row" data-controller="inscricaos">
+<% if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador')  %>
+    <div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Nova Inscrição", new_inscricao_path, class: "btn btn-bold btn-success", data: {turbolinks: "false"} %>
+		</div>
+        <div class="float-right mr-20">
+            <%= link_to "Confirmar Presença", confirmar_presenca_path, class: "btn btn-bold btn-info", data: {turbolinks: "false"} %>
+        </div>
+    </div>
+<%else%>
+
+	<% if $cpf_pessoa.present? %>
+		<div class="col-lg-12">
+			<div class="float-left">
+				<%= link_to "Nova Inscrição", new_inscricao_path(cpf: $cpf_pessoa.cpf), class: "btn btn-bold btn-success", style: "width: 400px; margin-left: 30px", data: {turbolinks: "false"} %>
+			</div>
+			<% if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador')%>
+				<div class="float-right mr-20">
+					<%= link_to "Encerrar Seção", encerrar_secao_cpf_path(evento: $evento.id), class: "btn btn-bold btn-danger", data: {turbolinks: "false"} %>
+				</div>
+			<%end%>
+		</div>
+		<%else%>
+		<div class="text-center justify-content-center text-danger" style= "width: 400px; margin: auto; margin-top: 100px">
+			<p> CPF NÃO LOCALIZADO NO BANCO DE DADOS DA ABCCC, FAVOR ENTRAR EM CONTATO COM A ASSOCIAÇÃO PARA ATUALIZAR. </p>
+			</div>
+	<%end%>
+<%end%>
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+				<h4 class="text-center justify-content-center"><%= $evento.nome %></h4>
+                <h4 class="card-title">Inscrições</h4> <%= @inscricaos.count %> animais inscritos
+            </div>
+
+            <div class="card-body">
+            <input style="width: 240px " type="text" id="myInput" onkeyup="fProcurarAnimal()" placeholder="Procurar Animal" title="Pesquisar">
+			<input style="width: 300px " type="text" id="myInputCriador" onkeyup="fProcurarCriador()" placeholder="Procurar Criador" title="Pesquisar">
+			<input style="width: 280px " type="text" id="myInputExpositor" onkeyup="fProcurarExpositor()" placeholder="Procurar Expositor" title="Pesquisar">
+
+                <table id="myTable" class="table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">Animal</th>
+                            <th onclick="sortTable(1)">Criador</th>
+                            <th onclick="sortTable(2)">Expositor</th>
+                            <th onclick="sortTable(4)">Marcha</th>
+                            <th onclick="sortTable(5)">Faixa Etária (Meses)</th>
+                            <th onclick="sortTable(6)">Só Marcha</th>
+							<% if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador') %>
+                            	<th style="width: 160px;">Ações</th>
+							<%end%>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @inscricaos.each do |inscricao| %>
+                            <tr id="inscricao-item-<%= inscricao.id %>">
+                                <td><%= inscricao.srg_animal.nome_completo rescue "Atributo Indefinido" %></td>
+                                <td><%= inscricao.criador.nome %></td>
+                                <td><%= inscricao.expositor.nome %></td>
+                                <td><%= inscricao.marcha %></td>
+                                <td><%= inscricao.faixa_etaria %></td>
+                                <td><% if inscricao.so_marcha %>
+                                    <i class="fas fa-check-circle" style="color: green"></i>
+                                    <%end%>
+                                </td>
+								<% if current_user&.tipo_usuario&.eql?('Administrador') || current_user&.tipo_usuario&.eql?('Organizador') %>
+									<td class="project-actions">
+										<%= link_to edit_inscricao_path(inscricao), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<i class="fas fa-pen"></i>
+										<% end if can? :update, inscricao %>
+
+										<%= link_to "javascript:void(0);", 'data-id': inscricao.id, "data-action": "inscricaos#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+										<% end if can? :destroy, inscricao %>
+									</td>
+								<%end%>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+  function fProcurarAnimal() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInput");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tr = table.getElementsByTagName("tr");
+	for (i = 0; i < tr.length; i++) {
+	  td = tr[i].getElementsByTagName("td")[0];
+	  if (td) {
+		txtValue = td.textContent || td.innerText;
+		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		  tr[i].style.display = "";
+		} else {
+		  tr[i].style.display = "none";
+		}
+	  }       
+	}
+  }
+
+    function fProcurarCriador() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInputCriador");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tr = table.getElementsByTagName("tr");
+	for (i = 0; i < tr.length; i++) {
+	  td = tr[i].getElementsByTagName("td")[1];
+	  if (td) {
+		txtValue = td.textContent || td.innerText;
+		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		  tr[i].style.display = "";
+		} else {
+		  tr[i].style.display = "none";
+		}
+	  }       
+	}
+  }
+
+    function fProcurarExpositor() {
+	var input, filter, table, tr, td, i, txtValue;
+	input = document.getElementById("myInputExpositor");
+	filter = input.value.toUpperCase();
+	table = document.getElementById("myTable");
+	tr = table.getElementsByTagName("tr");
+	for (i = 0; i < tr.length; i++) {
+	  td = tr[i].getElementsByTagName("td")[1];
+	  if (td) {
+		txtValue = td.textContent || td.innerText;
+		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		  tr[i].style.display = "";
+		} else {
+		  tr[i].style.display = "none";
+		}
+	  }       
+	}
+  }
+  
+  function sortTable(n) {
+	var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+	table = document.getElementById("myTable");
+	switching = true;
+	//Set the sorting direction to ascending:
+	dir = "asc"; 
+	/*Make a loop that will continue until
+	no switching has been done:*/
+	while (switching) {
+	  //start by saying: no switching is done:
+	  switching = false;
+	  rows = table.rows;
+	  /*Loop through all table rows (except the
+	  first, which contains table headers):*/
+	  for (i = 1; i < (rows.length - 1); i++) {
+		//start by saying there should be no switching:
+		shouldSwitch = false;
+		/*Get the two elements you want to compare,
+		one from current row and one from the next:*/
+		x = rows[i].getElementsByTagName("TD")[n];
+		y = rows[i + 1].getElementsByTagName("TD")[n];
+		/*check if the two rows should switch place,
+		based on the direction, asc or desc:*/
+		if (dir == "asc") {
+		  if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+			//if so, mark as a switch and break the loop:
+			shouldSwitch= true;
+			break;
+		  }
+		} else if (dir == "desc") {
+		  if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+			//if so, mark as a switch and break the loop:
+			shouldSwitch = true;
+			break;
+		  }
+		}
+	  }
+	  if (shouldSwitch) {
+		/*If a switch has been marked, make the switch
+		and mark that a switch has been done:*/
+		rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+		switching = true;
+		//Each time a switch is done, increase this count by 1:
+		switchcount ++;      
+	  } else {
+		/*If no switching has been done AND the direction is "asc",
+		set the direction to "desc" and run the while loop again.*/
+		if (switchcount == 0 && dir == "asc") {
+		  dir = "desc";
+		  switching = true;
+		}
+	  }
+	}
+  }
+</script>

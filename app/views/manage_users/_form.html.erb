@@ -1,0 +1,40 @@
+<div class="card-body form-type-round">
+	<% if @manage_user.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@manage_user.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @manage_user.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@manage_user, url: "/manage_users/#{@manage_user.id ? @manage_user.id : nil}", html: {class: "", method: @manage_user.id ? :put : :post }) do |f| %>
+
+		<%= f.label "Nome" %><br>
+		<fieldset class="form-group">
+			<%= f.text_field :name, class: 'form-control' %>
+			<%= "<p>#{@manage_user.errors.messages[:name].first}</p>".html_safe if @manage_user.errors.messages[:name].present? %>
+		</fieldset>
+	
+		<%= f.label :email %><br>
+		<fieldset class="form-group">
+			<%= f.text_field :email, class: 'form-control' %>
+			<%= "<p>#{@manage_user.errors.messages[:email].first}</p>".html_safe if @manage_user.errors.messages[:email].present? %>
+		</fieldset>
+
+		<%= f.label :tipo_usuario %>
+		<fieldset class="form-group">
+		<%= f.select :tipo_usuario, options_for_select([ 'Organizador','Juri', 'Associado','Superintendente' ]), {}, { :class => 'form-control show-tick' } %>
+			<%= "<p>#{@manage_user.errors.messages[:tipo_usuario].first}</p>".html_safe if @manage_user.errors.messages[:tipo_usuario].present? %>
+		</fieldset>
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', manage_users_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

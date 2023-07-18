@@ -1,0 +1,93 @@
+<div class="row" data-controller="<%= plural_name %>">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%%= link_to "Novo", new_<%= singular_table_name %>_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title"><%= human_name.pluralize.titlecase %></h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+			<% attributes.reject(&:password_digest?).each do |attribute| -%>
+			<th><%= attribute.human_name.titlecase %></th>
+			<% end -%>
+			<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%% @<%= plural_table_name %>.each do |<%= singular_table_name %>| %>
+							<tr id="<%= singular_table_name %>-item-<%%= <%= singular_table_name %>.id %>">
+								<%- attributes.reject(&:password_digest?).each do |attribute| -%>
+							<%- if attribute.reference? -%>
+								<td><%%= <%= singular_table_name %>.<%= attribute.name %>.name rescue "Atributo Indefinido" %></td>
+							<%- else -%>
+								<td><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
+							<%- end -%>
+								<%- end -%>
+
+								<td class="project-actions">
+									<%%= link_to edit_<%= singular_table_name %>_path(<%= singular_table_name %>), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<%% end if can? :update, <%= singular_table_name %> %>
+									<%%= link_to "javascript:void(0);", 'data-<%= plural_table_name %>-id': <%= singular_table_name %>.id, "data-action": "<%= plural_table_name %>#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<%% end if can? :destroy, <%= singular_table_name %> %>
+								</td>
+							</tr>
+						<%% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<%% content_for :javascript do %>
+	<script type="text/javascript">
+		$(".delete").click(function(){
+			id = $(this).data('id');
+			 swal({
+				title: "Você tem certeza?",
+				text: "Não será possível recuperar esses dados!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Sim, quero remover!",
+				closeOnConfirm: false
+			}, function(isConfirm) {
+				if(isConfirm){
+					$.ajax({
+						type: "POST",
+						url: "/<%= plural_table_name %>/" + id,
+						dataType: "json",
+						data: {"_method": "delete"},
+						success: function(){
+							$("#<%= singular_table_name %>-item-" + id).remove();
+							swal("Excluido!", "Os dados foram eliminados.", "success");
+						},
+						error: function(){
+							swal("Erro!", "Os dados não foram excluidos.", "error");
+						}
+					});
+				}
+			});
+			event.preventDefault();
+		});
+	</script>
+<%% end %>

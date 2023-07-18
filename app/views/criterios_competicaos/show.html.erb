@@ -1,0 +1,21 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Competicao</strong><br>
+							<%= @criterios_competicao.competicao.name rescue nil %>
+						</address>
+						<address>
+						<strong>Criterios avaliacao</strong><br>
+							<%= @criterios_competicao.criterios_avaliacao.name rescue nil %>
+						</address>
+							
+		<%= link_to 'Editar', edit_criterios_competicao_path(@criterios_competicao), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', criterios_competicaos_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

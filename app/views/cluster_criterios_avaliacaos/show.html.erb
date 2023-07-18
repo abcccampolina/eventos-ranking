@@ -1,0 +1,17 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Nome</strong><br>
+							<%= @cluster_criterios_avaliacao.nome %>
+						</address>
+							
+		<%= link_to 'Editar', edit_cluster_criterios_avaliacao_path(@cluster_criterios_avaliacao), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', cluster_criterios_avaliacaos_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

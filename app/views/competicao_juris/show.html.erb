@@ -1,0 +1,21 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Competicaos evento</strong><br>
+							<%= @competicao_juri.competicaos_evento.name rescue nil %>
+						</address>
+						<address>
+						<strong>User</strong><br>
+							<%= @competicao_juri.user.name rescue nil %>
+						</address>
+							
+		<%= link_to 'Editar', edit_competicao_juri_path(@competicao_juri), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', competicao_juris_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

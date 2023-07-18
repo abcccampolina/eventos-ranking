@@ -1,0 +1,29 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Srg animal</strong><br>
+							<%= @inscricao.srg_animal.name rescue nil %>
+						</address>
+						<address>
+						<strong>Criador</strong><br>
+							<%= @inscricao.criador_id %>
+						</address>
+						<address>
+						<strong>Expositor</strong><br>
+							<%= @inscricao.expositor_id %>
+						</address>
+						<address>
+						<strong>Status</strong><br>
+							<%= @inscricao.status %>
+						</address>
+							
+		<%= link_to 'Editar', edit_inscricao_path(@inscricao), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', inscricaos_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

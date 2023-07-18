@@ -1,0 +1,93 @@
+<div class="row" data-controller="parametro_inscricaos">
+
+	<div class="col-lg-12">
+		<div class="float-right">
+			<%= link_to "Novo", new_parametro_inscricao_path, class: "btn btn-bold btn-success" %>
+		</div>
+	</div>
+	
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Parâmetro Inscrições</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Nome</th>
+						<th>Competição</th>
+						<th>Coluna Parâmetro</th>
+						<th>Operador Parâmetro</th>
+						<th>Valor Parâmetro</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @parametro_inscricaos.each do |parametro_inscricao| %>
+							<tr id="parametro_inscricao-item-<%= parametro_inscricao.id %>">
+								<td><%= parametro_inscricao.nome %></td>
+								<td><%= parametro_inscricao.competicao.name rescue "Atributo Indefinido" %></td>
+								<td><%= parametro_inscricao.coluna_parametro %></td>
+								<td><%= parametro_inscricao.operador_parametro %></td>
+								<td><%= parametro_inscricao.valor_parametro %></td>
+
+								<td class="project-actions">
+									<%= link_to edit_parametro_inscricao_path(parametro_inscricao), class: "btn btn-icona btn-neutral btn-info btn-sm" do %>
+										<!-- <i class="icon-pencil"></i> -->
+										<i class="fas fa-pen"></i>
+										
+									<% end if can? :update, parametro_inscricao %>
+									<%= link_to "javascript:void(0);", 'data-parametro_inscricaos-id': parametro_inscricao.id, "data-action": "parametro_inscricaos#delete", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, parametro_inscricao %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+<% content_for :javascript do %>
+	<script type="text/javascript">
+		$(".delete").click(function(){
+			id = $(this).data('id');
+			 swal({
+				title: "Você tem certeza?",
+				text: "Não será possível recuperar esses dados!",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Sim, quero remover!",
+				closeOnConfirm: false
+			}, function(isConfirm) {
+				if(isConfirm){
+					$.ajax({
+						type: "POST",
+						url: "/parametro_inscricaos/" + id,
+						dataType: "json",
+						data: {"_method": "delete"},
+						success: function(){
+							$("#parametro_inscricao-item-" + id).remove();
+							swal("Excluido!", "Os dados foram eliminados.", "success");
+						},
+						error: function(){
+							swal("Erro!", "Os dados não foram excluidos.", "error");
+						}
+					});
+				}
+			});
+			event.preventDefault();
+		});
+	</script>
+<% end %>

@@ -1,0 +1,26 @@
+ <div class="card text-center justify-content-center flex-column" style= "width: 400px; margin: auto; margin-top: 100px">
+ <img src="/LOGO_1.png" alt="logo-campolina" style="margin: auto; max-width: 50% !important">
+ Faça agora sua inscrição.
+    <%= form_for :filter_animal_cpf, url: buscar_animal_srg_por_cpf_path, method: :get do |f| %>
+        <div class="row">
+            <div class="col-lg-12">
+                <%= label_tag :buscar_animal_cpf, "Digite seu CPF ou CNPJ (somente números)" %>
+                <fieldset class="form-group">
+                    <%= number_field_tag :buscar_animal_cpf, nil, min: 00000001000, max: 99999999999999, class: 'form-control',  required: true %>
+                </fieldset>
+            </div>
+        </div>
+        <%= hidden_field_tag :evento_id, params[:evento] %>
+
+        <p>
+		 Ao continuar você concorda com os 
+		 <%= link_to "Termos & Regulamento", documentos_inscricao_termo_path, class: "text-info text-gradient font-weight-bold", target: :_blank %>
+		</p>
+
+        <div class="row">
+            <div class="col-md-12">
+                <%= f.submit "Acessar", class: "btn btn-primary", style: "float: center" %>
+            </div>
+        </div>
+    <% end %>
+</div>

@@ -1,0 +1,21 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Name</strong><br>
+							<%= @manage_user.name %>
+						</address>
+						<address>
+						<strong>Email</strong><br>
+							<%= @manage_user.email %>
+						</address>
+							
+		<%= link_to 'Editar', edit_manage_user_path(@manage_user), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', manage_users_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

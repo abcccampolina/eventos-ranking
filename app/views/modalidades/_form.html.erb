@@ -1,0 +1,32 @@
+<div class="card-body form-type-round">
+	<% if @modalidade.errors.any? %>
+		<div class="alert alert-warning alert-dismissable">
+			<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+			<h2><%= pluralize(@modalidade.errors.count, "erro") %> impedem que os dados sejam salvos</h2>
+			<ul style="margin-left: 20px;">
+			<% @modalidade.errors.full_messages.each do |message| %>
+				<li><%= message %></li>
+			<% end %>
+			</ul>
+		</div>
+	<% end %>
+	<%= form_for(@modalidade, html: {class: ""}) do |f| %>
+
+		
+			
+				<%= f.label :nome %><br>
+				<fieldset class="form-group">
+					<%= f.text_field :nome, class: 'form-control' %>
+					<%= "<p>#{@modalidade.errors.messages[:nome].first}</p>".html_safe if @modalidade.errors.messages[:nome].present? %>
+				</fieldset>
+			
+		
+		
+		<fieldset class="form-group">
+			<div class="col-sm-4 col-sm-offset-2">
+				<%= f.submit "Salvar", class: 'btn btn-bold btn-success' %>
+				<%= link_to 'Voltar', modalidades_path, class: 'btn btn-bold btn-secundary' %>
+			</div>
+		</fieldset>
+	<% end %>
+</div>

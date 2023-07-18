@@ -1,0 +1,29 @@
+<div class="main-content">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">Detalhes</h4>
+		</div>
+
+		<div class="card-body form-type-round">
+						<address>
+						<strong>Nome</strong><br>
+							<%= @evento.nome %>
+						</address>
+						<address>
+						<strong>Datainicio</strong><br>
+							<%= @evento.dataInicio %>
+						</address>
+						<address>
+						<strong>Datafim</strong><br>
+							<%= @evento.dataFim %>
+						</address>
+						<address>
+						<strong>Anohipico</strong><br>
+							<%= @evento.anoHipico %>
+						</address>
+							
+		<%= link_to 'Editar', edit_evento_path(@evento), class: 'btn btn-bold btn-info' %>
+		<%= link_to 'Voltar', eventos_path, class: 'btn btn-bold btn-default' %>
+		</div>
+	</div>
+</div>

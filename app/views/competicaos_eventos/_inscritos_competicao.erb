@@ -1,0 +1,45 @@
+<div class="row" data-controller="inscricaos-competicaos">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header">
+				<h4 class="card-title">Inscritos na Competição</h4>
+			</div>
+
+			<div class="card-body">
+				<table class="table">
+					<thead>
+						<tr>
+						<th>Número Inscrição</th>
+						<th>Animal</th>
+                        <th>Expositor</th>
+                        <th>Criador</th>
+						<th style="width: 160px;">Ações</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% @inscricaos_competicaos.each do |inscricaos_competicao| %>
+							<tr id="inscricaos_competicao-item-<%= inscricaos_competicao.id %>">
+                            	<td><%= inscricaos_competicao.inscricao.id rescue "" %></td>
+								<td><%= inscricaos_competicao.inscricao.nome_animal rescue "" %></td>
+								<td><%= inscricaos_competicao.inscricao.expositor.nome rescue "" %></td>
+                                <td><%= inscricaos_competicao.inscricao.criador.nome rescue "" %></td>
+
+								<td class="project-actions">
+									<%= link_to "javascript:void(0);", 'data-inscricaos_competicaos-id': inscricaos_competicao.id, "data-action": "competicaos_eventos#delete_inscricao", class: "btn btn-icona btn-neutral btn-danger btn-sm delete" do %>
+										<i class="fas fa-trash"></i>
+									<% end if can? :destroy, inscricaos_competicao %>
+								</td>
+							</tr>
+						<% end %>
+					</tbody>
+				</table>
+			</div>
+			<% competicao_evento = CompeticaosEvento.find(params[:id]) %>
+            <div class="col-lg-12">
+                <div class="float-right">
+                <%= link_to 'Novo', inscricaos_competicao_nova_inscricao_path(competicaos_evento_id: params[:id], modalidade: competicao_evento.competicao.modalidade.nome ), class: 'btn btn-bold btn-success' %>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>

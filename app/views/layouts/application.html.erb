@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta name="viewport" content="initial-scale=1">
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#f4f3ef">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#f4f3ef">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#f4f3ef">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet">
+
+    <%= display_meta_tags site: Rails.env.production? ? 'Eventos & Rankings' : '[DEV] Eventos & Rankings' %>
+    <%#= favicon_link_tag asset_path('favicon.png') %>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+
+    <%= Gon::Base.render_data %>
+    <%#= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    
+    <%= stylesheet_pack_tag "application", 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <%= content_tag(:meta, nil, name: "alert", content: alert) if alert %>
+    <%= content_tag(:meta, nil, name: "notice", content: notice) if notice %>
+
+    <%= content_tag(:meta, nil, name: "notice", content: notice) if notice %>
+    <%= content_tag(:meta, nil, name: "notice", content: notice) if notice %>
+    <meta name="turbolinks-container" content="#main">
+  </head>
+
+  <body data-ccontroller="<%= params[:controller] %>" data-action="<%= params[:action] %>">
+    <div class="wrapper <%= "wrapper-full-page" if !user_signed_in? %>" id="main">
+      <% if user_signed_in? %>
+        <!-- Sidebar -->
+        <%= render 'layouts/sidebar' %>
+        <div class="main-panel">
+          <!-- Topbar -->
+          <%= render 'layouts/topbar' %>
+          <!-- Content -->
+          <div class="content">
+            <%= yield %>
+          </div>
+          <!-- Footer -->
+          <%= render 'layouts/footer' %>
+      <% else %>
+        <%= yield %>
+      <% end %>
+        </div>
+    </div>
+    <div id="notify-d-info" data-turbolinks-permanent></div>
+    <div id="notify-d-warning" data-turbolinks-permanent></div>
+  </body>
+</html>

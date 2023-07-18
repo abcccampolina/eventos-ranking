@@ -1,0 +1,15 @@
+
+[1mFrom:[0m /home/lucas/Workspace/eventos-raking/app/controllers/competicaos_eventos_controller.rb:61 CompeticaosEventosController#gerar_inscritos:
+
+    [1;34m56[0m:             [32mif[0m competicao_evento.competicao.modalidade.nome == [31m[1;31m"[0m[31mGrande Competição Castrado de Sela[1;31m"[0m[31m[0m
+    [1;34m57[0m:               @competicao_evento_antecessora = [1;34;4mCompeticaosEvento[0m.find_by([35mcompeticao_id[0m: parametro.competicao_antecessora, [35mevento_id[0m: [1;32m$evento[0m.id)
+    [1;34m58[0m:               campeoes_proxima_fase = [1;34;4mPremio[0m.where([35mcompeticaos_evento_id[0m: @competicao_evento_antecessora.id, [35mposto[0m: [31m[1;31m"[0m[31mcampeão marcha categoria[1;31m"[0m[31m[0m).pluck([33m:inscricao_id[0m)
+    [1;34m59[0m:               campeoes_proxima_fase << [1;34;4mPremio[0m.where([35mcompeticaos_evento_id[0m: @competicao_evento_antecessora.id, [35mposto[0m: [31m[1;31m"[0m[31mreservado marcha categoria[1;31m"[0m[31m[0m).pluck([33m:inscricao_id[0m)
+    [1;34m60[0m:             [32melse[0m
+ => [1;34m61[0m:               binding.pry
+    [1;34m62[0m:               @competicao_evento_antecessora = [1;34;4mCompeticaosEvento[0m.find_by([35mcompeticao_id[0m: parametro.competicao_antecessora, [35mevento_id[0m: [1;32m$evento[0m.id)
+    [1;34m63[0m:               campeoes_proxima_fase = [1;34;4mPremio[0m.where([35mcompeticaos_evento_id[0m: @competicao_evento_antecessora.id, [35mposto[0m: [31m[1;31m"[0m[31mcampeão marcha categoria[1;31m"[0m[31m[0m).pluck([33m:inscricao_id[0m)
+    [1;34m64[0m:               campeoes_proxima_fase << [1;34;4mPremio[0m.where([35mcompeticaos_evento_id[0m: @competicao_evento_antecessora.id, [35mposto[0m: [31m[1;31m"[0m[31mreservado marcha categoria[1;31m"[0m[31m[0m).pluck([33m:inscricao_id[0m) [32mif[0m @inscricaos.count <= [1;34m150[0m
+    [1;34m65[0m:               campeoes_proxima_fase << [1;34;4mPremio[0m.where([35mcompeticaos_evento_id[0m: @competicao_evento_antecessora.id, [35mposto[0m: [31m[1;31m"[0m[31mcampeão convencional[1;31m"[0m[31m[0m).pluck([33m:inscricao_id[0m)
+    [1;34m66[0m:               campeoes_proxima_fase << [1;34;4mPremio[0m.where([35mcompeticaos_evento_id[0m: @competicao_evento_antecessora.id, [35mposto[0m: [31m[1;31m"[0m[31mreservado convencional[1;31m"[0m[31m[0m).pluck([33m:inscricao_id[0m) [32mif[0m @inscricaos.count <= [1;34m150[0m
+

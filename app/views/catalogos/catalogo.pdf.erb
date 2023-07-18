@@ -1,0 +1,101 @@
+<% @catalogos.each do |nome_catalogo, catalogos| %>
+    <title>	Competidores</title>
+	<small> <h6 class="text-center"> <%= $evento.nome %> </h6></small>
+	<strong><h3 class="text-center"><%= catalogos&.first&.nome_catalogo %> </strong>- <%= catalogos&.size %></h3>
+
+	<% catalogos = catalogos.sort_by { |cat| [cat.numero_colete] } %>
+	<% catalogos.each do |catalogo| %>
+		<div>
+			<p>
+				<strong>
+					<%= catalogo.numero_colete %> - 
+					<%= catalogo.inscricao.nome_animal %> -
+					<%= catalogo.inscricao.srg_animal.data_nascimento %> -
+					Idade: <%= catalogo.inscricao.faixa_etaria %> meses e <%= catalogo.inscricao.faixa_etaria_dia %> dias
+				</strong>
+					Número Registro: <%= catalogo.inscricao.srg_registro_animal %>
+				<span class="float-right ws-nowarp">
+					<%= catalogo.inscricao.so_marcha ? "Somente Marcha" : catalogo.nome_catalogo %>
+				</span>
+			</p>
+
+			<p>
+				<strong>
+					Chip do Animal nº: <%= catalogo.inscricao.srg_animal.numero_chip %>
+				</strong>
+			</p>
+
+			<p>
+				<%= catalogo.inscricao.srg_animal.animal_pai.nome_completo %> - <%= catalogo.inscricao.num_registro_pai %>
+				<i>X</i>
+				<%= catalogo.inscricao.srg_animal.animal_mae.nome_completo %> - <%= catalogo.inscricao.num_registro_mae %>
+			</p>
+
+			<p>
+				Criador: <%= catalogo.inscricao.criador.nome %> /
+				Expositor: <%= catalogo.inscricao.expositor.nome %> -
+				<%= catalogo.inscricao.expositor.fazenda %> -
+				<%= catalogo.inscricao.expositor.cidade %> -
+				<%= catalogo.inscricao.expositor.uf %>
+			</p>
+		</div>
+		<hr>
+		<!-- <br><br><br><br> -->
+
+	<% end %>
+	<% unless @catalogos.keys.last.eql? nome_catalogo %>
+		<div class="page-break"></div>
+	<% end %>
+<% end %>
+
+
+
+<% @catalogos_progenie&.group_by {|c| c&.nome_catalogo&.parameterize }&.each do |nome_catalogo, catalogos| %>
+	<h4 class="text-center"><%= catalogos&.first&.nome_catalogo %> </h4>
+	<% catalogos = catalogos.sort_by { |cat| [cat.numero_colete_progenie] } %>
+	<% catalogos.group_by {|c| c&.numero_colete_progenie }.each do |colete_matriz, filhos| %>
+
+			<strong>
+				<%if @catalogos_progenie.first.competicaos_evento.competicao.modalidade.nome == "Competição Acasalamento" %>
+				<% inscricao_comp = InscricaosCompeticao.where(inscricao_id: filhos.first.inscricao_id, competicaos_evento_id: filhos.first.competicaos_evento_id).where.not(acasalamento_pai_id: nil).first %>
+					<% matriz = SrgAnimal.find(inscricao_comp.acasalamento_mae_id) rescue nil %>
+					<% garanhao = SrgAnimal.find(inscricao_comp.acasalamento_pai_id) rescue nil%>
+					<h5>
+					<%= colete_matriz %> - 
+					<%= matriz&.nome_completo %> x <%= garanhao&.nome_completo %>  
+					<!-- </h5> Nascimento Matriz: <%= matriz&.data_nascimento %> - Criador Matriz: <%= SrgPessoa.find(matriz&.criador)&.nome rescue nil%> - <%= matriz&.fazenda_nascimento %> <br>
+					</h5> Nascimento Garanhão: <%= garanhao&.data_nascimento %> - Criador garanhao: <%= SrgPessoa.find(garanhao&.criador)&.nome rescue nil%> - <%= garanhao&.fazenda_nascimento %> -->
+				<%elsif @catalogos_progenie.first.competicaos_evento.competicao.modalidade.nome == "Competição Progênie" %>
+					<% inscricao_comp = InscricaosCompeticao.where(inscricao_id: filhos.first.inscricao_id, competicaos_evento_id: filhos.first.competicaos_evento_id).where.not(progenie_id: nil).first %>
+					<% matriz = SrgAnimal.find(inscricao_comp.progenie_id) rescue nil %>
+					<h5>
+					<%= colete_matriz %> - 
+					<%= matriz&.nome_completo %> </h5> Nascimento: <%= matriz&.data_nascimento %> - Criador: <%= SrgPessoa.find(matriz&.criador)&.nome rescue nil%> - <%= matriz&.fazenda_nascimento %>
+				<%end%>
+			</strong>
+
+		<br><br>
+		Composição do Conjunto: <br><br>
+		<% filhos.each do |catalogo| %>
+		<div>
+			<p>
+				<strong>
+					<%= catalogo&.inscricao&.srg_animal.nome_completo %> -
+					<%= catalogo&.inscricao&.srg_registro_animal %> -
+					<%= catalogo&.inscricao&.srg_animal.data_nascimento %> -
+					Idade: <%= catalogo&.inscricao&.faixa_etaria %> meses e <%= catalogo&.inscricao&.faixa_etaria_dia %> dias -
+					Chip: <%= catalogo&.inscricao&.srg_animal.numero_chip %>
+				</strong>
+			</p>
+		</div>
+	<% end %>
+	<br>
+	<p>
+		Responsável:
+		<strong> <%= inscricao_comp&.responsavel_expositor %> </strong>
+	</p>
+
+	<hr>
+	<% end %>
+	<div class="page-break"></div>     
+<% end %>
