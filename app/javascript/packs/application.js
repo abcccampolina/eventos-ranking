@@ -5,6 +5,7 @@
 import '../stylesheets/index.js.erb';
 import './mainstyle.js';
 import 'jquery';
+import 'bootstrap';
 import './bootstrap-notify.js';
 import "@fortawesome/fontawesome-free/js/all";
 import $ from 'jquery'
